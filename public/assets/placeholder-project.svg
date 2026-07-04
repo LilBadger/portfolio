@@ -1,0 +1,25 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="760" fill="#050606"/>
+  <path d="M0 0H1200V760H0V0Z" fill="url(#g)"/>
+  <g opacity="0.75">
+    <rect x="132" y="122" width="936" height="516" stroke="#D9DDD6" stroke-opacity="0.22"/>
+    <path d="M142 582H1058" stroke="#A6FF00" stroke-opacity="0.6" stroke-width="3"/>
+    <path d="M190 512C300 376 401 498 483 384C566 268 677 287 774 200C846 135 947 159 1024 100" stroke="#D9DDD6" stroke-opacity="0.3" stroke-width="2"/>
+    <path d="M220 598H390" stroke="#FF1AA8" stroke-opacity="0.8" stroke-width="4"/>
+    <text x="154" y="178" fill="#D9DDD6" fill-opacity="0.78" font-family="monospace" font-size="34">ARTSTATION_IMPORT_PENDING</text>
+    <text x="154" y="226" fill="#A6FF00" fill-opacity="0.9" font-family="monospace" font-size="24">VLAD_MAFTEI_PORTFOLIO</text>
+  </g>
+  <g opacity="0.11" font-family="monospace" font-size="13" fill="#FFFFFF">
+    <text x="80" y="80">010110010011001101001001010011</text>
+    <text x="760" y="296">110010100101010101000101010101</text>
+    <text x="120" y="704">001010111010100110010101010110</text>
+    <text x="720" y="688">SYS/PLACEHOLDER_ASSET</text>
+  </g>
+  <defs>
+    <radialGradient id="g" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(622 380) rotate(90) scale(412 610)">
+      <stop stop-color="#E7E7DF" stop-opacity="0.16"/>
+      <stop offset="0.56" stop-color="#A6FF00" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#050606" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

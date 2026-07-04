@@ -1,0 +1,20 @@
+Project: Vlad Maftei cyberpunk portfolio
+Status: Chrome ArtStation asset import complete; 37 local images copied and wired into manual project data
+Current phase: 07 — Artwork QA, optimization, and missing thumbnails
+
+Known source inputs:
+- Mockup: references/mockup/ARTISTWEBSITE.png
+- ArtStation: https://www.artstation.com/vladmaftei
+
+Important publishing architecture:
+- Articles: content/articles/*.md, routed at #/articles/<slug>
+- Static pages: content/pages/*.md, routed at #/pages/<slug>
+- Project importer output: src/data/artstation-projects.json
+- Curated project edits that survive re-imports: content/project-overrides.json
+- Publishing workflow doc: docs/PUBLISHING_NEW_CONTENT.md
+
+Next action for Codex:
+1. Add missing thumbnails for video-only/no-still projects if desired.
+2. Optimize/resample imported images for production performance.
+3. Add final contact details when confirmed.
+4. Continue through accessibility, performance, and final QA.

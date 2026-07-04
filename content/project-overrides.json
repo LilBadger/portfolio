@@ -1,0 +1,32 @@
+{
+  "cat-walkman": {
+    "featured": true,
+    "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",
+    "tags": [
+      "Featured",
+      "AI",
+      "Illustration",
+      "Music"
+    ],
+    "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno."
+  },
+  "daft-punk-cover-art": {
+    "role": "AI ILLUSTRATION / CHARACTER POSING",
+    "tags": [
+      "AI",
+      "Cover Art",
+      "Characters"
+    ],
+    "description": "AI-driven cover-art workflow using ComfyUI, SDXL, posing tools, and Photoshop cleanup for multi-character direction."
+  },
+  "philips-sensotouch": {
+    "role": "RIGGING / ANIMATION / CAMERA / RENDERING",
+    "tags": [
+      "Product",
+      "Commercial",
+      "Animation",
+      "Rendering"
+    ],
+    "description": "Presentation video work for Philips Sensotouch, including shaver rigging, animation, camera work, and rendered shots while at INDG."
+  }
+}

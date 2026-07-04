@@ -1,0 +1,76 @@
+import { AsciiBunny } from './AsciiBunny';
+import type { PortfolioProject } from '../data/projects';
+import { assetPath } from '../utils/assetPath';
+
+export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
+  const gallery = project.gallery?.length ? project.gallery : [project.cover];
+  const videos = project.videos ?? [];
+  const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
+
+  return (
+    <article className="content-page project-detail-page">
+      <nav className="content-nav" aria-label="Project navigation">
+        <a href="#/">&lt; HOME</a>
+        <a href="#work">WORK</a>
+        {project.sourceUrl ? (
+          <a href={project.sourceUrl} target="_blank" rel="noreferrer">ARTSTATION</a>
+        ) : null}
+      </nav>
+
+      <header className="content-hero project-detail-hero">
+        <p className="eyebrow">_PROJECT DOSSIER</p>
+        <div className="project-title-shell">
+          <pre className="project-title-shell__terminal" aria-hidden="true">
+            {[
+              '$ nmap -sV portfolio.local',
+              '$ hydra -l guest -P /dev/null project-vault',
+              '$ ./crack_manifest --target ./assets/artstation',
+              '$ strings ./gallery.bundle | grep sourceUrl',
+              '$ openssl dgst -sha256 final_render.jpg',
+              '$ rsync --dry-run ./project_files ./client_preview',
+              '$ access denied: read-only dossier',
+              '$ retry --public-mirror --no-auth'
+            ].join('\n')}
+          </pre>
+          <h1>{project.title}</h1>
+        </div>
+        <p className="content-hero__meta">{meta.join(' / ')}</p>
+        {project.description ? <p className="content-hero__excerpt">{project.description}</p> : null}
+      </header>
+
+      <section className="project-gallery" aria-label={`${project.title} gallery`}>
+        {gallery.map((image, index) => (
+          <figure className="content-image scanline-image" key={`${image}-${index}`}>
+            {index === 0 ? <AsciiBunny variant="project" /> : null}
+            <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
+              <img src={assetPath(image)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
+              <span>OPEN FULL RESOLUTION</span>
+            </a>
+          </figure>
+        ))}
+      </section>
+
+      {videos.length > 0 ? (
+        <section className="project-videos" aria-label={`${project.title} videos`}>
+          <p className="eyebrow">_VIDEO SIGNALS</p>
+          <div className={`project-video-grid${videos.length === 1 ? ' project-video-grid--single' : ''}`}>
+            {videos.map((video, index) => (
+              <article className="project-video" key={`${video.url}-${index}`}>
+                <iframe
+                  src={video.url}
+                  title={video.title ?? `${project.title} video ${index + 1}`}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+                <a href={video.url} target="_blank" rel="noreferrer">
+                  {video.title ?? `Open ${video.platform ?? 'video'} source`}
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </article>
+  );
+}

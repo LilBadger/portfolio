@@ -1,0 +1,96 @@
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 0 28px rgba(255, 255, 255, 0.09);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.glitch-text::before {
+  color: var(--acid);
+  transform: translateX(-1px);
+  clip-path: inset(0 0 68% 0);
+  animation: glitchSliceA 4.1s steps(1) infinite;
+}
+
+.glitch-text::after {
+  color: var(--magenta);
+  transform: translateX(1px);
+  clip-path: inset(62% 0 0 0);
+  animation: glitchSliceB 5.7s steps(1) infinite;
+}
+
+.glitch-text--heavy {
+  filter: contrast(1.2);
+}
+
+.glitch-text--heavy::before,
+.glitch-text--heavy::after {
+  animation-duration: 2.8s;
+}
+
+@keyframes glitchSliceA {
+  0%, 89%, 100% { opacity: 0; transform: translate(0, 0); }
+  90% { opacity: 0.55; transform: translate(-4px, -1px); clip-path: inset(7% 0 79% 0); }
+  91% { opacity: 0.25; transform: translate(5px, 1px); clip-path: inset(41% 0 38% 0); }
+  92% { opacity: 0.65; transform: translate(-2px, 0); clip-path: inset(72% 0 9% 0); }
+  93% { opacity: 0; transform: translate(0, 0); }
+}
+
+@keyframes glitchSliceB {
+  0%, 76%, 100% { opacity: 0; transform: translate(0, 0); }
+  77% { opacity: 0.45; transform: translate(3px, 1px); clip-path: inset(14% 0 70% 0); }
+  78% { opacity: 0.5; transform: translate(-6px, -1px); clip-path: inset(55% 0 27% 0); }
+  79% { opacity: 0.25; transform: translate(2px, 0); clip-path: inset(80% 0 2% 0); }
+  80% { opacity: 0; transform: translate(0, 0); }
+}
+
+.scanline-image {
+  position: relative;
+  overflow: hidden;
+  background: #050505;
+}
+
+.scanline-image::before,
+.scanline-image::after {
+  content: none;
+}
+
+.scanline-image::before {
+  background: none;
+  opacity: 0;
+}
+
+.scanline-image::after {
+  background: none;
+  animation: none;
+}
+
+.scanline-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none;
+  transition: none;
+}
+
+.scanline-image:hover img,
+.scanline-image:focus-visible img {
+  filter: none;
+  transform: none;
+}
+
+@keyframes imageTear {
+  0%, 82%, 100% { transform: translateX(-120%); opacity: 0; }
+  86% { transform: translateX(20%); opacity: 1; }
+  89% { transform: translateX(120%); opacity: 0; }
+}

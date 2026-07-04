@@ -1,0 +1,16 @@
+{
+  "featuredTitleContains": "cat walkman",
+  "preferredOrder": [
+    "Cat Walkman",
+    "Daft Punk cover art",
+    "Philips Sensotouch",
+    "Breakdance",
+    "ReStart",
+    "Xparticles Challenge",
+    "Philips Product Renders",
+    "CC Digital Human Contest / Gellert Grindelwald",
+    "In Spirit",
+    "Quixel Mixer Contest"
+  ],
+  "notes": "Use this order when imported ArtStation data includes matching titles. Keep original title casing in data; UI can uppercase labels."
+}

@@ -1,0 +1,380 @@
+[
+  {
+    "slug": "cat-walkman",
+    "title": "Cat Walkman",
+    "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",
+    "tools": [
+      "Invoke",
+      "SDXL",
+      "ControlNet",
+      "Suno"
+    ],
+    "tags": [
+      "Featured",
+      "AI",
+      "Illustration",
+      "Music"
+    ],
+    "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno.",
+    "cover": "assets/artstation/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg",
+    "gallery": [
+      "assets/artstation/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/WXbbzQ",
+    "featured": true,
+    "videos": [
+      {
+        "title": "Making of Cat Walkman",
+        "url": "https://www.youtube-nocookie.com/embed/1z7ghpX1_eg?feature=oembed&rel=0",
+        "platform": "youtube"
+      }
+    ]
+  },
+  {
+    "slug": "daft-punk-cover-art",
+    "title": "Daft Punk cover art",
+    "role": "AI ILLUSTRATION / CHARACTER POSING",
+    "tools": [
+      "ComfyUI",
+      "SDXL",
+      "Photoshop",
+      "Reallusion Character Creator"
+    ],
+    "tags": [
+      "AI",
+      "Cover Art",
+      "Characters"
+    ],
+    "description": "AI-driven cover-art workflow using ComfyUI, SDXL, posing tools, and Photoshop cleanup for multi-character direction.",
+    "cover": "assets/artstation/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg",
+    "gallery": [
+      "assets/artstation/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/oJ6ZLz",
+    "videos": [
+      {
+        "title": "Making of Daft Punk ComfyUI Illustration",
+        "url": "https://www.youtube-nocookie.com/embed/AVUfWJVFMhs?feature=oembed&rel=0",
+        "platform": "youtube"
+      }
+    ]
+  },
+  {
+    "slug": "trips",
+    "title": "trips",
+    "role": "AI ENVIRONMENT / VIDEO / EDIT",
+    "tools": [
+      "ComfyUI",
+      "Flux",
+      "Runway",
+      "Aiva",
+      "Blender"
+    ],
+    "tags": [
+      "AI",
+      "Environment",
+      "Video",
+      "Edit"
+    ],
+    "description": "Alien-world environment exploration using generated stills, AI video, music generation, and Blender editing.",
+    "cover": "assets/artstation/trips/01-vlx-maftei-landscapes-01.jpg",
+    "gallery": [
+      "assets/artstation/trips/01-vlx-maftei-landscapes-01.jpg",
+      "assets/artstation/trips/02-vlx-maftei-landscapes-02.jpg",
+      "assets/artstation/trips/03-vlx-maftei-landscapes-03.jpg",
+      "assets/artstation/trips/04-vlx-maftei-landscapes-04.jpg",
+      "assets/artstation/trips/05-vlx-maftei-landscapes-05.jpg",
+      "assets/artstation/trips/06-vlx-maftei-landscapes-06.jpg",
+      "assets/artstation/trips/07-vlx-maftei-landscapes-07.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/1NBXYX",
+    "videos": [
+      {
+        "title": "trips",
+        "url": "https://www.youtube-nocookie.com/embed/UhN6GYCClDI?feature=oembed&rel=0",
+        "platform": "youtube"
+      }
+    ]
+  },
+  {
+    "slug": "xparticles-challenge-2018-animation-tests-and-explorations",
+    "title": "Xparticles Challenge 2018 Animation Tests and Explorations",
+    "role": "MOTION TESTS / PROCEDURAL EXPLORATION",
+    "tools": [
+      "Cinema 4D",
+      "X-Particles"
+    ],
+    "tags": [
+      "Procedural",
+      "Motion",
+      "Tests"
+    ],
+    "description": "Animation tests and iterations made while exploring visual directions for the X-Particles Challenge 2018.",
+    "cover": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg",
+    "gallery": [
+      "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/JeK0Dd"
+  },
+  {
+    "slug": "philips-sensotouch",
+    "title": "Philips Sensotouch",
+    "role": "RIGGING / ANIMATION / CAMERA / RENDERING",
+    "tools": [
+      "3D",
+      "Animation",
+      "Rendering"
+    ],
+    "tags": [
+      "Product",
+      "Commercial",
+      "Animation",
+      "Rendering"
+    ],
+    "description": "Presentation video work for Philips Sensotouch, including shaver rigging, animation, camera work, and rendered shots while at INDG.",
+    "cover": "assets/artstation/philips-sensotouch/01-vlx-maftei-sensotouch02.jpg",
+    "gallery": [
+      "assets/artstation/philips-sensotouch/01-vlx-maftei-sensotouch02.jpg",
+      "assets/artstation/philips-sensotouch/02-vlx-maftei-sensotouch04.jpg",
+      "assets/artstation/philips-sensotouch/03-vlx-maftei-sensotouch08.jpg",
+      "assets/artstation/philips-sensotouch/04-vlx-maftei-sensotouch07.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/nE9Xor",
+    "videos": [
+      {
+        "title": "Philips - Senso Touch 3D - by INDG.com",
+        "url": "https://www.youtube-nocookie.com/embed/QoMyGzBPKAo?feature=oembed&rel=0",
+        "platform": "youtube"
+      }
+    ]
+  },
+  {
+    "slug": "philips-product-renders",
+    "title": "Philips Product Renders",
+    "role": "PRODUCT VISUALIZATION",
+    "tools": [
+      "3D",
+      "Lighting",
+      "Rendering"
+    ],
+    "tags": [
+      "Product",
+      "Commercial",
+      "CGI"
+    ],
+    "description": "Product render selection created while working at INDG.",
+    "cover": "assets/artstation/philips-product-renders/01-vlx-maftei-philipsposter02.jpg",
+    "gallery": [
+      "assets/artstation/philips-product-renders/01-vlx-maftei-philipsposter02.jpg",
+      "assets/artstation/philips-product-renders/02-vlx-maftei-philipsposter06.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/8wqGAq"
+  },
+  {
+    "slug": "cc-digital-human-contest-2020-gellert-grindelwald",
+    "title": "CC Digital Human Contest 2020 - Animated Character - Gellert Grindelwald",
+    "role": "DIGITAL HUMAN / CHARACTER / CLOTH / RENDERING",
+    "tools": [
+      "Character Creator",
+      "iClone",
+      "Blender",
+      "Houdini",
+      "Marvelous Designer",
+      "Substance Painter"
+    ],
+    "tags": [
+      "Digital Human",
+      "Character",
+      "Animation",
+      "Cloth"
+    ],
+    "description": "Digital double contest entry using Reallusion tools, Blender, Houdini KineFX cleanup, Marvelous Designer clothing, Substance Painter textures, and Eevee rendering.",
+    "cover": "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/01-vlx-maftei-stills-00011.jpg",
+    "gallery": [
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/01-vlx-maftei-stills-00011.jpg",
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/02-vlx-maftei-stills-00001.jpg",
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/03-vlx-maftei-stills-00006.jpg",
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/04-vlx-maftei-stills-00009.jpg",
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/05-vlx-maftei-stills-00008.jpg",
+      "assets/artstation/cc-digital-human-contest-2020-gellert-grindelwald/06-vlx-maftei-stills-00005.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/xJv852",
+    "videos": [
+      {
+        "title": "Digital Human Contest video 1",
+        "url": "https://www.youtube-nocookie.com/embed/IZOJIYPgllk?feature=oembed&rel=0",
+        "platform": "youtube"
+      },
+      {
+        "title": "Digital Human Contest video 2",
+        "url": "https://www.youtube-nocookie.com/embed/mPSxDk1-BHU?feature=oembed&rel=0",
+        "platform": "youtube"
+      },
+      {
+        "title": "Digital Human Contest video 3",
+        "url": "https://www.youtube-nocookie.com/embed/ez2bCKLHNZk?feature=oembed&rel=0",
+        "platform": "youtube"
+      },
+      {
+        "title": "Digital Human Contest video 4",
+        "url": "https://www.youtube-nocookie.com/embed/UmKGc-lQ7lE?feature=oembed&rel=0",
+        "platform": "youtube"
+      }
+    ]
+  },
+  {
+    "slug": "breakdance",
+    "title": "Breakdance",
+    "role": "PERSONAL SHORT / ANIMATION PIPELINE",
+    "tools": [
+      "Cinema 4D",
+      "Mixamo"
+    ],
+    "tags": [
+      "Animation",
+      "Personal",
+      "Pipeline"
+    ],
+    "description": "Personal animation project exploring Mixamo-to-Cinema 4D workflows through a short narrative piece.",
+    "cover": "assets/artstation/breakdance/01-vlx-maftei-breakdance2.jpg",
+    "gallery": [
+      "assets/artstation/breakdance/01-vlx-maftei-breakdance2.jpg",
+      "assets/artstation/breakdance/02-vlx-maftei-breakdance3.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/Z5PeAm",
+    "videos": [
+      {
+        "title": "A million break dance.",
+        "url": "https://player.vimeo.com/video/180709865?app_id=122963&dnt=1",
+        "platform": "vimeo"
+      }
+    ]
+  },
+  {
+    "slug": "restart",
+    "title": "ReStart",
+    "role": "PERSONAL ABSTRACT ANIMATION",
+    "tools": [
+      "3D",
+      "Animation",
+      "Look Development"
+    ],
+    "tags": [
+      "Abstract",
+      "Animation",
+      "Personal"
+    ],
+    "description": "Personal abstract animation exploring a journey through cosmic, subconscious, and spiritual imagery.",
+    "cover": "assets/artstation/restart/01-vlx-maftei-moon01.jpg",
+    "gallery": [
+      "assets/artstation/restart/01-vlx-maftei-moon01.jpg",
+      "assets/artstation/restart/02-vlx-maftei-cave02.jpg",
+      "assets/artstation/restart/03-vlx-maftei-test-psychedelic05.jpg",
+      "assets/artstation/restart/04-vlx-maftei-earth02-00000.jpg",
+      "assets/artstation/restart/05-vlx-maftei-snake01.jpg",
+      "assets/artstation/restart/06-vlx-maftei-outteruniverse09.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/v19JgE",
+    "videos": [
+      {
+        "title": "Some Experiments For My Short",
+        "url": "https://player.vimeo.com/video/312940221?app_id=122963&dnt=1",
+        "platform": "vimeo"
+      }
+    ]
+  },
+  {
+    "slug": "in-spirit",
+    "title": "In Spirit",
+    "role": "DESIGN FOR PRODUCTION / ABSTRACT TECH IMAGERY",
+    "tools": [
+      "Design",
+      "3D",
+      "Look Development"
+    ],
+    "tags": [
+      "Abstract",
+      "Design",
+      "Tech",
+      "Lookdev"
+    ],
+    "description": "Abstract and technical imagery developed during a Learn Squared design-for-production class.",
+    "cover": "assets/artstation/in-spirit/01-vlx-maftei-shot03.jpg",
+    "gallery": [
+      "assets/artstation/in-spirit/01-vlx-maftei-shot03.jpg",
+      "assets/artstation/in-spirit/02-vlx-maftei-shot12.jpg",
+      "assets/artstation/in-spirit/03-vlx-maftei-shot06.jpg",
+      "assets/artstation/in-spirit/04-vlx-maftei-shot01.jpg",
+      "assets/artstation/in-spirit/05-vlx-maftei-shot10.jpg",
+      "assets/artstation/in-spirit/06-vlx-maftei-shot04.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/ybQJLn"
+  },
+  {
+    "slug": "x-particles-challenge-2018",
+    "title": "X-particles Challenge 2018",
+    "role": "PROCEDURAL SIMULATION / CHALLENGE ENTRY",
+    "tools": [
+      "Cinema 4D",
+      "X-Particles"
+    ],
+    "tags": [
+      "Procedural",
+      "Simulation",
+      "Challenge"
+    ],
+    "description": "X-Particles challenge entry focused on a cellular procedural look within the contest scene constraints.",
+    "cover": "assets/artstation/x-particles-challenge-2018/01-vlx-maftei-x1.jpg",
+    "gallery": [
+      "assets/artstation/x-particles-challenge-2018/01-vlx-maftei-x1.jpg",
+      "assets/artstation/x-particles-challenge-2018/02-vlx-maftei-x2.jpg",
+      "assets/artstation/x-particles-challenge-2018/03-vlx-maftei-x3.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/1nb49X",
+    "videos": [
+      {
+        "title": "XPC2018 Challenge at 4k",
+        "url": "https://player.vimeo.com/video/307570158?app_id=122963&dnt=1",
+        "platform": "vimeo"
+      }
+    ]
+  },
+  {
+    "slug": "quixel-mixer-contest",
+    "title": "Quixel Mixer Contest",
+    "role": "UNREAL ENGINE / MATERIALS / REAL-TIME RENDERING",
+    "tools": [
+      "Unreal Engine",
+      "Quixel Mixer",
+      "Megascans"
+    ],
+    "tags": [
+      "Real-Time",
+      "Materials",
+      "Challenge",
+      "Rendering"
+    ],
+    "description": "Quixel Mixer contest entry using Unreal Engine, Megascans, and custom Mixer materials for a real-time rendered scene.",
+    "cover": "assets/artstation/quixel-mixer-contest/01-vlx-maftei-minimal-default-00712.jpg",
+    "gallery": [
+      "assets/artstation/quixel-mixer-contest/01-vlx-maftei-minimal-default-00712.jpg",
+      "assets/artstation/quixel-mixer-contest/02-vlx-maftei-minimal-default-01776.jpg",
+      "assets/artstation/quixel-mixer-contest/03-vlx-maftei-floor.jpg",
+      "assets/artstation/quixel-mixer-contest/04-vlx-maftei-highresscreenshot00000.jpg",
+      "assets/artstation/quixel-mixer-contest/05-vlx-maftei-minimal-default-00948.jpg",
+      "assets/artstation/quixel-mixer-contest/06-vlx-maftei-minimal-default-01136-min.jpg",
+      "assets/artstation/quixel-mixer-contest/07-vlx-maftei-highresscreenshot00001.jpg",
+      "assets/artstation/quixel-mixer-contest/08-vlx-maftei-highresscreenshot00003.jpg",
+      "assets/artstation/quixel-mixer-contest/09-vlx-maftei-highresscreenshot00002.jpg",
+      "assets/artstation/quixel-mixer-contest/10-vlx-maftei-megascanassets.jpg"
+    ],
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/2Joox",
+    "videos": [
+      {
+        "title": "QuixelMixer Contest Entry",
+        "url": "https://player.vimeo.com/video/273187607?app_id=122963&dnt=1",
+        "platform": "vimeo"
+      }
+    ]
+  }
+]

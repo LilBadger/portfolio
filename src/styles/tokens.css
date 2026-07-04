@@ -1,0 +1,16 @@
+:root {
+  color-scheme: dark;
+  --bg: #020303;
+  --bg-soft: #050707;
+  --ink: #e7e7df;
+  --ink-muted: #898e89;
+  --ink-faint: #4a504b;
+  --acid: #9fb8c3;
+  --acid-dim: #6f8792;
+  --magenta: #ff1aa8;
+  --panel: rgba(8, 11, 10, 0.72);
+  --line: rgba(231, 231, 223, 0.18);
+  --line-hot: rgba(159, 184, 195, 0.55);
+  --shadow-acid: 0 0 22px rgba(159, 184, 195, 0.22);
+  --font-mono: "Ubuntu Mono", "DejaVu Sans Mono", "Liberation Mono", "Cascadia Mono", "Lucida Console", Consolas, "Courier New", monospace;
+}
