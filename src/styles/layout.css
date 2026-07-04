@@ -731,11 +731,15 @@
 .section-header h2 {
   margin: 0;
   max-width: 58rem;
-  color: var(--ink);
+  color: #c7ddea;
   font-size: clamp(2.4rem, 5vw, 5.8rem);
   line-height: 0.92;
   letter-spacing: -0.06em;
   text-transform: uppercase;
+  text-shadow:
+    -0.035em 0 rgba(0, 188, 255, 0.48),
+    0.035em 0 rgba(255, 45, 122, 0.34),
+    0 0 22px rgba(159, 184, 195, 0.2);
 }
 
 .section-header__copy {
@@ -1410,6 +1414,53 @@ button,
   z-index: 1;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(2,3,3,0.12), transparent 28%, rgba(2,3,3,0.22));
+}
+
+.content-dossier-hero {
+  max-width: none;
+  width: 100%;
+  padding-top: clamp(4rem, 8vw, 9rem);
+  padding-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+
+.content-dossier-hero h1 {
+  position: relative;
+  z-index: 2;
+  max-width: none;
+  font-size: clamp(1.7rem, 4.6vw, 6.75rem);
+  line-height: 0.96;
+  color: #c7ddea;
+  text-shadow:
+    -0.035em 0 rgba(0, 188, 255, 0.48),
+    0.035em 0 rgba(255, 45, 122, 0.34),
+    0 0 22px rgba(159, 184, 195, 0.2);
+}
+
+.content-title-shell {
+  min-height: clamp(4rem, 7vw, 9rem);
+}
+
+.content-dossier-hero .content-hero__meta:empty {
+  display: none;
+}
+
+.content-dossier-hero .content-hero__excerpt {
+  width: min(100%, 92vw);
+  max-width: none;
+  color: #f2f4ee;
+  font-size: clamp(0.82rem, calc(0.46rem + 0.94vw), 1.55rem) !important;
+  line-height: 1.42 !important;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.38),
+    0 0 12px rgba(159, 184, 195, 0.15);
+}
+
+.content-dossier-hero .content-hero__excerpt::before {
+  content: "$ cat ./summary.txt";
+  display: block;
+  margin: 0 0 0.45rem;
+  color: var(--acid);
+  font-size: 0.78em;
 }
 
 .project-detail-page .content-hero__meta {
