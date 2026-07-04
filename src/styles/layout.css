@@ -1533,6 +1533,20 @@ button,
   margin-top: 0;
 }
 
+.project-detail-page--article .project-detail-hero {
+  text-align: center;
+}
+
+.project-detail-page--article .project-title-shell {
+  justify-content: center;
+}
+
+.project-detail-page--article .project-detail-hero .content-hero__meta,
+.project-detail-page--article .project-detail-hero .content-hero__excerpt {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .project-detail-page--article .project-breakdown .content-renderer {
   max-width: min(100%, 76rem);
   margin-inline: auto;
