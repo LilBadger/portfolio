@@ -1535,11 +1535,12 @@ button,
 
 .project-detail-page--article .project-breakdown .content-renderer {
   max-width: min(100%, 76rem);
+  margin-inline: auto;
 }
 
 .project-detail-page--article .project-breakdown .content-image {
   max-width: min(100%, 58rem);
-  margin-block: clamp(1.5rem, 3vw, 3rem);
+  margin: clamp(1.5rem, 3vw, 3rem) auto;
 }
 
 .project-detail-page--article .project-breakdown .content-image img {
@@ -1547,8 +1548,19 @@ button,
   max-height: min(78vh, 58rem);
 }
 
+.project-detail-page--article .project-breakdown .content-renderer h2,
+.project-detail-page--article .project-breakdown .content-renderer h3,
+.project-detail-page--article .project-breakdown .content-renderer > p,
+.project-detail-page--article .project-breakdown .content-renderer > ul,
 .project-detail-page--article .project-breakdown .content-renderer pre {
   max-width: min(100%, 58rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.project-detail-page--article .project-breakdown .content-renderer h2,
+.project-detail-page--article .project-breakdown .content-renderer h3 {
+  text-align: center;
 }
 
 .project-detail-page .project-video-grid {
