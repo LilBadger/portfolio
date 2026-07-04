@@ -1,5 +1,67 @@
 [
   {
+    "slug": "fugi-visualizer",
+    "title": "Fugi Visualizer",
+    "year": "2026",
+    "role": "CODEX / LYRICS VIDEO / ASCII VISUALIZER",
+    "tools": [
+      "Codex",
+      "Suno",
+      "HTML Canvas",
+      "Web Audio API",
+      "JavaScript"
+    ],
+    "tags": [
+      "Latest",
+      "Codex",
+      "Music",
+      "ASCII"
+    ],
+    "description": "I built this with Codex as a browser-native lyric visualizer for a Suno song: an animated neon ASCII face, audio-reactive motion, synced lyric glitches, and a live cyberpunk transmission interface.",
+    "cover": "assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png",
+    "gallery": [
+      "assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png",
+      "assets/projects/fugi-visualizer/fugi-visualizer-01-idle.png",
+      "assets/projects/fugi-visualizer/fugi-visualizer-02-signal.png",
+      "assets/projects/fugi-visualizer/fugi-visualizer-04-wide.png",
+      "assets/projects/fugi-visualizer/reference-tongue-in.png",
+      "assets/projects/fugi-visualizer/fugi-effect-stack.svg",
+      "assets/projects/fugi-visualizer/fugi-ascii-layers.svg"
+    ],
+    "sourceUrl": "https://lilbadger.github.io/fugi-vizualizer/",
+    "sourceLabel": "LIVE VISUALIZER",
+    "body": [
+      "## What I Made",
+      "I used Codex as a build partner to turn a Suno track into a browser-native lyric video. The project is not a rendered video file: the page draws the performance live with HTML Canvas, a source portrait, timed lyric cues, procedural glitch cards, and audio-driven motion.",
+      "",
+      "The live version is here: [open the Fugi visualizer](https://lilbadger.github.io/fugi-vizualizer/).",
+      "",
+      "## Effect Stack",
+      "![Fugi effect stack](assets/projects/fugi-visualizer/fugi-effect-stack.svg)",
+      "",
+      "The signal chain is intentionally direct: song plus portrait go in; the browser generates the ASCII face, motion, trails, scanlines, HUD noise, and lyric bursts in real time. Codex helped iterate the canvas architecture, timing data, and visual system quickly enough that the tool started feeling more like a live instrument than a static page.",
+      "",
+      "## ASCII Face Layers",
+      "![ASCII layer breakdown](assets/projects/fugi-visualizer/fugi-ascii-layers.svg)",
+      "",
+      "The portrait is cropped into a face-focused signal, sampled into a character grid, rebuilt as a colored ASCII texture, then pushed through a fake depth model. Audio bands drive the face yaw, pitch, push, trails, and glitch density so the head feels like it is reacting to the track instead of just looping.",
+      "",
+      "```",
+      "reference portrait",
+      "  -> crop + head mask",
+      "  -> luminance cells",
+      "  -> dense/sparse ASCII characters",
+      "  -> sampled color texture",
+      "  -> column depth parallax",
+      "  -> audio-reactive push / yaw / trails",
+      "  -> lyric glitch overlays",
+      "```",
+      "",
+      "## Why It Matters",
+      "This is a small but important kind of experiment for me: music generation, image generation, coding, timing, and motion design all meeting inside one live web object. It shows how I can use Codex not just to assemble a page, but to prototype a visual language around a song and keep pushing until the thing has attitude."
+    ]
+  },
+  {
     "slug": "cat-walkman",
     "title": "Cat Walkman",
     "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",

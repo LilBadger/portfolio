@@ -1,11 +1,13 @@
 import { AsciiBunny } from './AsciiBunny';
 import type { PortfolioProject } from '../data/projects';
 import { assetPath } from '../utils/assetPath';
+import { ContentRenderer } from './ContentRenderer';
 
 export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
   const gallery = project.gallery?.length ? project.gallery : [project.cover];
   const videos = project.videos ?? [];
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
+  const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
 
   return (
     <article className="content-page project-detail-page">
@@ -13,7 +15,7 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
         <a href="#/">&lt; HOME</a>
         <a href="#work">WORK</a>
         {project.sourceUrl ? (
-          <a href={project.sourceUrl} target="_blank" rel="noreferrer">ARTSTATION</a>
+          <a href={project.sourceUrl} target="_blank" rel="noreferrer">{project.sourceLabel ?? 'ARTSTATION'}</a>
         ) : null}
       </nav>
 
@@ -69,6 +71,12 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
               </article>
             ))}
           </div>
+        </section>
+      ) : null}
+
+      {body ? (
+        <section className="project-breakdown" aria-label={`${project.title} breakdown`}>
+          <ContentRenderer body={body} />
         </section>
       ) : null}
     </article>

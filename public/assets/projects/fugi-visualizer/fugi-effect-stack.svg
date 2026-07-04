@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Fugi visualizer effect stack</title>
+  <desc id="desc">A terminal style diagram showing the signal flow from Suno song and reference portrait to the ASCII lyric visualizer.</desc>
+  <defs>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="panel" x1="0" x2="1">
+      <stop stop-color="#071125" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#090315" stop-opacity=".96"/>
+    </linearGradient>
+    <linearGradient id="wire" x1="0" x2="1">
+      <stop stop-color="#19f7ff"/>
+      <stop offset=".55" stop-color="#ff2eea"/>
+      <stop offset="1" stop-color="#8dff61"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="760" fill="#020303"/>
+  <g opacity=".2">
+    <path d="M0 78H1400M0 156H1400M0 234H1400M0 312H1400M0 390H1400M0 468H1400M0 546H1400M0 624H1400M0 702H1400" stroke="#9fb8c3" stroke-width="1"/>
+    <path d="M120 0V760M280 0V760M440 0V760M600 0V760M760 0V760M920 0V760M1080 0V760M1240 0V760" stroke="#9fb8c3" stroke-width="1"/>
+  </g>
+  <text x="54" y="74" fill="#f2f4ee" font-family="Consolas, monospace" font-size="34" font-weight="700">$ ./fugi --trace-pipeline</text>
+  <text x="54" y="118" fill="#9fb8c3" font-family="Consolas, monospace" font-size="20">codex session -> single page app -> live neon lyrics transmission</text>
+
+  <g font-family="Consolas, monospace" font-weight="700">
+    <g transform="translate(64 190)">
+      <rect width="250" height="130" fill="url(#panel)"/>
+      <text x="22" y="38" fill="#19f7ff" font-size="18">01 SOURCE</text>
+      <text x="22" y="72" fill="#f2f4ee" font-size="24">Suno track</text>
+      <text x="22" y="104" fill="#9fb8c3" font-size="16">wav + timed lyrics</text>
+    </g>
+    <g transform="translate(64 430)">
+      <rect width="250" height="130" fill="url(#panel)"/>
+      <text x="22" y="38" fill="#ff2eea" font-size="18">02 REFERENCE</text>
+      <text x="22" y="72" fill="#f2f4ee" font-size="24">portrait signal</text>
+      <text x="22" y="104" fill="#9fb8c3" font-size="16">crop / mask / sample</text>
+    </g>
+    <g transform="translate(420 300)">
+      <rect width="270" height="150" fill="url(#panel)"/>
+      <text x="22" y="38" fill="#8dff61" font-size="18">03 ASCII CORE</text>
+      <text x="22" y="76" fill="#f2f4ee" font-size="24">luminance map</text>
+      <text x="22" y="108" fill="#9fb8c3" font-size="16">characters by density</text>
+      <text x="22" y="132" fill="#9fb8c3" font-size="16">color sampled per cell</text>
+    </g>
+    <g transform="translate(790 190)">
+      <rect width="260" height="130" fill="url(#panel)"/>
+      <text x="22" y="38" fill="#19f7ff" font-size="18">04 MOTION</text>
+      <text x="22" y="72" fill="#f2f4ee" font-size="24">Web Audio API</text>
+      <text x="22" y="104" fill="#9fb8c3" font-size="16">bass / mids / treble</text>
+    </g>
+    <g transform="translate(790 430)">
+      <rect width="260" height="130" fill="url(#panel)"/>
+      <text x="22" y="38" fill="#ff2eea" font-size="18">05 IMAGE FX</text>
+      <text x="22" y="72" fill="#f2f4ee" font-size="24">parallax head</text>
+      <text x="22" y="104" fill="#9fb8c3" font-size="16">trails / scan / glitch</text>
+    </g>
+    <g transform="translate(1138 300)">
+      <rect width="210" height="150" fill="url(#panel)" filter="url(#glow)"/>
+      <text x="22" y="38" fill="#8dff61" font-size="18">06 OUTPUT</text>
+      <text x="22" y="76" fill="#f2f4ee" font-size="24">lyrics video</text>
+      <text x="22" y="108" fill="#9fb8c3" font-size="16">browser-native</text>
+      <text x="22" y="132" fill="#9fb8c3" font-size="16">interactive loop</text>
+    </g>
+  </g>
+
+  <g fill="none" stroke="url(#wire)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M314 255C374 255 360 375 420 375"/>
+    <path d="M314 495C374 495 360 375 420 375"/>
+    <path d="M690 375C742 375 738 255 790 255"/>
+    <path d="M690 375C742 375 738 495 790 495"/>
+    <path d="M1050 255C1118 255 1070 375 1138 375"/>
+    <path d="M1050 495C1118 495 1070 375 1138 375"/>
+  </g>
+
+  <g font-family="Consolas, monospace" font-size="18" fill="#f2f4ee">
+    <text x="468" y="650">$ every frame: audio bands modulate scale, yaw, pitch, trails, and glitch density</text>
+    <text x="468" y="682" fill="#9fb8c3">$ no video file: the browser renders the performance in real time</text>
+  </g>
+</svg>

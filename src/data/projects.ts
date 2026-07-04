@@ -19,6 +19,8 @@ export type PortfolioProject = {
     poster?: string;
   }>;
   sourceUrl?: string;
+  sourceLabel?: string;
+  body?: string | string[];
   featured?: boolean;
 };
 

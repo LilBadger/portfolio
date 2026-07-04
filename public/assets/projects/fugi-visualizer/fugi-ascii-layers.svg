@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 880" role="img" aria-labelledby="title desc">
+  <title id="title">ASCII face effect layers</title>
+  <desc id="desc">Four panels explaining how the Fugi visualizer builds the ASCII face from crop mask, character density, depth columns, and glitch passes.</desc>
+  <defs>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#03111d"/>
+      <stop offset=".52" stop-color="#030314"/>
+      <stop offset="1" stop-color="#17001d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="880" fill="#020303"/>
+  <text x="58" y="72" fill="#f2f4ee" font-family="Consolas, monospace" font-size="34" font-weight="700">$ inspect ./ascii_face.layers</text>
+  <text x="58" y="114" fill="#9fb8c3" font-family="Consolas, monospace" font-size="20">same portrait, four render passes, one neon transmission</text>
+
+  <g font-family="Consolas, monospace" font-weight="700">
+    <g transform="translate(58 166)">
+      <rect width="604" height="276" fill="url(#bg)"/>
+      <text x="24" y="38" fill="#19f7ff" font-size="18">LAYER_01 / CROP + MASK</text>
+      <ellipse cx="302" cy="152" rx="122" ry="154" fill="none" stroke="#f2f4ee" stroke-width="3" opacity=".75"/>
+      <path d="M208 94C238 40 366 38 396 94M210 240C254 286 348 286 394 240" fill="none" stroke="#ff2eea" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
+      <path d="M220 160H384M226 188H378" stroke="#8dff61" stroke-width="2" opacity=".6"/>
+      <text x="24" y="242" fill="#9fb8c3" font-size="16">keep face + neon landmarks, reject blue plate</text>
+    </g>
+
+    <g transform="translate(738 166)">
+      <rect width="604" height="276" fill="url(#bg)"/>
+      <text x="24" y="38" fill="#ff2eea" font-size="18">LAYER_02 / ASCII TEXTURE</text>
+      <text x="126" y="88" fill="#f2f4ee" font-size="18" letter-spacing="2">..,,;;!!ii&gt;&lt;++??11ttffjjrrxxnn</text>
+      <text x="126" y="118" fill="#c7ddea" font-size="18" letter-spacing="2">LLCCUUOO00ZZmmwwqqppddbbkk</text>
+      <text x="126" y="148" fill="#9fb8c3" font-size="18" letter-spacing="2">haa**##MMWW&amp;&amp;88%%BB@@$</text>
+      <text x="126" y="190" fill="#19f7ff" font-size="18" filter="url(#softGlow)">bright pixels choose dense characters</text>
+      <text x="126" y="220" fill="#9fb8c3" font-size="16">cell color is sampled from the source portrait</text>
+    </g>
+
+    <g transform="translate(58 504)">
+      <rect width="604" height="276" fill="url(#bg)"/>
+      <text x="24" y="38" fill="#8dff61" font-size="18">LAYER_03 / COLUMN DEPTH</text>
+      <g transform="translate(128 80)" stroke-linecap="round">
+        <path d="M0 150C48 48 126 22 190 86C250 145 320 92 396 18" fill="none" stroke="#19f7ff" stroke-width="5" filter="url(#softGlow)"/>
+        <path d="M0 190H420" stroke="#9fb8c3" stroke-width="1" opacity=".35"/>
+        <path d="M42 190V116M96 190V76M150 190V88M204 190V136M258 190V120M312 190V82M366 190V50" stroke="#ff2eea" stroke-width="8" opacity=".72"/>
+      </g>
+      <text x="24" y="242" fill="#9fb8c3" font-size="16">columns bend into yaw, pitch, push, and wobble</text>
+    </g>
+
+    <g transform="translate(738 504)">
+      <rect width="604" height="276" fill="url(#bg)"/>
+      <text x="24" y="38" fill="#19f7ff" font-size="18">LAYER_04 / GLITCH COMPOSITE</text>
+      <g opacity=".85">
+        <rect x="98" y="92" width="360" height="18" fill="#19f7ff" opacity=".55"/>
+        <rect x="148" y="132" width="286" height="10" fill="#ff2eea" opacity=".62"/>
+        <rect x="74" y="176" width="430" height="26" fill="#071295" opacity=".62"/>
+        <rect x="188" y="218" width="226" height="7" fill="#8dff61" opacity=".5"/>
+      </g>
+      <text x="92" y="118" fill="#f2f4ee" font-size="18">$ lyric cue spawns hack card</text>
+      <text x="92" y="160" fill="#f2f4ee" font-size="18">$ scanlines drift over frame</text>
+      <text x="92" y="244" fill="#9fb8c3" font-size="16">audio energy controls how hard it tears</text>
+    </g>
+  </g>
+</svg>
