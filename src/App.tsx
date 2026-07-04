@@ -22,7 +22,7 @@ const navLinks = [
   { href: '#work', label: 'Work' },
   { href: '#process', label: 'Process' },
   { href: '#articles', label: 'Articles' },
-  { href: '#about', label: 'About' },
+  { href: '#/pages/about', label: 'About' },
   { href: '#contact', label: 'Contact' }
 ];
 
