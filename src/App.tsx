@@ -127,6 +127,13 @@ function useActiveHomeBunny(): ActiveBunny {
 
 function HomePage() {
   const activeBunny = useActiveHomeBunny();
+  const contactLinks = [
+    { href: 'mailto:vladmaftei@gmail.com', label: 'Email', value: 'vladmaftei@gmail.com' },
+    { href: 'https://vladmaftei.artstation.com/', label: 'ArtStation', value: 'vladmaftei.artstation.com' },
+    { href: 'https://www.linkedin.com/in/vladmaftei/', label: 'LinkedIn', value: 'linkedin.com/in/vladmaftei' },
+    { href: 'https://www.instagram.com/_vladski_/', label: 'Instagram', value: '@_vladski_' },
+    { href: 'https://x.com/Badgerz', label: 'X', value: '@Badgerz' }
+  ];
 
   return (
     <>
@@ -200,8 +207,8 @@ function HomePage() {
       <section id="about" className="pages-section" aria-labelledby="about-title">
         <SectionHeader eyebrow="ABOUT" titleId="about-title" title="Artist Profile">
           <p>
-            Vlad Maftei works across VFX, 3D, and AI image/video workflows.
-            This area should stay concise, factual, and project-led.
+            I work as a 3D generalist across VFX, product imagery, character experiments,
+            procedural motion, and AI-assisted image/video workflows.
           </p>
         </SectionHeader>
         {pages.length > 0 ? (
@@ -219,13 +226,18 @@ function HomePage() {
       <section id="contact" className="contact-section" aria-labelledby="contact-title">
         <SectionHeader eyebrow="CONTACT" titleId="contact-title" title="Commission / Collaboration Signal">
           <p>
-            Contact details should stay here once the final email and social links are confirmed.
-            For now, use the verified public ArtStation profile.
+            For commissions, collaborations, project breakdowns, or availability,
+            email me directly or use one of the public channels below.
           </p>
         </SectionHeader>
-        <a className="contact-link" href="https://vladmaftei.artstation.com/" target="_blank" rel="noreferrer">
-          OPEN ARTSTATION PROFILE &gt;
-        </a>
+        <div className="contact-links" aria-label="Contact and social links">
+          {contactLinks.map((link) => (
+            <a className="contact-link" href={link.href} key={link.label} rel="noreferrer" target={link.href.startsWith('mailto:') ? undefined : '_blank'}>
+              <span>{link.label}</span>
+              <strong>{link.value}</strong>
+            </a>
+          ))}
+        </div>
       </section>
     </>
   );

@@ -1,11 +1,15 @@
 ---
 title: Contact
 status: draft
-excerpt: Contact details placeholder. Publish only after adding the correct email and social links.
+excerpt: Email me directly or use ArtStation, LinkedIn, Instagram, or X.
 order: 20
 ---
 ## Contact
 
-Add the final email address, ArtStation link, LinkedIn, Vimeo, Instagram, or other public channels here.
+For commissions, collaborations, project breakdowns, or availability, email me directly.
 
-Do not publish this page until the links are checked.
+- Email: vladmaftei@gmail.com
+- ArtStation: https://vladmaftei.artstation.com/
+- LinkedIn: https://www.linkedin.com/in/vladmaftei/
+- Instagram: https://www.instagram.com/_vladski_/
+- X: https://x.com/Badgerz
