@@ -27,7 +27,6 @@ const navLinks = [
 ];
 
 const socialLinks = [
-  { href: 'https://www.facebook.com/vlad.maftei', label: 'Facebook', icon: 'f' },
   { href: 'https://x.com/Badgerz', label: 'X', icon: 'X' },
   { href: 'https://www.instagram.com/_vladski_/', label: 'Instagram', icon: 'IG' },
   { href: 'https://www.linkedin.com/in/vladmaftei/', label: 'LinkedIn', icon: 'in' },
