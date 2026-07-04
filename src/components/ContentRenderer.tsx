@@ -7,8 +7,19 @@ type MarkdownBlock =
   | { type: 'list'; items: string[] }
   | { type: 'quote'; text: string }
   | { type: 'image'; alt: string; src: string }
+  | { type: 'video'; title: string; url: string }
   | { type: 'code'; code: string }
   | { type: 'rule' };
+
+function toEmbedUrl(url: string): string {
+  const youtubeShort = url.match(/^https:\/\/youtu\.be\/([^?&/]+)/);
+  if (youtubeShort) return `https://www.youtube.com/embed/${youtubeShort[1]}`;
+
+  const youtubeWatch = url.match(/^https:\/\/(?:www\.)?youtube\.com\/watch\?v=([^?&/]+)/);
+  if (youtubeWatch) return `https://www.youtube.com/embed/${youtubeWatch[1]}`;
+
+  return url;
+}
 
 function parseMarkdown(markdown: string): MarkdownBlock[] {
   const lines = markdown.split(/\r?\n/);
@@ -49,6 +60,13 @@ function parseMarkdown(markdown: string): MarkdownBlock[] {
       continue;
     }
 
+    const video = trimmed.match(/^::video\[([^\]]+)\]\(([^)]+)\)$/);
+    if (video) {
+      blocks.push({ type: 'video', title: video[1], url: video[2] });
+      index += 1;
+      continue;
+    }
+
     const heading = trimmed.match(/^(#{2,4})\s+(.+)$/);
     if (heading) {
       blocks.push({ type: 'heading', level: heading[1].length as 2 | 3 | 4, text: heading[2] });
@@ -85,6 +103,7 @@ function parseMarkdown(markdown: string): MarkdownBlock[] {
       !/^[-*]\s+/.test(lines[index].trim()) &&
       !lines[index].trim().startsWith('```') &&
       !lines[index].trim().startsWith('>') &&
+      !lines[index].trim().match(/^::video\[([^\]]+)\]\(([^)]+)\)$/) &&
       !lines[index].trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
     ) {
       paragraphLines.push(lines[index].trim());
@@ -154,6 +173,21 @@ export function ContentRenderer({ body }: { body: string }) {
             <figure className="content-image scanline-image" key={index}>
               <img src={assetPath(block.src)} alt={block.alt} loading="lazy" />
               {block.alt ? <figcaption>{block.alt}</figcaption> : null}
+            </figure>
+          );
+        }
+
+        if (block.type === 'video') {
+          return (
+            <figure className="content-video" key={index}>
+              <iframe
+                src={toEmbedUrl(block.url)}
+                title={block.title}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+              <figcaption>{block.title}</figcaption>
             </figure>
           );
         }

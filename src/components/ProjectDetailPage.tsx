@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { AsciiBunny } from './AsciiBunny';
 import type { PortfolioProject } from '../data/projects';
 import { assetPath } from '../utils/assetPath';
 import { ContentRenderer } from './ContentRenderer';
 
 export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
+  const [isTextHidden, setIsTextHidden] = useState(false);
   const gallery = project.gallery?.length ? project.gallery : [project.cover];
   const videos = project.videos ?? [];
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
@@ -11,7 +13,7 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
   const isArticleLayout = project.layout === 'article';
 
   return (
-    <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}`}>
+    <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}${isTextHidden ? ' project-detail-page--text-hidden' : ''}`}>
       <nav className="content-nav" aria-label="Project navigation">
         <a href="#/">&lt; HOME</a>
         <a href="#work">WORK</a>
@@ -19,6 +21,17 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
           <a href={project.sourceUrl} target="_blank" rel="noreferrer">{project.sourceLabel ?? 'ARTSTATION'}</a>
         ) : null}
       </nav>
+
+      <div className="project-view-tools" aria-label="Project view controls">
+        <button type="button" onClick={() => setIsTextHidden((current) => !current)}>
+          {isTextHidden ? 'SHOW TEXT' : 'HIDE TEXT'}
+        </button>
+        {project.sourceUrl ? (
+          <a href={project.sourceUrl} target="_blank" rel="noreferrer">
+            OPEN {project.sourceLabel ?? 'SOURCE'}
+          </a>
+        ) : null}
+      </div>
 
       <header className="content-hero project-detail-hero">
         <p className="eyebrow">_PROJECT DOSSIER</p>

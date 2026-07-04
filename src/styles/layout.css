@@ -315,6 +315,25 @@
   text-transform: uppercase;
 }
 
+.content-video {
+  margin: 2.5rem 0;
+}
+
+.content-video iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #000;
+}
+
+.content-video figcaption {
+  padding: 0.7rem 0;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
 .project-detail-page .content-hero {
   padding-bottom: clamp(1rem, 3vw, 2rem);
 }
@@ -1524,6 +1543,31 @@ button,
   margin-inline: 0;
 }
 
+.project-view-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: center;
+  margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+  width: min(100%, 58rem);
+}
+
+.project-view-tools button,
+.project-view-tools a {
+  min-height: 2.35rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(255, 255, 255, 0.035);
+  color: #c7ddea;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.project-view-tools button {
+  cursor: pointer;
+}
+
 .project-detail-page .content-hero {
   max-width: none;
   width: 100%;
@@ -1640,8 +1684,8 @@ button,
   margin-left: auto;
   margin-right: auto;
   color: #f2f4ee;
-  font-size: clamp(0.82rem, calc(0.46rem + 0.94vw), 1.55rem) !important;
-  line-height: 1.42 !important;
+  font-size: clamp(0.7rem, calc(0.5rem + 0.45vw), 1rem) !important;
+  line-height: 1.46 !important;
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.38),
     0 0 12px rgba(159, 184, 195, 0.15);
@@ -1698,6 +1742,12 @@ button,
   background: transparent;
 }
 
+.project-detail-page .project-breakdown .content-video {
+  max-width: min(100%, 80vw, 58rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .project-detail-page .project-breakdown .content-image img {
   width: 100%;
   height: auto;
@@ -1734,6 +1784,11 @@ button,
   margin: clamp(1.5rem, 3vw, 3rem) auto;
 }
 
+.project-detail-page--article .project-breakdown .content-video {
+  max-width: min(100%, 58rem);
+  margin: clamp(1.5rem, 3vw, 3rem) auto;
+}
+
 .project-detail-page--article .project-breakdown .content-image img {
   display: block;
   max-height: min(78vh, 58rem);
@@ -1752,6 +1807,17 @@ button,
 .project-detail-page--article .project-breakdown .content-renderer h2,
 .project-detail-page--article .project-breakdown .content-renderer h3 {
   text-align: center;
+}
+
+.project-detail-page--text-hidden .content-hero__meta,
+.project-detail-page--text-hidden .content-hero__excerpt,
+.project-detail-page--text-hidden .project-videos .eyebrow,
+.project-detail-page--text-hidden .project-video a,
+.project-detail-page--text-hidden .project-gallery__image-link span,
+.project-detail-page--text-hidden .content-renderer > :not(.content-image):not(.content-video),
+.project-detail-page--text-hidden .content-image figcaption,
+.project-detail-page--text-hidden .content-video figcaption {
+  display: none !important;
 }
 
 .project-detail-page .project-video-grid {
