@@ -41,20 +41,6 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
         {project.description ? <p className="content-hero__excerpt">{project.description}</p> : null}
       </header>
 
-      {!isArticleLayout ? (
-        <section className="project-gallery" aria-label={`${project.title} gallery`}>
-          {gallery.map((image, index) => (
-            <figure className="content-image scanline-image" key={`${image}-${index}`}>
-              {index === 0 ? <AsciiBunny variant="project" /> : null}
-              <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
-                <img src={assetPath(image)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
-                <span>OPEN FULL RESOLUTION</span>
-              </a>
-            </figure>
-          ))}
-        </section>
-      ) : null}
-
       {videos.length > 0 ? (
         <section className="project-videos" aria-label={`${project.title} videos`}>
           <p className="eyebrow">_VIDEO SIGNALS</p>
@@ -74,6 +60,20 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
               </article>
             ))}
           </div>
+        </section>
+      ) : null}
+
+      {!isArticleLayout ? (
+        <section className="project-gallery" aria-label={`${project.title} gallery`}>
+          {gallery.map((image, index) => (
+            <figure className="content-image scanline-image" key={`${image}-${index}`}>
+              {index === 0 ? <AsciiBunny variant="project" /> : null}
+              <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
+                <img src={assetPath(image)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
+                <span>OPEN FULL RESOLUTION</span>
+              </a>
+            </figure>
+          ))}
         </section>
       ) : null}
 
