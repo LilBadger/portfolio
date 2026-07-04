@@ -8,9 +8,10 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
   const videos = project.videos ?? [];
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
+  const isArticleLayout = project.layout === 'article';
 
   return (
-    <article className="content-page project-detail-page">
+    <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}`}>
       <nav className="content-nav" aria-label="Project navigation">
         <a href="#/">&lt; HOME</a>
         <a href="#work">WORK</a>
@@ -40,17 +41,19 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
         {project.description ? <p className="content-hero__excerpt">{project.description}</p> : null}
       </header>
 
-      <section className="project-gallery" aria-label={`${project.title} gallery`}>
-        {gallery.map((image, index) => (
-          <figure className="content-image scanline-image" key={`${image}-${index}`}>
-            {index === 0 ? <AsciiBunny variant="project" /> : null}
-            <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
-              <img src={assetPath(image)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
-              <span>OPEN FULL RESOLUTION</span>
-            </a>
-          </figure>
-        ))}
-      </section>
+      {!isArticleLayout ? (
+        <section className="project-gallery" aria-label={`${project.title} gallery`}>
+          {gallery.map((image, index) => (
+            <figure className="content-image scanline-image" key={`${image}-${index}`}>
+              {index === 0 ? <AsciiBunny variant="project" /> : null}
+              <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
+                <img src={assetPath(image)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
+                <span>OPEN FULL RESOLUTION</span>
+              </a>
+            </figure>
+          ))}
+        </section>
+      ) : null}
 
       {videos.length > 0 ? (
         <section className="project-videos" aria-label={`${project.title} videos`}>

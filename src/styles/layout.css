@@ -1529,6 +1529,28 @@ button,
   object-fit: contain;
 }
 
+.project-detail-page--article .project-breakdown {
+  margin-top: 0;
+}
+
+.project-detail-page--article .project-breakdown .content-renderer {
+  max-width: min(100%, 76rem);
+}
+
+.project-detail-page--article .project-breakdown .content-image {
+  max-width: min(100%, 58rem);
+  margin-block: clamp(1.5rem, 3vw, 3rem);
+}
+
+.project-detail-page--article .project-breakdown .content-image img {
+  display: block;
+  max-height: min(78vh, 58rem);
+}
+
+.project-detail-page--article .project-breakdown .content-renderer pre {
+  max-width: min(100%, 58rem);
+}
+
 .project-detail-page .project-video-grid {
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 38rem), 1fr));

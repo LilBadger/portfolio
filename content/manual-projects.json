@@ -1,9 +1,9 @@
 [
   {
     "slug": "fugi-visualizer",
-    "title": "Fugi Visualizer",
+    "title": "F1R - Fugi Visualizer",
     "year": "2026",
-    "role": "CODEX / LYRICS VIDEO / ASCII VISUALIZER",
+    "role": "AI MUSIC PROJECT / CODEX / ASCII VISUALIZER",
     "tools": [
       "Codex",
       "Suno",
@@ -13,28 +13,49 @@
     ],
     "tags": [
       "Latest",
+      "F1R",
       "Codex",
-      "Music",
+      "AI Music",
       "ASCII"
     ],
-    "description": "I built this with Codex as a browser-native lyric visualizer for a Suno song: an animated neon ASCII face, audio-reactive motion, synced lyric glitches, and a live cyberpunk transmission interface.",
+    "description": "F1R is my AI-based music and character art project. This page focuses on the Fugi lyric visualizer I built with Codex: a live browser transmission with an animated ASCII face, audio-reactive motion, synced lyric glitches, and F1R character explorations.",
     "cover": "assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png",
     "gallery": [
-      "assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png",
-      "assets/projects/fugi-visualizer/fugi-visualizer-01-idle.png",
-      "assets/projects/fugi-visualizer/fugi-visualizer-02-signal.png",
-      "assets/projects/fugi-visualizer/fugi-visualizer-04-wide.png",
-      "assets/projects/fugi-visualizer/reference-tongue-in.png",
-      "assets/projects/fugi-visualizer/fugi-effect-stack.svg",
-      "assets/projects/fugi-visualizer/fugi-ascii-layers.svg"
+      "assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png"
     ],
     "sourceUrl": "https://lilbadger.github.io/fugi-vizualizer/",
     "sourceLabel": "LIVE VISUALIZER",
+    "layout": "article",
     "body": [
-      "## What I Made",
-      "I used Codex as a build partner to turn a Suno track into a browser-native lyric video. The project is not a rendered video file: the page draws the performance live with HTML Canvas, a source portrait, timed lyric cues, procedural glitch cards, and audio-driven motion.",
+      "## Project Signal",
+      "F1R is the band/project name for an AI-based music and visual identity experiment. `Fugi` is one track inside that world, and the lyric visualizer is only one output from a larger character-driven art direction: music generation, cyberpunk portrait experiments, browser animation, and a fictional hacked transmission language.",
       "",
       "The live version is here: [open the Fugi visualizer](https://lilbadger.github.io/fugi-vizualizer/).",
+      "",
+      "![F1R - Fugi live visualizer capture](assets/projects/fugi-visualizer/fugi-visualizer-03-glitch.png)",
+      "",
+      "## What I Made With Codex",
+      "I used Codex as a build partner to turn the Suno track into a browser-native lyric video. The page is not a rendered video file: it draws the performance live with HTML Canvas, a source portrait, timed lyric cues, procedural glitch cards, and audio-driven motion.",
+      "",
+      "The important part is the workflow. I could describe an idea in motion-design language, inspect what the browser was doing, push the code toward a stronger image, and keep iterating until the piece felt less like a tech demo and more like a tiny F1R transmission.",
+      "",
+      "## F1R Character Explorations",
+      "![F1R character glitch portrait](assets/projects/fugi-visualizer/f1r-character-glitch.png)",
+      "",
+      "This glitch portrait sits closest to the final visualizer language: neon rabbit mask, blue hacked interface, anonymous user readouts, and a noisy signal texture around the face.",
+      "",
+      "![F1R cinematic real-world look](assets/projects/fugi-visualizer/f1r-character-real.png)",
+      "",
+      "The wider cinematic look explores how the F1R character could exist in a real city environment: wet pavement, Bucharest-night energy, long-exposure light trails, and the rabbit mask treated as a diegetic neon device.",
+      "",
+      "![F1R building-face character exploration](assets/projects/fugi-visualizer/f1r-character-building-face.png)",
+      "",
+      "This version pushes the identity into a stranger direction, turning the face into architecture. It is not just a portrait variation; it suggests that F1R could be a person, a place, a broadcast, or an infected city surface.",
+      "",
+      "## Reference To ASCII",
+      "![Reference portrait used for the ASCII face](assets/projects/fugi-visualizer/reference-tongue-in.png)",
+      "",
+      "The visualizer converts this portrait into an ASCII signal. The browser crops the head, rejects most of the flat blue background, samples color and brightness into character cells, then gives the face a fake depth model so it can yaw, push, trail, and tear with the song.",
       "",
       "## Effect Stack",
       "![Fugi effect stack](assets/projects/fugi-visualizer/fugi-effect-stack.svg)",
@@ -58,7 +79,7 @@
       "```",
       "",
       "## Why It Matters",
-      "This is a small but important kind of experiment for me: music generation, image generation, coding, timing, and motion design all meeting inside one live web object. It shows how I can use Codex not just to assemble a page, but to prototype a visual language around a song and keep pushing until the thing has attitude."
+      "This is the kind of AI art project I want to keep expanding: generated music, generated identity, code, timing, motion design, and web-native performance all meeting inside one object. The Fugi lyric video is a small part of F1R, but it proves the pipeline can make a song feel like a character, an interface, and a world."
     ]
   },
   {

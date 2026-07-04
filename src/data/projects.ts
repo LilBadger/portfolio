@@ -21,6 +21,7 @@ export type PortfolioProject = {
   sourceUrl?: string;
   sourceLabel?: string;
   body?: string | string[];
+  layout?: 'gallery' | 'article';
   featured?: boolean;
 };
 
