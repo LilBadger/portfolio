@@ -1633,7 +1633,7 @@ button,
 .project-detail-page .project-gallery,
 .project-detail-page .project-videos,
 .project-detail-page .project-breakdown {
-  max-width: min(100%, 80vw);
+  max-width: min(100%, 80vw, 58rem);
   margin-left: auto;
   margin-right: auto;
   width: 100%;
