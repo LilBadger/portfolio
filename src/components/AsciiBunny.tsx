@@ -16,7 +16,7 @@ const bunnyFrames = [
 ];
 
 type AsciiBunnyProps = {
-  variant?: 'hero' | 'work' | 'project';
+  variant?: 'hero' | 'work' | 'project' | 'love';
 };
 
 export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
@@ -101,7 +101,7 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
   useEffect(() => {
     if (phase !== 'entering') return undefined;
 
-    const enterDuration = variant === 'hero' ? 4700 : 2200;
+    const enterDuration = variant === 'hero' || variant === 'love' ? 4700 : 2200;
     const enterTimer = window.setTimeout(() => setPhase('idle'), enterDuration);
     return () => window.clearTimeout(enterTimer);
   }, [phase, variant]);
@@ -140,6 +140,13 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
       aria-hidden="true"
     >
       {bunnyFrames[frameIndex]}
+      {variant === 'love' ? (
+        <span className="ascii-bunny__hearts" aria-hidden="true">
+          <span>&lt;3</span>
+          <span>&lt;3</span>
+          <span>&lt;3</span>
+        </span>
+      ) : null}
     </pre>
   );
 }

@@ -667,8 +667,23 @@
   opacity: 0.84;
 }
 
+.ascii-bunny--love {
+  --love-edge-inset: clamp(1rem, 3.6vw, 4rem);
+  --love-start-offset: calc(var(--love-edge-inset) + 170%);
+  --love-peek-offset: calc(var(--love-edge-inset) + 58%);
+  top: clamp(3rem, 6vw, 6rem);
+  right: calc(50% - 50vw + var(--love-edge-inset));
+  z-index: 5;
+  font-size: clamp(1.25rem, 1.85vw, 2.15rem);
+  opacity: 0.92;
+}
+
 .ascii-bunny--hero.ascii-bunny--entering {
   animation: bunnyEnter 4.6s cubic-bezier(0.2, 0.78, 0.24, 1) forwards;
+}
+
+.ascii-bunny--love.ascii-bunny--entering {
+  animation: bunnyLoveEnter 4.6s cubic-bezier(0.2, 0.78, 0.24, 1) forwards;
 }
 
 .ascii-bunny--work.ascii-bunny--entering {
@@ -691,8 +706,49 @@
   animation: bunnyProjectPeek 7.2s ease-in-out infinite;
 }
 
+.ascii-bunny--love.ascii-bunny--idle {
+  animation: bunnyLoveIdle 1.7s ease-in-out infinite;
+}
+
+.ascii-bunny__hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ascii-bunny__hearts span {
+  position: absolute;
+  left: 56%;
+  bottom: 88%;
+  color: #f5f7f2;
+  font-size: 0.68em;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 46, 234, 0.35));
+  text-shadow:
+    -1px 0 rgba(0, 188, 255, 0.35),
+    1px 0 rgba(255, 45, 122, 0.5),
+    0 0 10px rgba(255, 255, 255, 0.32);
+  animation: bunnyHeartRise 2.6s ease-in-out infinite;
+}
+
+.ascii-bunny__hearts span:nth-child(2) {
+  left: 25%;
+  animation-delay: 1.25s;
+  font-size: 0.56em;
+}
+
+.ascii-bunny__hearts span:nth-child(3) {
+  left: 72%;
+  animation-delay: 0.68s;
+  font-size: 0.5em;
+}
+
 .ascii-bunny--hero.ascii-bunny--fleeing {
   animation: bunnyFlee 0.82s cubic-bezier(0.14, 0.86, 0.22, 1) forwards;
+}
+
+.ascii-bunny--love.ascii-bunny--fleeing {
+  animation: bunnyLoveFlee 0.82s cubic-bezier(0.14, 0.86, 0.22, 1) forwards;
 }
 
 .ascii-bunny--work.ascii-bunny--fleeing {
@@ -1203,6 +1259,90 @@ button,
   }
 }
 
+@keyframes bunnyLoveEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(var(--love-start-offset)) translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+  7% {
+    opacity: 0.92;
+    transform: translateX(var(--love-peek-offset)) translateY(0.2rem) rotate(-10deg) scaleX(1) scaleY(1);
+  }
+  43% {
+    opacity: 0.92;
+    transform: translateX(var(--love-peek-offset)) translateY(0.2rem) rotate(-10deg) scaleX(1) scaleY(1);
+  }
+  52% {
+    opacity: 0;
+    transform: translateX(var(--love-start-offset)) translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+  73% {
+    opacity: 0;
+    transform: translateX(var(--love-start-offset)) translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+  78% {
+    opacity: 0.92;
+    transform: translateX(calc(var(--love-edge-inset) + 96%)) translateY(0.7rem) rotate(4deg) scaleX(1.18) scaleY(0.78);
+  }
+  88% {
+    transform: translateX(6rem) translateY(-3.2rem) rotate(-8deg) scaleX(0.82) scaleY(1.22);
+  }
+  96% {
+    transform: translateX(0.9rem) translateY(0.48rem) rotate(3deg) scaleX(1.13) scaleY(0.84);
+  }
+  100% {
+    opacity: 0.92;
+    transform: translateX(0) translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes bunnyLoveIdle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+  35% {
+    transform: translateY(-0.38rem) rotate(-2deg) scaleX(0.98) scaleY(1.05);
+  }
+  68% {
+    transform: translateY(0.12rem) rotate(2deg) scaleX(1.04) scaleY(0.96);
+  }
+}
+
+@keyframes bunnyHeartRise {
+  0%, 20% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.65) rotate(-8deg);
+  }
+  34% {
+    opacity: 0.82;
+  }
+  72% {
+    opacity: 0.68;
+    transform: translate(-85%, -2.9rem) scale(1) rotate(7deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-25%, -4.4rem) scale(1.18) rotate(-5deg);
+  }
+}
+
+@keyframes bunnyLoveFlee {
+  0% {
+    opacity: 0.92;
+    transform: translateX(0) translateY(0) rotate(0deg) scaleX(1) scaleY(1);
+  }
+  18% {
+    transform: translateX(-1.4rem) translateY(0.7rem) rotate(-8deg) scaleX(1.22) scaleY(0.78);
+  }
+  36% {
+    transform: translateX(3.2rem) translateY(-2rem) rotate(8deg) scaleX(0.78) scaleY(1.24);
+  }
+  100% {
+    opacity: 0.92;
+    transform: translateX(calc(var(--love-edge-inset) + 70vw)) translateY(-1.2rem) rotate(15deg) scaleX(1.15) scaleY(0.88);
+  }
+}
+
 @keyframes bunnyWorkWatch {
   0%, 100% {
     transform: rotate(18deg) scaleX(1) scaleY(1);
@@ -1545,6 +1685,16 @@ button,
 .project-detail-page--article .project-detail-hero .content-hero__excerpt {
   margin-left: auto;
   margin-right: auto;
+}
+
+.f1r-love-bunny-field {
+  position: relative;
+  top: clamp(16rem, 24vw, 30rem);
+  z-index: 3;
+  width: min(100%, 76rem);
+  height: 0;
+  margin: 0 auto;
+  pointer-events: none;
 }
 
 .project-detail-page--article .project-breakdown .content-renderer {

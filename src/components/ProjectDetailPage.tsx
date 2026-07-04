@@ -79,6 +79,11 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
 
       {body ? (
         <section className="project-breakdown" aria-label={`${project.title} breakdown`}>
+          {project.slug === 'fugi-visualizer' ? (
+            <div className="f1r-love-bunny-field" aria-hidden="true">
+              <AsciiBunny variant="love" />
+            </div>
+          ) : null}
           <ContentRenderer body={body} />
         </section>
       ) : null}
