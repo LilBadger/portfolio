@@ -304,8 +304,29 @@
 }
 
 .content-image {
+  position: relative;
   margin: 2.5rem 0;
   border: 1px solid rgba(255,255,255,0.1);
+}
+
+.content-image__full-link {
+  position: relative;
+  display: block;
+  color: inherit;
+}
+
+.content-image__full-link span {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 4;
+  padding: 0.55rem 0.65rem;
+  background: rgba(2, 4, 4, 0.78);
+  color: #c7ddea;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .content-image figcaption {
@@ -1565,7 +1586,9 @@ button,
 }
 
 .project-view-tools button {
+  color: #ff3b3b;
   cursor: pointer;
+  text-shadow: 0 0 12px rgba(255, 59, 59, 0.32);
 }
 
 .project-detail-page .content-hero {

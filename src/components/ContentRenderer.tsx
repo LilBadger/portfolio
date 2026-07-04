@@ -171,7 +171,10 @@ export function ContentRenderer({ body }: { body: string }) {
         if (block.type === 'image') {
           return (
             <figure className="content-image scanline-image" key={index}>
-              <img src={assetPath(block.src)} alt={block.alt} loading="lazy" />
+              <a className="content-image__full-link" href={assetPath(block.src)} target="_blank" rel="noreferrer" aria-label={`Open ${block.alt || 'image'} full resolution`}>
+                <img src={assetPath(block.src)} alt={block.alt} loading="lazy" />
+                <span>OPEN FULL RESOLUTION</span>
+              </a>
               {block.alt ? <figcaption>{block.alt}</figcaption> : null}
             </figure>
           );
