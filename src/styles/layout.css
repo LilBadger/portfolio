@@ -425,7 +425,8 @@
   background: rgba(4,6,6,0.92);
 }
 
-.project-video iframe {
+.project-video iframe,
+.project-video video {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -1859,7 +1860,8 @@ button,
   background: transparent;
 }
 
-.project-detail-page .project-video iframe {
+.project-detail-page .project-video iframe,
+.project-detail-page .project-video video {
   width: 100%;
   aspect-ratio: 16 / 9;
 }

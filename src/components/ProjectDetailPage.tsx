@@ -11,6 +11,7 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
   const isArticleLayout = project.layout === 'article';
+  const isLocalVideo = (url: string) => /\.(mp4|webm|mov)(\?|#|$)/i.test(url) || url.startsWith('assets/');
 
   return (
     <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}${isTextHidden ? ' project-detail-page--text-hidden' : ''}`}>
@@ -60,14 +61,23 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
           <div className={`project-video-grid${videos.length === 1 ? ' project-video-grid--single' : ''}`}>
             {videos.map((video, index) => (
               <article className="project-video" key={`${video.url}-${index}`}>
-                <iframe
-                  src={video.url}
-                  title={video.title ?? `${project.title} video ${index + 1}`}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-                <a href={video.url} target="_blank" rel="noreferrer">
+                {isLocalVideo(video.url) ? (
+                  <video
+                    src={assetPath(video.url)}
+                    poster={video.poster ? assetPath(video.poster) : undefined}
+                    controls
+                    preload="metadata"
+                  />
+                ) : (
+                  <iframe
+                    src={video.url}
+                    title={video.title ?? `${project.title} video ${index + 1}`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
+                <a href={isLocalVideo(video.url) ? assetPath(video.url) : video.url} target="_blank" rel="noreferrer">
                   {video.title ?? `Open ${video.platform ?? 'video'} source`}
                 </a>
               </article>

@@ -127,6 +127,12 @@
         "url": "https://www.youtube-nocookie.com/embed/1z7ghpX1_eg?feature=oembed&rel=0",
         "platform": "youtube"
       }
+    ],
+    "body": [
+      "## Process Notes",
+      "I made this image in Invoke while experimenting with SDXL models and ControlNets. The main idea was to keep the generated image under direction instead of just letting the model improvise: block the composition, steer the shapes with control inputs, iterate the prompt and model response, then keep pushing the frame until the illustration felt like a finished cover image rather than a raw generation.",
+      "",
+      "The making-of video shows that the image is built through iteration: composition first, then detail passes, cleanup, and final mood. I also made the music in Suno, so the project became a small AI illustration and music experiment rather than only a still image."
     ]
   },
   {
@@ -156,6 +162,12 @@
         "url": "https://www.youtube-nocookie.com/embed/AVUfWJVFMhs?feature=oembed&rel=0",
         "platform": "youtube"
       }
+    ],
+    "body": [
+      "## Process Notes",
+      "I used ComfyUI and SDXL to build a controlled cover-art workflow with multiple elements and characters. The main challenge was not just generating one nice frame; it was directing the scene: posing the characters, keeping the two figures readable, mixing the car/environment/helmet shapes together, and then upscaling the result without losing the cover-art composition.",
+      "",
+      "For the character pose pass I used Reallusion Character Creator to create OpenPose ControlNet skeletons. Photoshop came in for small positional edits and cleanup early in the process, while ComfyUI handled the heavier image generation, mixing, refinement, and upscale steps. The result is an AI cover-art workflow where I still keep authorial control over staging and direction."
     ]
   },
   {
@@ -175,7 +187,7 @@
       "Video",
       "Edit"
     ],
-    "description": "Alien-world environment exploration using generated stills, AI video, music generation, and Blender editing.",
+    "description": "AI environment experiment where I pushed current models and services to see how much quality I could get from strange alien-world drone footage.",
     "cover": "assets/artstation/trips/01-vlx-maftei-landscapes-01.jpg",
     "gallery": [
       "assets/artstation/trips/01-vlx-maftei-landscapes-01.jpg",
@@ -193,6 +205,12 @@
         "url": "https://www.youtube-nocookie.com/embed/UhN6GYCClDI?feature=oembed&rel=0",
         "platform": "youtube"
       }
+    ],
+    "body": [
+      "## Project Notes",
+      "I was playing with AI workflows to see how much quality I could squeeze out of the models and services available at the time. The goal was to create drone-like footage from a strange alien planet: unfamiliar, but still close enough to Earth that the environments feel physically readable.",
+      "",
+      "The still images were generated in ComfyUI with Flux and upscaled there as well. I used those stills as starting frames in Runway, made the music with Aiva, and edited the final video in Blender."
     ]
   },
   {
@@ -213,7 +231,73 @@
     "gallery": [
       "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg"
     ],
-    "sourceUrl": "https://vladmaftei.artstation.com/projects/JeK0Dd"
+    "sourceUrl": "https://vladmaftei.artstation.com/projects/JeK0Dd",
+    "videos": [
+      {
+        "title": "Xparticles Challenge 2018 animation test 01",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 02",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 03",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 04",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 05",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 06",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 07",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 08",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 09",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40-poster.jpg"
+      },
+      {
+        "title": "Xparticles Challenge 2018 animation test 10",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45-poster.jpg"
+      }
+    ],
+    "body": [
+      "## Iteration Notes",
+      "These clips collect the different passes I went through for the X-Particles Challenge 2018. They work best as a sequence: each short test is a slightly different look, camera direction, or procedural behavior while I was searching for the right motion language."
+    ]
   },
   {
     "slug": "philips-sensotouch",
@@ -234,9 +318,12 @@
     "cover": "assets/artstation/philips-sensotouch/01-vlx-maftei-sensotouch02.jpg",
     "gallery": [
       "assets/artstation/philips-sensotouch/01-vlx-maftei-sensotouch02.jpg",
+      "assets/artstation/philips-sensotouch/02-vlx-maftei-sensotouch03.jpg",
       "assets/artstation/philips-sensotouch/02-vlx-maftei-sensotouch04.jpg",
-      "assets/artstation/philips-sensotouch/03-vlx-maftei-sensotouch08.jpg",
-      "assets/artstation/philips-sensotouch/04-vlx-maftei-sensotouch07.jpg"
+      "assets/artstation/philips-sensotouch/04-vlx-maftei-sensotouch05.jpg",
+      "assets/artstation/philips-sensotouch/05-vlx-maftei-sensotouch06.jpg",
+      "assets/artstation/philips-sensotouch/04-vlx-maftei-sensotouch07.jpg",
+      "assets/artstation/philips-sensotouch/03-vlx-maftei-sensotouch08.jpg"
     ],
     "sourceUrl": "https://vladmaftei.artstation.com/projects/nE9Xor",
     "videos": [
@@ -366,11 +453,21 @@
     "description": "Personal abstract animation exploring a journey through cosmic, subconscious, and spiritual imagery.",
     "cover": "assets/artstation/restart/01-vlx-maftei-moon01.jpg",
     "gallery": [
+      "assets/artstation/restart/01-vlx-maftei-jupiter01.jpg",
+      "assets/artstation/restart/02-vlx-maftei-cave01.jpg",
       "assets/artstation/restart/01-vlx-maftei-moon01.jpg",
       "assets/artstation/restart/02-vlx-maftei-cave02.jpg",
+      "assets/artstation/restart/05-vlx-maftei-saturn03.jpg",
+      "assets/artstation/restart/06-vlx-maftei-monkeyhand.jpg",
       "assets/artstation/restart/03-vlx-maftei-test-psychedelic05.jpg",
+      "assets/artstation/restart/08-vlx-maftei-test-psychedelic01.jpg",
+      "assets/artstation/restart/09-vlx-maftei-test-psychedelic03.jpg",
+      "assets/artstation/restart/10-vlx-maftei-test-psychedelic04.jpg",
+      "assets/artstation/restart/11-vlx-maftei-skull01.jpg",
+      "assets/artstation/restart/12-vlx-maftei-earth01b-00000.jpg",
       "assets/artstation/restart/04-vlx-maftei-earth02-00000.jpg",
       "assets/artstation/restart/05-vlx-maftei-snake01.jpg",
+      "assets/artstation/restart/15-vlx-maftei-outteruniverse01.jpg",
       "assets/artstation/restart/06-vlx-maftei-outteruniverse09.jpg"
     ],
     "sourceUrl": "https://vladmaftei.artstation.com/projects/v19JgE",
