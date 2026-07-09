@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const commands = [
   'ssh guest@vlad-maftei.net',
@@ -23,6 +23,8 @@ const commands = [
 export function HeroTerminalLine() {
   const [commandIndex, setCommandIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
+  const [lineWidth, setLineWidth] = useState(0);
+  const lineRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const command = commands[commandIndex % commands.length];
@@ -42,10 +44,25 @@ export function HeroTerminalLine() {
     return () => window.clearTimeout(timer);
   }, [charIndex, commandIndex]);
 
+  useLayoutEffect(() => {
+    const line = lineRef.current;
+    if (!line) return undefined;
+
+    const updateWidth = () => setLineWidth(line.clientWidth);
+    const observer = new ResizeObserver(updateWidth);
+    updateWidth();
+    observer.observe(line);
+
+    return () => observer.disconnect();
+  }, []);
+
   const command = commands[commandIndex % commands.length];
+  const fittedFontSize = lineWidth > 0
+    ? Math.max(9, Math.min(16, lineWidth / ((command.length + 3) * 0.62)))
+    : 16;
 
   return (
-    <p className="hero-terminal-line" aria-hidden="true">
+    <p className="hero-terminal-line" aria-hidden="true" ref={lineRef} style={{ fontSize: `${fittedFontSize}px` }}>
       <span>$ {command.slice(0, charIndex)}</span><i>_</i>
     </p>
   );

@@ -21,7 +21,8 @@ type AsciiBunnyProps = {
 
 export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
   const bunnyRef = useRef<HTMLPreElement>(null);
-  const [phase, setPhase] = useState<'entering' | 'idle' | 'fleeing'>('entering');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [phase, setPhase] = useState<'entering' | 'idle' | 'fleeing'>(() => prefersReducedMotion ? 'idle' : 'entering');
   const [frameIndex, setFrameIndex] = useState(0);
 
   useEffect(() => {
@@ -91,12 +92,14 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
   }, [variant]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const frameTimer = window.setInterval(() => {
       setFrameIndex((current) => (current + 1) % bunnyFrames.length);
     }, phase === 'fleeing' ? 105 : 230);
 
     return () => window.clearInterval(frameTimer);
-  }, [phase]);
+  }, [phase, prefersReducedMotion]);
 
   useEffect(() => {
     if (phase !== 'entering') return undefined;

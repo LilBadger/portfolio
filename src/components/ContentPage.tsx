@@ -1,8 +1,11 @@
 import type { ContentDocument } from '../data/content';
 import { assetPath } from '../utils/assetPath';
 import { ContentRenderer } from './ContentRenderer';
+import { homeHref, homeSectionHref } from '../utils/routes';
+import { imagePresentation } from '../utils/imagePreview';
 
 export function ContentPage({ document }: { document: ContentDocument }) {
+  const cover = document.cover ? imagePresentation(document.cover) : undefined;
   const terminalLines = document.kind === 'article'
     ? [
       '$ cat ./field-note.md',
@@ -23,9 +26,9 @@ export function ContentPage({ document }: { document: ContentDocument }) {
   return (
     <article className={`content-page content-page--${document.kind}`}>
       <nav className="content-nav" aria-label="Content navigation">
-        <a href="#/">&lt; HOME</a>
-        {document.kind === 'article' ? <a href="#articles">ARTICLES</a> : null}
-        <a href="#work">WORK</a>
+        <a href={homeHref}>&lt; HOME</a>
+        {document.kind === 'article' ? <a href={homeSectionHref('articles')}>ARTICLES</a> : null}
+        <a href={homeSectionHref('work')}>WORK</a>
       </nav>
 
       <header className={`content-hero content-dossier-hero content-dossier-hero--${document.kind}`}>
@@ -40,9 +43,9 @@ export function ContentPage({ document }: { document: ContentDocument }) {
           {[document.date, ...document.tags].filter(Boolean).join(' / ')}
         </p>
         {shouldShowExcerpt ? <p className="content-hero__excerpt">{document.excerpt}</p> : null}
-        {document.cover ? (
+        {document.cover && cover ? (
           <figure className="content-hero__cover scanline-image">
-            <img src={assetPath(document.cover)} alt="" loading="eager" />
+            <img src={assetPath(cover.src)} alt="" loading="eager" width={cover.width} height={cover.height} />
           </figure>
         ) : null}
       </header>

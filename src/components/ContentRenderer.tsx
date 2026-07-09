@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
 import { assetPath } from '../utils/assetPath';
+import { imagePresentation } from '../utils/imagePreview';
 
 type MarkdownBlock =
   | { type: 'heading'; level: 2 | 3 | 4; text: string }
@@ -169,10 +170,11 @@ export function ContentRenderer({ body }: { body: string }) {
         }
 
         if (block.type === 'image') {
+          const presentation = imagePresentation(block.src);
           return (
             <figure className="content-image scanline-image" key={index}>
               <a className="content-image__full-link" href={assetPath(block.src)} target="_blank" rel="noreferrer" aria-label={`Open ${block.alt || 'image'} full resolution`}>
-                <img src={assetPath(block.src)} alt={block.alt} loading="lazy" />
+                <img src={assetPath(presentation.src)} alt={block.alt} loading="lazy" width={presentation.width} height={presentation.height} />
                 <span>OPEN FULL RESOLUTION</span>
               </a>
               {block.alt ? <figcaption>{block.alt}</figcaption> : null}

@@ -1,3 +1,5 @@
+import { articleHref, pageHref } from '../utils/routes';
+
 type FrontmatterValue = string | number | boolean | string[];
 
 type ContentKind = 'article' | 'page';
@@ -113,7 +115,7 @@ function parseDocument(kind: ContentKind, filePath: string, raw: string): Conten
     title,
     status: statusValue(attributes.status),
     body,
-    href: kind === 'article' ? `#/articles/${slug}` : `#/pages/${slug}`,
+    href: kind === 'article' ? articleHref(slug) : pageHref(slug),
     date: stringValue(attributes.date),
     updated: stringValue(attributes.updated),
     excerpt: stringValue(attributes.excerpt),

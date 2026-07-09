@@ -9,21 +9,26 @@ import { ProjectDetailPage } from './components/ProjectDetailPage';
 import { WorkGrid } from './components/WorkGrid';
 import { articles, featuredArticle, getArticle, getPage, pages } from './data/content';
 import { getProject, projects } from './data/projects';
+import { assetPath } from './utils/assetPath';
+import { articleHref, homeHref, homeSectionHref, pageHref, pathWithoutBase, projectHref } from './utils/routes';
 
 type Route =
-  | { type: 'home' }
+  | { type: 'home'; section?: HomeSection }
   | { type: 'article'; slug: string }
   | { type: 'page'; slug: string }
   | { type: 'project'; slug: string };
 
 type ActiveBunny = 'hero' | 'work';
+type HomeSection = 'work' | 'process' | 'articles' | 'contact';
+
+const homeSections: HomeSection[] = ['work', 'process', 'articles', 'contact'];
 
 const navLinks = [
-  { href: '#work', label: 'Work' },
-  { href: '#process', label: 'Process' },
-  { href: '#articles', label: 'Articles' },
-  { href: '#/pages/about', label: 'About' },
-  { href: '#contact', label: 'Contact' }
+  { href: homeSectionHref('work'), label: 'Work' },
+  { href: homeSectionHref('process'), label: 'Process' },
+  ...(articles.length > 0 ? [{ href: homeSectionHref('articles'), label: 'Articles' }] : []),
+  { href: pageHref('about'), label: 'About' },
+  { href: homeSectionHref('contact'), label: 'Contact' }
 ];
 
 const socialLinks = [
@@ -34,35 +39,119 @@ const socialLinks = [
   { href: 'mailto:vladmaftei@gmail.com', label: 'Email', icon: '@' }
 ];
 
-function parseHashRoute(hash: string): Route {
-  const cleaned = hash.replace(/^#\/?/, '').replace(/^\//, '');
+function parseRouteValue(cleaned: string): Route {
   if (cleaned.startsWith('articles/')) return { type: 'article', slug: cleaned.replace('articles/', '') };
   if (cleaned.startsWith('pages/')) return { type: 'page', slug: cleaned.replace('pages/', '') };
   if (cleaned.startsWith('projects/')) return { type: 'project', slug: cleaned.replace('projects/', '') };
-  return { type: 'home' };
+  const section = homeSections.find((candidate) => candidate === cleaned);
+  return { type: 'home', section };
 }
 
-function useHashRoute(): Route {
-  const [route, setRoute] = useState<Route>(() => parseHashRoute(window.location.hash));
+function parseLocationRoute(): Route {
+  const legacyHash = window.location.hash.match(/^#\/(.+)/);
+  if (legacyHash) return parseRouteValue(legacyHash[1].replace(/^\/+|\/+$/g, ''));
+
+  const pathRoute = parseRouteValue(pathWithoutBase(window.location.pathname));
+  if (pathRoute.type !== 'home') return pathRoute;
+
+  const section = window.location.hash.replace(/^#/, '');
+  return parseRouteValue(section);
+}
+
+function useLocationRoute(): Route {
+  const [route, setRoute] = useState<Route>(() => parseLocationRoute());
 
   useEffect(() => {
-    const onHashChange = () => setRoute(parseHashRoute(window.location.hash));
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const onLocationChange = () => setRoute(parseLocationRoute());
+    window.addEventListener('hashchange', onLocationChange);
+    window.addEventListener('popstate', onLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', onLocationChange);
+      window.removeEventListener('popstate', onLocationChange);
+    };
   }, []);
 
   return route;
 }
 
+function useHomeSectionScroll(route: Route) {
+  useEffect(() => {
+    if (route.type !== 'home') return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      if (route.section) {
+        document.getElementById(route.section)?.scrollIntoView({ block: 'start', behavior: 'auto' });
+        return;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [route]);
+}
+
+type RouteMetadata = {
+  title: string;
+  description: string;
+  image: string;
+  canonicalPath: string;
+  type: 'website' | 'article';
+};
+
+function setMetaContent(selector: string, attribute: 'name' | 'property', key: string, content: string) {
+  let element = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+}
+
+function useRouteMetadata(metadata: RouteMetadata) {
+  useEffect(() => {
+    const canonicalUrl = new URL(metadata.canonicalPath, window.location.origin).href;
+    const imageUrl = new URL(assetPath(metadata.image), window.location.origin).href;
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+
+    document.title = metadata.title;
+    canonical.href = canonicalUrl;
+    setMetaContent('meta[name="description"]', 'name', 'description', metadata.description);
+    setMetaContent('meta[property="og:title"]', 'property', 'og:title', metadata.title);
+    setMetaContent('meta[property="og:description"]', 'property', 'og:description', metadata.description);
+    setMetaContent('meta[property="og:type"]', 'property', 'og:type', metadata.type);
+    setMetaContent('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
+    setMetaContent('meta[property="og:image"]', 'property', 'og:image', imageUrl);
+    setMetaContent('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image');
+    setMetaContent('meta[name="twitter:title"]', 'name', 'twitter:title', metadata.title);
+    setMetaContent('meta[name="twitter:description"]', 'name', 'twitter:description', metadata.description);
+    setMetaContent('meta[name="twitter:image"]', 'name', 'twitter:image', imageUrl);
+  }, [metadata]);
+}
+
 function SiteNav() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <header className="site-nav">
-      <a className="site-nav__brand" href="#/">
+    <header className={`site-nav${isMenuOpen ? ' site-nav--open' : ''}`}>
+      <a className="site-nav__brand" href={homeHref}>
         <span>VLAD MAFTEI</span>
         <small><b>VFX</b><b>/</b><b>3D</b><b>/</b><b>AI</b></small>
       </a>
-      <nav aria-label="Main navigation">
-        {navLinks.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}
+      <button className="site-nav__toggle" type="button" aria-label="Toggle navigation" aria-controls="main-navigation" aria-expanded={isMenuOpen} onClick={() => setIsMenuOpen((current) => !current)}>
+        <span />
+        <span />
+        <span />
+      </button>
+      <nav aria-label="Main navigation" id="main-navigation">
+        {navLinks.map((link) => <a href={link.href} key={link.href} onClick={() => setIsMenuOpen(false)}>{link.label}</a>)}
       </nav>
     </header>
   );
@@ -153,8 +242,8 @@ function HomePage() {
           </p>
           <HeroTerminalLine />
           <div className="hero-actions">
-            <a className="enter-link" href="#work">&gt; VIEW WORK_</a>
-            <a className="secondary-link" href="#process">PROCESS</a>
+            <a className="enter-link" href={homeSectionHref('work')}>&gt; VIEW WORK_</a>
+            <a className="secondary-link" href={homeSectionHref('process')}>PROCESS</a>
             <div className="hero-socials" aria-label="Social links">
               {socialLinks.map((link) => (
                 <a href={link.href} aria-label={link.label} key={link.label} rel="noreferrer" target={link.href.startsWith('mailto:') ? undefined : '_blank'}>
@@ -193,16 +282,16 @@ function HomePage() {
         </div>
       </section>
 
-      <section id="articles" className="articles-section" aria-labelledby="articles-title">
-        <SectionHeader eyebrow="ARTICLES / CASE STUDIES" titleId="articles-title" title="Field Notes">
-          <p>
-            {featuredArticle ? (
-              <>Current featured note: <a href={featuredArticle.href}>{featuredArticle.title}</a>.</>
-            ) : 'Published breakdowns and process notes will appear here.'}
-          </p>
-        </SectionHeader>
-        <ArticleIndex articles={articles} />
-      </section>
+      {articles.length > 0 ? (
+        <section id="articles" className="articles-section" aria-labelledby="articles-title">
+          <SectionHeader eyebrow="ARTICLES / CASE STUDIES" titleId="articles-title" title="Field Notes">
+            <p>
+              {featuredArticle ? <>Current featured note: <a href={featuredArticle.href}>{featuredArticle.title}</a>.</> : null}
+            </p>
+          </SectionHeader>
+          <ArticleIndex articles={articles} />
+        </section>
+      ) : null}
 
       <section id="about" className="pages-section" aria-labelledby="about-title">
         <SectionHeader eyebrow="ABOUT" titleId="about-title" title="Artist Profile">
@@ -244,10 +333,44 @@ function HomePage() {
 }
 
 export function App() {
-  const route = useHashRoute();
+  const route = useLocationRoute();
+  useHomeSectionScroll(route);
   const article = route.type === 'article' ? getArticle(route.slug) : undefined;
   const page = route.type === 'page' ? getPage(route.slug) : undefined;
   const project = route.type === 'project' ? getProject(route.slug) : undefined;
+  const defaultImage = 'assets/projects/fugi-visualizer/reference-tongue-in.png';
+  const metadata: RouteMetadata = project
+    ? {
+      title: `${project.title} — Vlad Maftei`,
+      description: project.description ?? `${project.title}, a portfolio project by Vlad Maftei.`,
+      image: project.cover,
+      canonicalPath: projectHref(project.slug ?? (route.type === 'project' ? route.slug : '')),
+      type: 'article'
+    }
+    : article
+      ? {
+        title: `${article.title} — Vlad Maftei`,
+        description: article.excerpt ?? `${article.title}, a field note by Vlad Maftei.`,
+        image: article.cover ?? defaultImage,
+        canonicalPath: articleHref(article.slug),
+        type: 'article'
+      }
+      : page
+        ? {
+          title: `${page.title} — Vlad Maftei`,
+          description: page.excerpt ?? `${page.title} — Vlad Maftei.`,
+          image: page.cover ?? defaultImage,
+          canonicalPath: pageHref(page.slug),
+          type: 'website'
+        }
+        : {
+          title: 'Vlad Maftei — VFX / 3D / AI',
+          description: 'Vlad Maftei portfolio: cinematic visual work across VFX, 3D, procedural systems, product imagery, character experiments, and AI-assisted workflows.',
+          image: defaultImage,
+          canonicalPath: homeHref,
+          type: 'website'
+        };
+  useRouteMetadata(metadata);
 
   return (
     <main className="site-shell">

@@ -4,6 +4,7 @@ import { App } from './App';
 import './styles/tokens.css';
 import './styles/global.css';
 import './styles/glitch.css';
+import './styles/bunny.css';
 import './styles/layout.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

@@ -6,6 +6,8 @@ html {
   min-height: 100%;
   background: var(--bg);
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -20,6 +22,7 @@ body {
   color: var(--ink);
   font-family: var(--font-mono);
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body::before,
@@ -64,7 +67,11 @@ img {
 }
 
 button,
-a {
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
   -webkit-tap-highlight-color: transparent;
 }
 

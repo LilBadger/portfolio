@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   base: process.env.VITE_BASE_PATH || defaultBase,
   build: {
-    sourcemap: true,
+    sourcemap: false,
     assetsInlineLimit: 0
   }
 });

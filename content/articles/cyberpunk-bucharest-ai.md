@@ -1,10 +1,10 @@
 ---
 title: Building a Cyberpunk Bucharest with AI
 date: 2026-07-03
-status: published
+status: draft
 excerpt: A placeholder article scaffold for turning process breakdowns into a sharp terminal-style case study feed.
 tags: [AI, VFX, process, cyberpunk]
-featured: true
+featured: false
 cover: assets/placeholder-project.svg
 heroTitle: BUILDING A|CYBERPUNK BUCHAREST|WITH AI_
 ---
