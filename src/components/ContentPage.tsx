@@ -1,11 +1,25 @@
+import { useState } from 'react';
 import type { ContentDocument } from '../data/content';
 import { assetPath } from '../utils/assetPath';
-import { ContentRenderer } from './ContentRenderer';
+import { ContentRenderer, extractContentImages } from './ContentRenderer';
 import { homeHref, homeSectionHref } from '../utils/routes';
 import { imagePresentation } from '../utils/imagePreview';
+import { ImageViewer, type ViewerImage } from './ImageViewer';
 
 export function ContentPage({ document }: { document: ContentDocument }) {
+  const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
   const cover = document.cover ? imagePresentation(document.cover) : undefined;
+  const viewerImages: ViewerImage[] = [
+    ...(document.cover ? [{ src: document.cover, alt: `${document.title} cover` }] : []),
+    ...extractContentImages(document.body).map((item, index) => ({
+      src: item.src,
+      alt: item.alt || `${document.title} image ${index + 1}`
+    }))
+  ];
+  const openImage = (src: string) => {
+    const index = viewerImages.findIndex((item) => item.src === src);
+    if (index >= 0) setActiveImageIndex(index);
+  };
   const terminalLines = document.kind === 'article'
     ? [
       '$ cat ./field-note.md',
@@ -45,12 +59,21 @@ export function ContentPage({ document }: { document: ContentDocument }) {
         {shouldShowExcerpt ? <p className="content-hero__excerpt">{document.excerpt}</p> : null}
         {document.cover && cover ? (
           <figure className="content-hero__cover scanline-image">
-            <img src={assetPath(cover.src)} alt="" loading="eager" width={cover.width} height={cover.height} />
+            <button className="content-hero__cover-button" type="button" aria-haspopup="dialog" aria-label={`Inspect ${document.title} cover full resolution`} onClick={() => openImage(document.cover!)}>
+              <img src={assetPath(cover.src)} alt="" loading="eager" width={cover.width} height={cover.height} />
+              <span>INSPECT FULL RESOLUTION</span>
+            </button>
           </figure>
         ) : null}
       </header>
 
-      <ContentRenderer body={document.body} />
+      <ContentRenderer body={document.body} onImageOpen={openImage} />
+      <ImageViewer
+        images={viewerImages}
+        activeIndex={activeImageIndex}
+        onClose={() => setActiveImageIndex(null)}
+        onIndexChange={setActiveImageIndex}
+      />
     </article>
   );
 }

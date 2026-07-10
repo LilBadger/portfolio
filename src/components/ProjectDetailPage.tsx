@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { AsciiBunny } from './AsciiBunny';
 import type { PortfolioProject } from '../data/projects';
 import { assetPath } from '../utils/assetPath';
-import { ContentRenderer, extractContentHeadings } from './ContentRenderer';
+import { ContentRenderer, extractContentHeadings, extractContentImages } from './ContentRenderer';
 import { homeHref, homeSectionHref, projectHref } from '../utils/routes';
 import { imagePresentation } from '../utils/imagePreview';
 import { ProjectContentsNav, type ProjectContentsItem } from './ProjectContentsNav';
+import { ImageViewer, type ViewerImage } from './ImageViewer';
 
 type ProjectVideoData = NonNullable<PortfolioProject['videos']>[number];
 
@@ -55,17 +56,30 @@ export function ProjectDetailPage({
   nextProject?: PortfolioProject;
 }) {
   const [isTextHidden, setIsTextHidden] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
   const gallery = project.gallery?.length ? project.gallery : [project.cover];
   const videos = project.videos ?? [];
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
   const isArticleLayout = project.layout === 'article';
+  const contentImages = body ? extractContentImages(body) : [];
+  const viewerImages: ViewerImage[] = [
+    ...(isArticleLayout ? [] : gallery.map((src, index) => ({ src, alt: `${project.title} artwork ${index + 1}` }))),
+    ...contentImages.map((item, index) => ({
+      src: item.src,
+      alt: item.alt || `${project.title} process image ${index + 1}`
+    }))
+  ];
   const contents: ProjectContentsItem[] = project.contents ?? (body
     ? extractContentHeadings(body)
       .filter((heading) => heading.level === 2)
       .slice(0, 4)
       .map((heading) => ({ label: heading.text.toUpperCase(), target: heading.id }))
     : []);
+  const openImage = (src: string) => {
+    const index = viewerImages.findIndex((item) => item.src === src);
+    if (index >= 0) setActiveImageIndex(index);
+  };
 
   return (
     <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}${isTextHidden ? ' project-detail-page--text-hidden' : ''}`}>
@@ -133,10 +147,10 @@ export function ProjectDetailPage({
             return (
               <figure className="content-image scanline-image" key={`${image}-${index}`}>
                 {index === 0 ? <AsciiBunny variant="project" /> : null}
-                <a className="project-gallery__image-link" href={assetPath(image)} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} artwork ${index + 1} full resolution`}>
+                <button className="project-gallery__image-link" type="button" aria-haspopup="dialog" aria-label={`Inspect ${project.title} artwork ${index + 1} full resolution`} onClick={() => openImage(image)}>
                   <img src={assetPath(presentation.src)} alt={`${project.title} artwork ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} width={presentation.width} height={presentation.height} />
-                  <span>OPEN FULL RESOLUTION</span>
-                </a>
+                  <span>INSPECT FULL RESOLUTION</span>
+                </button>
               </figure>
             );
           })}
@@ -150,7 +164,7 @@ export function ProjectDetailPage({
               <AsciiBunny variant="love" />
             </div>
           ) : null}
-          <ContentRenderer body={body} />
+          <ContentRenderer body={body} onImageOpen={openImage} />
         </section>
       ) : null}
 
@@ -167,6 +181,13 @@ export function ProjectDetailPage({
           </a>
         </footer>
       ) : null}
+
+      <ImageViewer
+        images={viewerImages}
+        activeIndex={activeImageIndex}
+        onClose={() => setActiveImageIndex(null)}
+        onIndexChange={setActiveImageIndex}
+      />
     </article>
   );
 }

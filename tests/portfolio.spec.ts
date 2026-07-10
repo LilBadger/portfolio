@@ -180,6 +180,47 @@ test('project images remain contained within the viewport height', async ({ page
   expect(dimensions.objectFit).toBe('contain');
 });
 
+test('full-resolution viewer supports fit, actual pixels, navigation, and focus return', async ({ page }) => {
+  await page.goto('/projects/trips/');
+
+  const trigger = page.getByRole('button', { name: 'Inspect trips artwork 1 full resolution' });
+  await trigger.click();
+
+  const viewer = page.getByRole('dialog', { name: 'Full-resolution image viewer' });
+  const image = viewer.locator('.image-viewer__viewport img');
+  await expect(viewer).toBeVisible();
+  await expect(page).toHaveURL(/\/projects\/trips\/$/);
+  await expect(viewer.getByRole('button', { name: 'FIT', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(image).toHaveAttribute('src', /\/assets\/artstation\/trips\//);
+
+  await viewer.getByRole('button', { name: '100%', exact: true }).click();
+  await expect(viewer.getByRole('button', { name: '100%', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(viewer.locator('.image-viewer__viewport')).toHaveClass(/image-viewer__viewport--actual/);
+  await expect(image).toHaveCSS('max-width', 'none');
+
+  const firstSource = await image.getAttribute('src');
+  await viewer.getByRole('button', { name: 'Next image' }).click();
+  await expect(viewer.getByText(/02 \/ \d{2}/)).toBeVisible();
+  await expect.poll(() => image.getAttribute('src')).not.toBe(firstSource);
+
+  await page.keyboard.press('ArrowLeft');
+  await expect(viewer.getByText(/01 \/ \d{2}/)).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(viewer).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect(page.locator('body')).not.toHaveClass(/image-viewer-open/);
+});
+
+test('article images open in the same full-resolution viewer', async ({ page }) => {
+  await page.goto('/projects/fugi-visualizer/');
+
+  const trigger = page.locator('.content-image__full-link').first();
+  await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+  await trigger.click();
+  await expect(page.getByRole('dialog', { name: 'Full-resolution image viewer' })).toBeVisible();
+  await expect(page.locator('.image-viewer__viewport img')).toHaveAttribute('src', /\/assets\/projects\/fugi-visualizer\/.*\.png$/);
+});
+
 test('project cards react as one object on hover', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Hover feedback is desktop-specific');
   await page.goto('/#work');

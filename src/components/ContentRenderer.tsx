@@ -18,6 +18,11 @@ export type ContentHeading = {
   text: string;
 };
 
+export type ContentImage = {
+  src: string;
+  alt: string;
+};
+
 export function contentHeadingId(text: string): string {
   return text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -178,6 +183,12 @@ function parseMarkdown(markdown: string): MarkdownBlock[] {
   return blocks;
 }
 
+export function extractContentImages(markdown: string): ContentImage[] {
+  return parseMarkdown(markdown).flatMap((block) => block.type === 'image'
+    ? [{ src: block.src, alt: block.alt }]
+    : []);
+}
+
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
   const pattern = /(\[([^\]]+)\]\(([^)]+)\))|(\*\*([^*]+)\*\*)|(`([^`]+)`)/g;
@@ -204,7 +215,7 @@ function renderInline(text: string): ReactNode[] {
   return nodes;
 }
 
-export function ContentRenderer({ body }: { body: string }) {
+export function ContentRenderer({ body, onImageOpen }: { body: string; onImageOpen?: (src: string) => void }) {
   const blocks = parseMarkdown(body);
 
   return (
@@ -233,12 +244,23 @@ export function ContentRenderer({ body }: { body: string }) {
 
         if (block.type === 'image') {
           const presentation = imagePresentation(block.src);
+          const imageContents = (
+            <>
+              <img src={assetPath(presentation.src)} alt={block.alt} loading="lazy" width={presentation.width} height={presentation.height} />
+              <span>INSPECT FULL RESOLUTION</span>
+            </>
+          );
           return (
             <figure className="content-image scanline-image" key={index}>
-              <a className="content-image__full-link" href={assetPath(block.src)} target="_blank" rel="noreferrer" aria-label={`Open ${block.alt || 'image'} full resolution`}>
-                <img src={assetPath(presentation.src)} alt={block.alt} loading="lazy" width={presentation.width} height={presentation.height} />
-                <span>OPEN FULL RESOLUTION</span>
-              </a>
+              {onImageOpen ? (
+                <button className="content-image__full-link" type="button" aria-haspopup="dialog" aria-label={`Inspect ${block.alt || 'image'} full resolution`} onClick={() => onImageOpen(block.src)}>
+                  {imageContents}
+                </button>
+              ) : (
+                <a className="content-image__full-link" href={assetPath(block.src)} target="_blank" rel="noreferrer" aria-label={`Open ${block.alt || 'image'} full resolution`}>
+                  {imageContents}
+                </a>
+              )}
               {block.alt ? <figcaption>{block.alt}</figcaption> : null}
             </figure>
           );
