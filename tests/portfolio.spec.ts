@@ -221,6 +221,39 @@ test('article images open in the same full-resolution viewer', async ({ page }) 
   await expect(page.locator('.image-viewer__viewport img')).toHaveAttribute('src', /\/assets\/projects\/fugi-visualizer\/.*\.png$/);
 });
 
+test('FIT contains every F1R image at ultrawide resolution', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Ultrawide-specific layout check');
+  await page.setViewportSize({ width: 2560, height: 1080 });
+  await page.goto('/projects/fugi-visualizer/');
+
+  const imageCount = await page.locator('.content-image__full-link').count();
+  const viewerImage = page.locator('.image-viewer__viewport img');
+  await page.locator('.content-image__full-link').first().click();
+
+  for (let index = 0; index < imageCount; index += 1) {
+    await expect.poll(() => viewerImage.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    const bounds = await viewerImage.evaluate((element) => {
+      const image = element.getBoundingClientRect();
+      const viewport = element.closest('.image-viewer__viewport')!.getBoundingClientRect();
+      return {
+        image: { left: image.left, top: image.top, right: image.right, bottom: image.bottom },
+        viewport: { left: viewport.left, top: viewport.top, right: viewport.right, bottom: viewport.bottom }
+      };
+    });
+
+    expect(bounds.image.left).toBeGreaterThanOrEqual(bounds.viewport.left - 1);
+    expect(bounds.image.top).toBeGreaterThanOrEqual(bounds.viewport.top - 1);
+    expect(bounds.image.right).toBeLessThanOrEqual(bounds.viewport.right + 1);
+    expect(bounds.image.bottom).toBeLessThanOrEqual(bounds.viewport.bottom + 1);
+
+    if (index < imageCount - 1) {
+      const currentSource = await viewerImage.getAttribute('src');
+      await page.getByRole('button', { name: 'Next image' }).click();
+      await expect.poll(() => viewerImage.getAttribute('src')).not.toBe(currentSource);
+    }
+  }
+});
+
 test('project cards react as one object on hover', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Hover feedback is desktop-specific');
   await page.goto('/#work');

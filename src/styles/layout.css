@@ -2020,6 +2020,10 @@ button,
 }
 
 .image-viewer {
+  --image-viewer-bar-height: 3.25rem;
+  --image-viewer-status-height: 2.25rem;
+  --image-viewer-fit-inline-space: clamp(5.6rem, 10vw, 9rem);
+  --image-viewer-fit-block-space: clamp(1.3rem, 4vw, 3rem);
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -2147,9 +2151,9 @@ button,
 
 .image-viewer__viewport--fit img {
   width: auto;
-  max-width: 100%;
+  max-width: calc(100vw - var(--image-viewer-fit-inline-space));
   height: auto;
-  max-height: 100%;
+  max-height: calc(100dvh - var(--image-viewer-bar-height) - var(--image-viewer-status-height) - var(--image-viewer-fit-block-space));
   object-fit: contain;
 }
 
@@ -2339,5 +2343,11 @@ button,
 
   .image-viewer__status {
     font-size: 0.58rem;
+  }
+
+  .image-viewer {
+    --image-viewer-bar-height: 5.25rem;
+    --image-viewer-fit-inline-space: 5.2rem;
+    --image-viewer-fit-block-space: 1.3rem;
   }
 }
