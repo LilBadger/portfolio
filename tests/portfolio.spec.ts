@@ -4,6 +4,7 @@ test('home exposes finished work without the draft article', async ({ page }) =>
   await page.goto('/');
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('VLAD');
+  await expect(page.getByRole('heading', { name: 'Night of the Living Dead - LTX-2 Contest', exact: true })).toBeVisible();
   await expect(page.getByText('Building a Cyberpunk Bucharest with AI')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Articles', exact: true })).toHaveCount(0);
 });
@@ -78,6 +79,21 @@ test('local video collections defer playback until selected', async ({ page }) =
 
   await page.getByRole('button', { name: 'Play Xparticles Challenge 2018 animation test 01' }).click();
   await expect(page.locator('.project-video video')).toHaveCount(1);
+});
+
+test('LTX contest dossier leads with the final and defers inline WIP playback', async ({ page }) => {
+  await page.goto('/projects/night-of-the-living-dead-ltx-contest/');
+
+  await expect(page).toHaveTitle('Night of the Living Dead - LTX-2 Contest — Vlad Maftei');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Night of the Living Dead');
+  await expect(page.getByRole('button', { name: 'Play Final contest sequence' })).toBeVisible();
+  await expect(page.locator('.content-video__poster')).toHaveCount(3);
+  await expect(page.locator('.content-video video')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'The Constraint' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'ComfyUI Graph' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Play LTX-2 pose-guided motion test' }).click();
+  await expect(page.locator('.content-video video')).toHaveCount(1);
 });
 
 test('videos precede gallery images and the text toggle reports its state', async ({ page }) => {

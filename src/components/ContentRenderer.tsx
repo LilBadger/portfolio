@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { assetPath } from '../utils/assetPath';
 import { imagePresentation } from '../utils/imagePreview';
 
@@ -20,6 +20,42 @@ function toEmbedUrl(url: string): string {
   if (youtubeWatch) return `https://www.youtube.com/embed/${youtubeWatch[1]}`;
 
   return url;
+}
+
+function isLocalVideoUrl(url: string): boolean {
+  return /\.(mp4|webm|mov)(\?|#|$)/i.test(url) || url.startsWith('assets/');
+}
+
+function localVideoPoster(url: string): string {
+  return url.replace(/\.(mp4|webm|mov)(\?.*)?$/i, '.poster.jpg');
+}
+
+function ContentVideo({ title, url }: { title: string; url: string }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const isLocal = isLocalVideoUrl(url);
+  const poster = isLocal ? localVideoPoster(url) : undefined;
+
+  return (
+    <figure className="content-video">
+      {isLocal && !isLoaded ? (
+        <button className="project-video__poster content-video__poster" type="button" onClick={() => setIsLoaded(true)} aria-label={`Play ${title}`}>
+          <img src={assetPath(poster!)} alt="" loading="lazy" />
+          <span>PLAY WIP</span>
+        </button>
+      ) : isLocal ? (
+        <video src={assetPath(url)} poster={assetPath(poster!)} controls autoPlay preload="metadata" />
+      ) : (
+        <iframe
+          src={toEmbedUrl(url)}
+          title={title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      )}
+      <figcaption>{title}</figcaption>
+    </figure>
+  );
 }
 
 function parseMarkdown(markdown: string): MarkdownBlock[] {
@@ -183,18 +219,7 @@ export function ContentRenderer({ body }: { body: string }) {
         }
 
         if (block.type === 'video') {
-          return (
-            <figure className="content-video" key={index}>
-              <iframe
-                src={toEmbedUrl(block.url)}
-                title={block.title}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-              <figcaption>{block.title}</figcaption>
-            </figure>
-          );
+          return <ContentVideo title={block.title} url={block.url} key={index} />;
         }
 
         if (block.type === 'code') {
