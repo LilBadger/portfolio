@@ -1595,6 +1595,17 @@ button,
   background: transparent;
 }
 
+.project-video-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.project-video-stage .project-video-grid {
+  position: relative;
+  z-index: 1;
+}
+
 .project-detail-page .project-video-grid--single {
   grid-template-columns: 1fr;
 }

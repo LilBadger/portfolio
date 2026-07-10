@@ -48,7 +48,7 @@ const previews: Record<string, ImagePresentation> = {
     src: 'assets/projects/night-of-the-living-dead-ltx-contest/camera-low-angle.preview.webp', width: 1176, height: 888
   },
   'assets/projects/night-of-the-living-dead-ltx-contest/comfyui-ltx2-pose-workflow.png': {
-    src: 'assets/projects/night-of-the-living-dead-ltx-contest/comfyui-ltx2-pose-workflow.preview.webp', width: 1400, height: 788
+    src: 'assets/projects/night-of-the-living-dead-ltx-contest/comfyui-ltx2-pose-workflow.preview.webp', width: 1400, height: 646
   },
   'assets/projects/night-of-the-living-dead-ltx-contest/original-scene-frame.jpg': {
     src: 'assets/projects/night-of-the-living-dead-ltx-contest/original-scene-frame.jpg', width: 1432, height: 1080

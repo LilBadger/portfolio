@@ -87,6 +87,7 @@ test('LTX contest dossier leads with the final and defers inline WIP playback', 
   await expect(page).toHaveTitle('Night of the Living Dead - LTX-2 Contest — Vlad Maftei');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Night of the Living Dead');
   await expect(page.getByRole('button', { name: 'Play Final contest sequence' })).toBeVisible();
+  await expect(page.locator('.ascii-bunny--zombie')).toHaveCount(1);
   await expect(page.locator('.content-video__poster')).toHaveCount(3);
   await expect(page.locator('.content-video video')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'The Constraint' })).toBeVisible();

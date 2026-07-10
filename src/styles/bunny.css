@@ -51,6 +51,21 @@
   opacity: 0.92;
 }
 
+.ascii-bunny--zombie {
+  left: 72%;
+  top: clamp(-2.7rem, -3vw, -1.7rem);
+  z-index: 0;
+  color: #dcffe1;
+  font-size: clamp(0.92rem, 1.35vw, 1.55rem);
+  opacity: 0.9;
+  filter: drop-shadow(0 0 11px rgba(112, 255, 150, 0.22));
+  text-shadow:
+    -1px 0 rgba(0, 188, 255, 0.28),
+    1px 0 rgba(136, 255, 113, 0.38),
+    0 0 16px rgba(220, 255, 225, 0.2);
+  transform-origin: 50% 100%;
+}
+
 .ascii-bunny--hero.ascii-bunny--entering {
   animation: bunnyEnter 4.6s cubic-bezier(0.2, 0.78, 0.24, 1) forwards;
 }
@@ -67,6 +82,10 @@
   animation: bunnyProjectPeek 4.8s ease-in-out infinite;
 }
 
+.ascii-bunny--zombie.ascii-bunny--entering {
+  animation: bunnyZombieEnter 2.5s cubic-bezier(0.2, 0.74, 0.2, 1) forwards;
+}
+
 .ascii-bunny--idle {
   animation: bunnyIdle 1.8s ease-in-out infinite;
 }
@@ -81,6 +100,10 @@
 
 .ascii-bunny--love.ascii-bunny--idle {
   animation: bunnyLoveIdle 1.7s ease-in-out infinite;
+}
+
+.ascii-bunny--zombie.ascii-bunny--idle {
+  animation: bunnyZombiePeek 7.4s ease-in-out infinite;
 }
 
 .ascii-bunny__hearts {
@@ -130,6 +153,10 @@
 
 .ascii-bunny--project.ascii-bunny--fleeing {
   animation: bunnyFleeDown 0.62s cubic-bezier(0.14, 0.86, 0.22, 1) forwards;
+}
+
+.ascii-bunny--zombie.ascii-bunny--fleeing {
+  animation: bunnyZombieFlee 0.9s steps(8, end) forwards;
 }
 
 @keyframes bunnyEnter {
@@ -345,6 +372,74 @@
   }
   64%, 100% {
     transform: translateY(4.8rem) rotate(0deg) scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes bunnyZombieEnter {
+  0% {
+    opacity: 0.2;
+    transform: translateY(5.3rem) translateX(0.7rem) rotate(9deg) skewX(-4deg);
+  }
+  44% {
+    opacity: 0.9;
+    transform: translateY(2.1rem) translateX(-0.45rem) rotate(-8deg) skewX(3deg);
+  }
+  68% {
+    transform: translateY(0.55rem) translateX(0.3rem) rotate(5deg) skewX(-2deg);
+  }
+  84% {
+    transform: translateY(-0.25rem) translateX(-0.2rem) rotate(-4deg) skewX(2deg);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(0) rotate(2deg) skewX(0deg);
+  }
+}
+
+@keyframes bunnyZombiePeek {
+  0%, 20% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(0) rotate(2deg) skewX(0deg);
+  }
+  8% {
+    transform: translateY(-0.25rem) translateX(-0.35rem) rotate(-5deg) skewX(3deg);
+  }
+  25%, 67% {
+    opacity: 0.82;
+    transform: translateY(5.3rem) translateX(0.6rem) rotate(9deg) skewX(-4deg);
+  }
+  76% {
+    transform: translateY(2.2rem) translateX(-0.45rem) rotate(-9deg) skewX(4deg);
+  }
+  86% {
+    transform: translateY(-0.2rem) translateX(0.25rem) rotate(6deg) skewX(-3deg);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(0) rotate(2deg) skewX(0deg);
+  }
+}
+
+@keyframes bunnyZombieFlee {
+  0% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(0) rotate(2deg) scaleX(1) scaleY(1);
+  }
+  18% {
+    transform: translateY(0.3rem) translateX(-0.7rem) rotate(-10deg) scaleX(1.16) scaleY(0.84);
+  }
+  34% {
+    transform: translateY(-0.45rem) translateX(0.8rem) rotate(12deg) scaleX(0.84) scaleY(1.16);
+  }
+  52% {
+    transform: translateY(1.3rem) translateX(1.6rem) rotate(-7deg) scaleX(1.12) scaleY(0.88);
+  }
+  70% {
+    transform: translateY(3.8rem) translateX(0.4rem) rotate(15deg) scaleX(0.9) scaleY(1.1);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translateY(9rem) translateX(2.8rem) rotate(24deg) skewX(-8deg) scaleX(1.08) scaleY(0.92);
   }
 }
 

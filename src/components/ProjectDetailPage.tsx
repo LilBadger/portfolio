@@ -97,10 +97,13 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
       {videos.length > 0 ? (
         <section className="project-videos" aria-label={`${project.title} videos`}>
           <p className="eyebrow">_VIDEO SIGNALS</p>
-          <div className={`project-video-grid${videos.length === 1 ? ' project-video-grid--single' : ''}`}>
-            {videos.map((video, index) => (
-              <ProjectVideo projectTitle={project.title} video={video} index={index} key={`${video.url}-${index}`} />
-            ))}
+          <div className="project-video-stage">
+            {project.slug === 'night-of-the-living-dead-ltx-contest' ? <AsciiBunny variant="zombie" /> : null}
+            <div className={`project-video-grid${videos.length === 1 ? ' project-video-grid--single' : ''}`}>
+              {videos.map((video, index) => (
+                <ProjectVideo projectTitle={project.title} video={video} index={index} key={`${video.url}-${index}`} />
+              ))}
+            </div>
           </div>
         </section>
       ) : null}

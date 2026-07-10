@@ -12,11 +12,26 @@ const bunnyFrames = [
   String.raw`  n   n
  ( o.o )
  (  -  )
+  o(")(")`
+];
+
+const zombieBunnyFrames = [
+  String.raw`  n   n
+ ( x.o )
+ (  ~  )
+ o(")(")`,
+  String.raw`  n   n
+ ( x.- )
+ (  ~  )
+  (")_(")`,
+  String.raw`  n   n
+ ( x.o )
+ (  ~  )
  o(")(")`
 ];
 
 type AsciiBunnyProps = {
-  variant?: 'hero' | 'work' | 'project' | 'love';
+  variant?: 'hero' | 'work' | 'project' | 'love' | 'zombie';
 };
 
 export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
@@ -24,6 +39,7 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const [phase, setPhase] = useState<'entering' | 'idle' | 'fleeing'>(() => prefersReducedMotion ? 'idle' : 'entering');
   const [frameIndex, setFrameIndex] = useState(0);
+  const frames = variant === 'zombie' ? zombieBunnyFrames : bunnyFrames;
 
   useEffect(() => {
     if (variant !== 'project') return undefined;
@@ -95,16 +111,16 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
     if (prefersReducedMotion) return undefined;
 
     const frameTimer = window.setInterval(() => {
-      setFrameIndex((current) => (current + 1) % bunnyFrames.length);
-    }, phase === 'fleeing' ? 105 : 230);
+      setFrameIndex((current) => (current + 1) % frames.length);
+    }, phase === 'fleeing' ? 125 : variant === 'zombie' ? 340 : 230);
 
     return () => window.clearInterval(frameTimer);
-  }, [phase, prefersReducedMotion]);
+  }, [frames.length, phase, prefersReducedMotion, variant]);
 
   useEffect(() => {
     if (phase !== 'entering') return undefined;
 
-    const enterDuration = variant === 'hero' || variant === 'love' ? 4700 : 2200;
+    const enterDuration = variant === 'hero' || variant === 'love' ? 4700 : variant === 'zombie' ? 2600 : 2200;
     const enterTimer = window.setTimeout(() => setPhase('idle'), enterDuration);
     return () => window.clearTimeout(enterTimer);
   }, [phase, variant]);
@@ -142,7 +158,7 @@ export function AsciiBunny({ variant = 'hero' }: AsciiBunnyProps) {
       className={`ascii-bunny ascii-bunny--${variant} ascii-bunny--${phase}`}
       aria-hidden="true"
     >
-      {bunnyFrames[frameIndex]}
+      {frames[frameIndex]}
       {variant === 'love' ? (
         <span className="ascii-bunny__hearts" aria-hidden="true">
           <span>&lt;3</span>
