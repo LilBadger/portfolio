@@ -9,6 +9,39 @@ test('home exposes finished work without the draft article', async ({ page }) =>
   await expect(page.getByRole('link', { name: 'Articles', exact: true })).toHaveCount(0);
 });
 
+test('work archive prioritizes current transmissions and normalizes older cards', async ({ page }, testInfo) => {
+  await page.goto('/#work');
+
+  const currentGrid = page.locator('.work-grid--current');
+  const archiveGrid = page.locator('.work-grid--archive');
+  await expect(page.getByText('_CURRENT TRANSMISSIONS', { exact: true })).toBeVisible();
+  await expect(page.getByText('_ARCHIVE INDEX', { exact: true })).toBeVisible();
+  await expect(currentGrid.locator('.work-card')).toHaveCount(2);
+  await expect(archiveGrid.locator('.work-card')).toHaveCount(12);
+  await expect(currentGrid.locator('h3').nth(0)).toHaveText('F1R - Fugi Visualizer');
+  await expect(currentGrid.locator('h3').nth(1)).toHaveText('Night of the Living Dead - LTX-2 Contest');
+
+  const metrics = await page.evaluate(() => {
+    const current = document.querySelector('.work-grid--current');
+    const archive = document.querySelector('.work-grid--archive');
+    const copyHeights = [...document.querySelectorAll('.work-grid--archive .work-card__copy')]
+      .slice(0, 6)
+      .map((element) => Math.round(element.getBoundingClientRect().height));
+    const title = document.querySelector('.work-grid--archive h3');
+    return {
+      currentColumns: current ? getComputedStyle(current).gridTemplateColumns.split(' ').length : 0,
+      archiveColumns: archive ? getComputedStyle(archive).gridTemplateColumns.split(' ').length : 0,
+      copyHeights,
+      titleClamp: title ? getComputedStyle(title).webkitLineClamp : ''
+    };
+  });
+
+  expect(metrics.currentColumns).toBe(testInfo.project.name === 'mobile' ? 1 : 2);
+  expect(metrics.archiveColumns).toBe(testInfo.project.name === 'mobile' ? 1 : 3);
+  expect(new Set(metrics.copyHeights).size).toBe(1);
+  expect(metrics.titleClamp).toBe('2');
+});
+
 test('home navigation marks the section currently crossing the viewport', async ({ page }) => {
   await page.goto('/');
 
