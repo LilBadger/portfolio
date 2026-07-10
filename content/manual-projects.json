@@ -26,6 +26,24 @@
     "sourceUrl": "https://lilbadger.github.io/fugi-vizualizer/",
     "sourceLabel": "LIVE VISUALIZER",
     "layout": "article",
+    "contents": [
+      {
+        "label": "SIGNAL",
+        "target": "project-signal"
+      },
+      {
+        "label": "PROCESS",
+        "target": "what-i-made-with-codex"
+      },
+      {
+        "label": "CHARACTER",
+        "target": "f1r-character-explorations"
+      },
+      {
+        "label": "TESTS",
+        "target": "extended-video-tests"
+      }
+    ],
     "body": [
       "## Project Signal",
       "F1R is the band/project name for an AI-based music and visual identity experiment. `Fugi` is one track inside that world, and the lyric visualizer is only one output from a larger character-driven art direction: music generation, cyberpunk portrait experiments, browser animation, and a fictional hacked transmission language.",
@@ -120,6 +138,24 @@
     "cover": "assets/projects/night-of-the-living-dead-ltx-contest/final-frame-cover.jpg",
     "gallery": [],
     "layout": "article",
+    "contents": [
+      {
+        "label": "CONSTRAINT",
+        "target": "the-constraint"
+      },
+      {
+        "label": "LOOKDEV",
+        "target": "qwen-look-development"
+      },
+      {
+        "label": "MOTION",
+        "target": "from-still-to-motion"
+      },
+      {
+        "label": "EDIT",
+        "target": "editorial-reintegration"
+      }
+    ],
     "videos": [
       {
         "title": "Final contest sequence",

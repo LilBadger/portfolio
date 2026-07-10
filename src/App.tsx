@@ -19,16 +19,16 @@ type Route =
   | { type: 'project'; slug: string };
 
 type ActiveBunny = 'hero' | 'work';
-type HomeSection = 'work' | 'process' | 'articles' | 'contact';
+type HomeSection = 'work' | 'process' | 'articles' | 'about' | 'contact';
 
-const homeSections: HomeSection[] = ['work', 'process', 'articles', 'contact'];
+const homeSections: HomeSection[] = ['work', 'process', 'articles', 'about', 'contact'];
 
-const navLinks = [
-  { href: homeSectionHref('work'), label: 'Work' },
-  { href: homeSectionHref('process'), label: 'Process' },
-  ...(articles.length > 0 ? [{ href: homeSectionHref('articles'), label: 'Articles' }] : []),
-  { href: pageHref('about'), label: 'About' },
-  { href: homeSectionHref('contact'), label: 'Contact' }
+const navLinks: Array<{ href: string; label: string; section: HomeSection }> = [
+  { href: homeSectionHref('work'), label: 'Work', section: 'work' },
+  { href: homeSectionHref('process'), label: 'Process', section: 'process' },
+  ...(articles.length > 0 ? [{ href: homeSectionHref('articles'), label: 'Articles', section: 'articles' as HomeSection }] : []),
+  { href: pageHref('about'), label: 'About', section: 'about' },
+  { href: homeSectionHref('contact'), label: 'Contact', section: 'contact' }
 ];
 
 const socialLinks = [
@@ -136,7 +136,7 @@ function useRouteMetadata(metadata: RouteMetadata) {
   }, [metadata]);
 }
 
-function SiteNav() {
+function SiteNav({ activeSection }: { activeSection?: HomeSection }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -151,10 +151,56 @@ function SiteNav() {
         <span />
       </button>
       <nav aria-label="Main navigation" id="main-navigation">
-        {navLinks.map((link) => <a href={link.href} key={link.href} onClick={() => setIsMenuOpen(false)}>{link.label}</a>)}
+        {navLinks.map((link) => (
+          <a
+            className={activeSection === link.section ? 'is-active' : undefined}
+            href={link.href}
+            aria-current={activeSection === link.section ? 'location' : undefined}
+            key={link.href}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {link.label}
+          </a>
+        ))}
       </nav>
     </header>
   );
+}
+
+function useActiveHomeSection(): HomeSection | undefined {
+  const [activeSection, setActiveSection] = useState<HomeSection>();
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const activationLine = Math.min(window.innerHeight * 0.34, 300);
+      let current: HomeSection | undefined;
+
+      for (const section of homeSections) {
+        const element = document.getElementById(section);
+        const bounds = element?.getBoundingClientRect();
+        if (bounds && bounds.top <= activationLine && bounds.bottom > activationLine) current = section;
+      }
+
+      setActiveSection(current);
+    };
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
+  }, []);
+
+  return activeSection;
 }
 
 function SectionHeader({
@@ -216,6 +262,7 @@ function useActiveHomeBunny(): ActiveBunny {
 
 function HomePage() {
   const activeBunny = useActiveHomeBunny();
+  const activeSection = useActiveHomeSection();
   const contactLinks = [
     { href: 'mailto:vladmaftei@gmail.com', label: 'Email', value: 'vladmaftei@gmail.com' },
     { href: 'https://vladmaftei.artstation.com/', label: 'ArtStation', value: 'vladmaftei.artstation.com' },
@@ -226,7 +273,7 @@ function HomePage() {
 
   return (
     <>
-      <SiteNav />
+      <SiteNav activeSection={activeSection} />
 
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-identity">
@@ -338,6 +385,9 @@ export function App() {
   const article = route.type === 'article' ? getArticle(route.slug) : undefined;
   const page = route.type === 'page' ? getPage(route.slug) : undefined;
   const project = route.type === 'project' ? getProject(route.slug) : undefined;
+  const projectIndex = project ? projects.findIndex((candidate) => candidate.slug === project.slug) : -1;
+  const previousProject = projectIndex >= 0 ? projects[(projectIndex - 1 + projects.length) % projects.length] : undefined;
+  const nextProject = projectIndex >= 0 ? projects[(projectIndex + 1) % projects.length] : undefined;
   const defaultImage = 'assets/projects/fugi-visualizer/reference-tongue-in.png';
   const metadata: RouteMetadata = project
     ? {
@@ -377,7 +427,7 @@ export function App() {
       <div className="crt-overlay" aria-hidden="true" />
       {route.type === 'article' && article ? <ContentPage document={article} /> : null}
       {route.type === 'page' && page ? <ContentPage document={page} /> : null}
-      {route.type === 'project' && project ? <ProjectDetailPage project={project} /> : null}
+      {route.type === 'project' && project ? <ProjectDetailPage project={project} previousProject={previousProject} nextProject={nextProject} /> : null}
       {route.type === 'home' ? <HomePage /> : null}
       {((route.type === 'article' && !article) || (route.type === 'page' && !page) || (route.type === 'project' && !project)) ? <NotFoundPage /> : null}
     </main>

@@ -12,6 +12,32 @@ type MarkdownBlock =
   | { type: 'code'; code: string }
   | { type: 'rule' };
 
+export type ContentHeading = {
+  id: string;
+  level: 2 | 3 | 4;
+  text: string;
+};
+
+export function contentHeadingId(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*`_]/g, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'section';
+}
+
+export function extractContentHeadings(markdown: string): ContentHeading[] {
+  return markdown.split(/\r?\n/).flatMap((line) => {
+    const heading = line.trim().match(/^(#{2,4})\s+(.+)$/);
+    if (!heading) return [];
+    const level = heading[1].length as 2 | 3 | 4;
+    return [{ id: contentHeadingId(heading[2]), level, text: heading[2] }];
+  });
+}
+
 function toEmbedUrl(url: string): string {
   const youtubeShort = url.match(/^https:\/\/youtu\.be\/([^?&/]+)/);
   if (youtubeShort) return `https://www.youtube.com/embed/${youtubeShort[1]}`;
@@ -186,7 +212,7 @@ export function ContentRenderer({ body }: { body: string }) {
       {blocks.map((block, index) => {
         if (block.type === 'heading') {
           const Tag = `h${block.level}` as 'h2' | 'h3' | 'h4';
-          return <Tag key={index}>{renderInline(block.text)}</Tag>;
+          return <Tag id={contentHeadingId(block.text)} key={index}>{renderInline(block.text)}</Tag>;
         }
 
         if (block.type === 'paragraph') {

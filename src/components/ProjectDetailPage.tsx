@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { AsciiBunny } from './AsciiBunny';
 import type { PortfolioProject } from '../data/projects';
 import { assetPath } from '../utils/assetPath';
-import { ContentRenderer } from './ContentRenderer';
-import { homeHref, homeSectionHref } from '../utils/routes';
+import { ContentRenderer, extractContentHeadings } from './ContentRenderer';
+import { homeHref, homeSectionHref, projectHref } from '../utils/routes';
 import { imagePresentation } from '../utils/imagePreview';
+import { ProjectContentsNav, type ProjectContentsItem } from './ProjectContentsNav';
 
 type ProjectVideoData = NonNullable<PortfolioProject['videos']>[number];
 
@@ -44,13 +45,27 @@ function ProjectVideo({ projectTitle, video, index }: { projectTitle: string; vi
   );
 }
 
-export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
+export function ProjectDetailPage({
+  project,
+  previousProject,
+  nextProject
+}: {
+  project: PortfolioProject;
+  previousProject?: PortfolioProject;
+  nextProject?: PortfolioProject;
+}) {
   const [isTextHidden, setIsTextHidden] = useState(false);
   const gallery = project.gallery?.length ? project.gallery : [project.cover];
   const videos = project.videos ?? [];
   const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
   const isArticleLayout = project.layout === 'article';
+  const contents: ProjectContentsItem[] = project.contents ?? (body
+    ? extractContentHeadings(body)
+      .filter((heading) => heading.level === 2)
+      .slice(0, 4)
+      .map((heading) => ({ label: heading.text.toUpperCase(), target: heading.id }))
+    : []);
 
   return (
     <article className={`content-page project-detail-page${isArticleLayout ? ' project-detail-page--article' : ''}${isTextHidden ? ' project-detail-page--text-hidden' : ''}`}>
@@ -62,15 +77,18 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </nav>
 
-      <div className="project-view-tools" aria-label="Project view controls">
-        <button type="button" aria-pressed={isTextHidden} onClick={() => setIsTextHidden((current) => !current)}>
-          {isTextHidden ? 'SHOW TEXT' : 'HIDE TEXT'}
-        </button>
-        {project.sourceUrl ? (
-          <a href={project.sourceUrl} target="_blank" rel="noreferrer">
-            OPEN {project.sourceLabel ?? 'SOURCE'}
-          </a>
-        ) : null}
+      <div className="project-utility-rail">
+        <div className="project-view-tools" aria-label="Project view controls">
+          <button type="button" aria-pressed={isTextHidden} onClick={() => setIsTextHidden((current) => !current)}>
+            {isTextHidden ? 'SHOW TEXT' : 'HIDE TEXT'}
+          </button>
+          {project.sourceUrl ? (
+            <a href={project.sourceUrl} target="_blank" rel="noreferrer">
+              OPEN {project.sourceLabel ?? 'SOURCE'}
+            </a>
+          ) : null}
+        </div>
+        <ProjectContentsNav items={contents} />
       </div>
 
       <header className="content-hero project-detail-hero">
@@ -134,6 +152,20 @@ export function ProjectDetailPage({ project }: { project: PortfolioProject }) {
           ) : null}
           <ContentRenderer body={body} />
         </section>
+      ) : null}
+
+      {previousProject && nextProject ? (
+        <footer className="project-exit-nav" aria-label="More projects">
+          <a className="project-exit-nav__previous" href={projectHref(previousProject.slug ?? '')}>
+            <span>&larr; PREVIOUS PROJECT</span>
+            <strong>{previousProject.title}</strong>
+          </a>
+          <a className="project-exit-nav__archive" href={homeSectionHref('work')}>WORK ARCHIVE</a>
+          <a className="project-exit-nav__next" href={projectHref(nextProject.slug ?? '')}>
+            <span>NEXT PROJECT &rarr;</span>
+            <strong>{nextProject.title}</strong>
+          </a>
+        </footer>
       ) : null}
     </article>
   );

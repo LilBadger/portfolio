@@ -9,6 +9,16 @@ test('home exposes finished work without the draft article', async ({ page }) =>
   await expect(page.getByRole('link', { name: 'Articles', exact: true })).toHaveCount(0);
 });
 
+test('home navigation marks the section currently crossing the viewport', async ({ page }) => {
+  await page.goto('/');
+
+  await page.locator('#process').scrollIntoViewIfNeeded();
+  await expect(page.locator('#main-navigation a[href="/#process"]')).toHaveClass(/is-active/);
+
+  await page.locator('#contact').scrollIntoViewIfNeeded();
+  await expect(page.locator('#main-navigation a[href="/#contact"]')).toHaveClass(/is-active/);
+});
+
 test('clean project routes have specific metadata and return to the work archive', async ({ page }) => {
   await page.goto('/projects/cat-walkman/');
 
@@ -95,6 +105,57 @@ test('LTX contest dossier leads with the final and defers inline WIP playback', 
 
   await page.getByRole('button', { name: 'Play LTX-2 pose-guided motion test' }).click();
   await expect(page.locator('.content-video video')).toHaveCount(1);
+});
+
+test('project dossiers expose sticky contents and deliberate previous-next exits', async ({ page }, testInfo) => {
+  await page.goto('/projects/fugi-visualizer/');
+
+  const utilityRail = page.locator('.project-utility-rail');
+  await expect(utilityRail).toHaveCSS('position', 'sticky');
+  await expect(page.locator('#project-signal')).toHaveCount(1);
+  await expect(page.locator('#what-i-made-with-codex')).toHaveCount(1);
+  await expect(page.locator('#f1r-character-explorations')).toHaveCount(1);
+  await expect(page.locator('#extended-video-tests')).toHaveCount(1);
+
+  if (testInfo.project.name === 'mobile') {
+    const menu = page.locator('.project-contents--mobile');
+    await expect(menu).toBeVisible();
+    await menu.locator('summary').click();
+    await expect(menu.getByRole('link', { name: '03 CHARACTER', exact: true })).toBeVisible();
+  } else {
+    const contents = page.locator('.project-contents--desktop');
+    await expect(contents).toBeVisible();
+    await expect(contents.getByRole('link')).toHaveCount(4);
+  }
+
+  await expect(page.locator('.project-exit-nav__previous')).toHaveAttribute('href', '/projects/quixel-mixer-contest/');
+  await expect(page.locator('.project-exit-nav__archive')).toHaveAttribute('href', '/#work');
+  await expect(page.locator('.project-exit-nav__next')).toHaveAttribute('href', '/projects/night-of-the-living-dead-ltx-contest/');
+});
+
+test('project images remain contained within the viewport height', async ({ page }) => {
+  await page.goto('/projects/fugi-visualizer/');
+
+  const image = page.locator('.content-image img').first();
+  await image.scrollIntoViewIfNeeded();
+  const dimensions = await image.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return { height: bounds.height, viewportHeight: window.innerHeight, objectFit: getComputedStyle(element).objectFit };
+  });
+
+  expect(dimensions.height).toBeLessThanOrEqual(dimensions.viewportHeight * 0.82 + 1);
+  expect(dimensions.objectFit).toBe('contain');
+});
+
+test('project cards react as one object on hover', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Hover feedback is desktop-specific');
+  await page.goto('/#work');
+
+  const card = page.locator('.work-card').first();
+  await card.hover();
+  await expect(card.locator('.work-card__popup')).toHaveCSS('opacity', '1');
+  await expect(card.locator('.work-card__media img')).toHaveCSS('filter', /brightness\(0\.62\)/);
+  await expect(card.locator('h3')).toHaveCSS('color', 'rgb(229, 248, 255)');
 });
 
 test('videos precede gallery images and the text toggle reports its state', async ({ page }) => {
