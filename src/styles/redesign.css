@@ -1126,3 +1126,61 @@
     aspect-ratio: 1 / 1;
   }
 }
+
+/* ---------- social icons ---------- */
+
+.social-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-social {
+  margin-top: 1.1rem;
+  margin-left: -0.55rem;
+}
+
+.social-icons a {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid transparent;
+  color: var(--ink-muted);
+  opacity: 0.75;
+  transition: color 140ms steps(2), opacity 140ms steps(2), border-color 140ms steps(2);
+}
+
+.social-icons a:hover,
+.social-icons a:focus-visible {
+  border-color: rgba(166, 255, 0, 0.35);
+  color: var(--signal);
+  opacity: 1;
+}
+
+/* Keep one stroke weight even for glyphs drawn with a transform (ArtStation is scaled to fit). */
+.social-icons svg path,
+.social-icons svg rect,
+.social-icons svg circle {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 760px) {
+  /* Reduced-motion play button: use the free space under the hero content, not over the buttons. */
+  .hero-reel__play {
+    top: auto;
+    right: auto;
+    bottom: 1.25rem;
+    left: 1rem;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  /* Reserve that space so the button never covers the social icons on short screens. */
+  .hero:has(.hero-reel__play) {
+    padding-bottom: 5.5rem;
+  }
+}

@@ -9,6 +9,7 @@ import { HeroReel } from './components/HeroReel';
 import { HeroTerminalLine } from './components/HeroTerminalLine';
 import { NotFoundPage } from './components/NotFoundPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
+import { SocialIcons } from './components/SocialIcons';
 import { WorkShowcase } from './components/WorkShowcase';
 import { articles, featuredArticle, getArticle, getPage, pages } from './data/content';
 import { archiveProjects, featuredProjects, getProject, projects } from './data/projects';
@@ -295,6 +296,7 @@ function HomePage() {
             <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
             <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
           </div>
+          <SocialIcons className="hero-social" />
         </div>
         <div className="hero-hud" aria-hidden="true">
           <span>REEL / 2016—2026</span>

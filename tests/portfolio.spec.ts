@@ -90,6 +90,12 @@ test('hero shows the reel with a primary call to action', async ({ page }) => {
   const cta = page.locator('.hero-actions .button--signal');
   await expect(cta).toHaveAttribute('href', '/#work');
   await expect(cta).toHaveCSS('background-color', 'rgb(166, 255, 0)');
+
+  const socials = page.locator('.hero-social a');
+  await expect(socials).toHaveCount(4);
+  for (const name of ['ArtStation', 'LinkedIn', 'Instagram', 'X']) {
+    await expect(page.locator('.hero-social').getByRole('link', { name: new RegExp(`^${name}:`) })).toHaveAttribute('target', '_blank');
+  }
 });
 
 test('local video collections defer playback until selected', async ({ page }) => {
