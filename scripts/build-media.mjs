@@ -64,9 +64,17 @@ function thumbnails(slug, cover) {
 
 /* ---------- video segments ---------- */
 
-function clipSegment(source, start, duration, width, height, file) {
+// `focus` reframes a clip: zoom in and place a point (0-1 fractions of the source) at
+// `at` (0-1 of the output width, default centre). `atSmall` overrides it for the phone
+// reel, whose portrait hero crop keeps only the middle of the frame.
+function clipSegment(source, start, duration, width, height, file, focus) {
+  const zoom = focus?.zoom ?? 1;
+  const at = (height < 720 ? focus?.atSmall : undefined) ?? focus?.at ?? 0.5;
+  const x = focus ? `min(max(iw*${focus.x}-ow*${at}\\,0)\\,iw-ow)` : '(iw-ow)/2';
+  const y = focus ? `min(max(ih*${focus.y}-oh/2\\,0)\\,ih-oh)` : '(ih-oh)/2';
+  const scaled = `scale=${Math.round(width * zoom)}:${Math.round(height * zoom)}:force_original_aspect_ratio=increase:flags=lanczos`;
   run('ffmpeg', ['-v', 'error', '-y', '-ss', String(start), '-t', String(duration), '-i', abs(source),
-    '-an', '-vf', `scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},fps=${FPS},format=yuv420p`,
+    '-an', '-vf', `${scaled},crop=${width}:${height}:${x}:${y},fps=${FPS},format=yuv420p`,
     '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '16', file]);
 }
 
@@ -83,7 +91,7 @@ function stillSegment(source, duration, width, height, file, variant = 0) {
 function renderSegments(segments, width, height, key) {
   return segments.map((segment, index) => {
     const file = path.join(tmp, `${key}-${width}-${index}.mp4`);
-    if (segment.clip) clipSegment(segment.clip, segment.start, segment.duration, width, height, file);
+    if (segment.clip) clipSegment(segment.clip, segment.start, segment.duration, width, height, file, segment.focus);
     else stillSegment(segment.still, segment.duration, width, height, file, index);
     return file;
   });
@@ -134,7 +142,8 @@ const reel = [
   { clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
   { still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
   { clip: NOTLD, start: 66, duration: 1.8 },
-  { clip: DARK_FOREST, start: 10, duration: 1.8 },
+  // Reframed so the boy and his lantern sit in the middle of the hero's open area, clear of the title.
+  { clip: DARK_FOREST, start: 10, duration: 1.8, focus: { x: 0.35, y: 0.6, zoom: 1.65, at: 0.58, atSmall: 0.5 } },
   { clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
   { clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
   { clip: F1R_LIVE, start: 166, duration: 1.8 },
