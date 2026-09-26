@@ -283,8 +283,8 @@ function HomePage() {
         <div className="hero-identity">
           <p className="eyebrow">_3D GENERALIST / VFX / AI VIDEO — BUCHAREST</p>
           <h1 id="hero-title">
-            <GlitchText text="VLAD" as="span" className="hero-name-line hero-name-line--vlad" intensity="heavy" />
-            <GlitchText text="MAFTEI" as="span" className="hero-name-line" intensity="heavy" />
+            <GlitchText text="VLAD" as="span" className="hero-name-line hero-name-line--vlad" />
+            <GlitchText text="MAFTEI" as="span" className="hero-name-line" />
           </h1>
           <p className="hero-summary">
             I make cinematic images with 3D, simulation and generative video, from product CGI and

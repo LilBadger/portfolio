@@ -95,9 +95,12 @@
 
 .hero {
   position: relative;
-  min-height: 100svh;
+  /* The nav bar sits above the hero in the flow, so fill what's left of the first screen. */
+  min-height: calc(100svh - 4.4rem);
   display: grid;
   align-items: end;
+  /* Lower-third layout: the text block sits at the bottom, the reel owns the space above. */
+  align-content: end;
   padding: 6rem var(--gutter) clamp(2.5rem, 6vh, 5rem);
   background: #000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -179,14 +182,18 @@
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(3.6rem, 10vw, 10.5rem);
-  line-height: 0.84;
+  font-size: clamp(2.2rem, 4.4vw, 4.4rem);
+  line-height: 0.95;
   color: #f3f4ee;
-  /* Distressed print breakup from the original mockup. */
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 -14 0 0 0 10.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 -14 0 0 0 10.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  -webkit-mask-size: 260px;
-  mask-size: 260px;
+}
+
+/* One line on wide screens; the reel, not the name, is the headline. */
+.hero h1 .hero-name-line {
+  display: inline-block;
+}
+
+.hero h1 .hero-name-line--vlad {
+  margin-right: 0.28em;
 }
 
 .hero h1 .glitch-text {
@@ -195,9 +202,9 @@
 
 .hero-summary {
   max-width: 40rem;
-  margin: 1.4rem 0 0;
+  margin: 1.2rem 0 0;
   color: #eef0ea;
-  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  font-size: clamp(1.05rem, 1.45vw, 1.4rem);
   line-height: 1.6;
 }
 
@@ -931,7 +938,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(3rem, 16vw, 5.4rem);
+    font-size: clamp(2.2rem, 11vw, 3rem);
   }
 
   .hero-hud {
