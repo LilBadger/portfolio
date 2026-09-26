@@ -33,6 +33,10 @@ npm run build:media -- --force # rebuild everything
 
 Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/assets/generated/` and are committed, so CI does not need either tool. Every project gets `thumbs/<slug>-{640,1280}.{avif,webp}` and a silent `loops/<slug>.mp4`; edit the `reel` and `customLoops` lists in `scripts/build-media.mjs` to change shots. Each reel shot carries the project `slug` it shows; the script writes `reel/reel.json` with measured shot timings, which drives the hero's `$ now_playing:` line. Run it after adding a project.
 
+## Collage reel (alternate hero)
+
+`npm run build:collage` renders a beat-cut collage/lyric edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. Open the site with `?reel=collage` to see it in the hero; edit the `EDIT` list in `scripts/build-collage-reel.py` to change cards, treatments and words.
+
 ## Featured grid, archive, filters, breakdowns
 
 Set these per project in `content/project-overrides.json`:

@@ -1,0 +1,128 @@
+{
+  "duration": 16.0,
+  "shots": [
+    {
+      "start": 0.0,
+      "end": 1.0,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 1.0,
+      "end": 2.75,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
+      "tools": [
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
+      ]
+    },
+    {
+      "start": 2.75,
+      "end": 5.25,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 5.25,
+      "end": 7.0,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 7.0,
+      "end": 8.0,
+      "slug": "daft-punk-cover-art",
+      "title": "Daft Punk cover art",
+      "tools": [
+        "ComfyUI",
+        "SDXL"
+      ]
+    },
+    {
+      "start": 8.0,
+      "end": 9.0,
+      "slug": "cat-walkman",
+      "title": "Cat Walkman",
+      "tools": [
+        "Invoke",
+        "SDXL"
+      ]
+    },
+    {
+      "start": 9.0,
+      "end": 10.25,
+      "slug": "trips",
+      "title": "Trips",
+      "tools": [
+        "Flux",
+        "Runway"
+      ]
+    },
+    {
+      "start": 10.25,
+      "end": 11.25,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
+      "tools": [
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
+      ]
+    },
+    {
+      "start": 11.25,
+      "end": 12.5,
+      "slug": "fugi-visualizer",
+      "title": "F1R - Fugi Visualizer",
+      "tools": [
+        "Codex",
+        "WebGL"
+      ]
+    },
+    {
+      "start": 12.5,
+      "end": 14.0,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 14.0,
+      "end": 15.0,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 15.0,
+      "end": 16.0,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
+      "tools": [
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
+      ]
+    }
+  ]
+}

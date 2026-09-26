@@ -16,15 +16,17 @@ export function HeroReel({
   const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [isPlaying, setIsPlaying] = useState(!reducedMotion);
   const [manifest, setManifest] = useState<ReelManifest | null>(null);
-  const [source] = useState(() => assetPath(`assets/generated/reel/reel-${window.matchMedia('(max-width: 760px)').matches ? 480 : 720}.mp4`));
-  const poster = assetPath('assets/generated/reel/reel-poster.jpg');
+  // `?reel=collage` swaps in the beat-cut collage edit (scripts/build-collage-reel.py).
+  const [variant] = useState(() => (new URLSearchParams(window.location.search).get('reel') === 'collage' ? 'reel-collage' : 'reel'));
+  const [source] = useState(() => assetPath(`assets/generated/reel/${variant}-${window.matchMedia('(max-width: 760px)').matches ? 480 : 720}.mp4`));
+  const poster = assetPath(`assets/generated/reel/${variant}-poster.jpg`);
 
   useEffect(() => {
-    fetch(assetPath('assets/generated/reel/reel.json'))
+    fetch(assetPath(`assets/generated/reel/${variant}.json`))
       .then((response) => (response.ok ? response.json() : null))
       .then((data: ReelManifest | null) => setManifest(data))
       .catch(() => setManifest(null));
-  }, []);
+  }, [variant]);
 
   // Track the shot under the playhead; report only when it changes.
   useEffect(() => {
