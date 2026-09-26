@@ -116,15 +116,15 @@ def duotone(f):
     return (g * np.array(ACID) + (1 - g) * np.array([2, 6, 2])).astype(np.uint8)
 
 
-STAGGER = 8   # frames between split pieces arriving (1/3 s)
 SLIDE = 8     # frames for a piece to slide into place
 
 
-def _arrival(local, k):
+def _arrival(local, k, stagger):
     """0..1 slide progress of split piece k, `local` frames into the split segment."""
     if k == 0:
         return 1.0  # the first piece is already on screen when the split starts
-    p = min(max((local - k * STAGGER) / SLIDE, 0.0), 1.0)
+    start = sum(stagger[:k])
+    p = min(max((local - start) / SLIDE, 0.0), 1.0)
     return 1 - (1 - p) ** 3
 
 
@@ -140,25 +140,25 @@ def _slide_in(out, tile, x0, y0, progress, direction):
     out[y0:y0 + h, x0 + src_l + shift:x0 + src_r + shift] = tile[:, src_l:src_r]
 
 
-def stack(pieces, i, rows, local):
+def stack(pieces, i, rows, local, stagger):
     """Horizontal strips, each a different image or region of the same project, sliding in one by one."""
     band = H // rows
     out = np.zeros((H, W, 3), np.uint8)
     top = (H - band) // 2
     for r in range(rows):
-        _slide_in(out, pieces[r][i][top:top + band], 0, r * band, _arrival(local, r), 1 if r % 2 else -1)
+        _slide_in(out, pieces[r][i][top:top + band], 0, r * band, _arrival(local, r, stagger), 1 if r % 2 else -1)
     for r in range(1, rows):
         out[r * band - 2:r * band + 2] = 0
     return out
 
 
-def grid(pieces, i, local, n=2):
+def grid(pieces, i, local, stagger, n=2):
     """n x n tiles, each a different image or region of the same project, sliding in one by one."""
     out = np.zeros((H, W, 3), np.uint8)
     for k in range(n * n):
         r, c = divmod(k, n)
         tile = np.asarray(Image.fromarray(pieces[k][i]).resize((W // n, H // n), Image.BILINEAR))
-        _slide_in(out, tile, c * (W // n), r * (H // n), _arrival(local, k), -1 if c == 0 else 1)
+        _slide_in(out, tile, c * (W // n), r * (H // n), _arrival(local, k, stagger), -1 if c == 0 else 1)
     out[H // 2 - 2:H // 2 + 2] = 0
     out[:, W // 2 - 2:W // 2 + 2] = 0
     return out
@@ -186,53 +186,58 @@ def circle(f, i, total):
 SPLIT_COUNT = {'stack2': 2, 'stack3': 3, 'grid': 4}
 
 
-def card(slug, source, beats, segments, split=()):
-    """`split`: the distinct sources (same project) shown in stack/grid strips or tiles, in order."""
+def card(slug, source, beats, segments, split=(), move='static', stagger=(7, 11, 8)):
+    """`split`: the distinct sources (same project) shown in stack/grid strips or tiles, in order.
+    `move`: 'static', 'push', 'pull' or 'snap' (a quicker push that settles). `stagger`: frames
+    between split pieces arriving, deliberately uneven."""
     need = max((SPLIT_COUNT.get(t, 0) for _, t in segments), default=0)
     if need and len(split) < need:
         raise SystemExit(f'{slug}: a split treatment needs {need} different sources, got {len(split)}')
     if len({repr(spec) for spec in split}) != len(split):
         raise SystemExit(f'{slug}: split sources must all be different')
-    return dict(slug=slug, source=source, beats=beats, segments=segments, split=list(split))
+    if round(beats * BEAT) < MIN_FRAMES:
+        raise SystemExit(f'{slug}: {beats} beats is shorter than the {MIN_FRAMES}-frame minimum (reads as a flash)')
+    return dict(slug=slug, source=source, beats=beats, segments=segments, split=list(split), move=move, stagger=list(stagger))
+
+
+MIN_FRAMES = 15  # 0.625 s: quick cuts, never a flash
 
 
 FOREST_FOCUS = {'x': 0.35, 'y': 0.6, 'zoom': 1.5}
 DAFT = 'assets/artstation/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg'
 CAT = 'assets/artstation/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg'
+# Uneven on purpose: quick 1.25-beat hits between long split holds, switches off the beat.
 EDIT = [
-    card('f1r-live-video', ('clip', F1R, 150.0), 2, [(2, 'circle')]),
-    card('dark-forest', ('clip', FOREST, 10.0, FOREST_FOCUS), 2, [(1, 'bw'), (1, 'color')]),
-    card('dark-forest', ('clip', FOREST, 12.0, FOREST_FOCUS), 2.5, [(2.5, 'stack2')],
-         split=[('clip', FOREST, 12.0, FOREST_FOCUS), ('clip', FOREST, 4.0, {'x': 0.78, 'y': 0.2, 'zoom': 2.2})]),  # boy / eyes in the trees
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 59.6), 3, [(1.5, 'color'), (1.5, 'bw')]),
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 61.2), 3.5, [(3.5, 'stack3')],
+    card('f1r-live-video', ('clip', F1R, 150.0), 3, [(3, 'circle')]),
+    card('dark-forest', ('clip', FOREST, 10.0, FOREST_FOCUS), 1.25, [(1.25, 'bw')]),
+    card('dark-forest', ('clip', FOREST, 10.7, FOREST_FOCUS), 2, [(2, 'color')], move='push'),
+    card('dark-forest', ('clip', FOREST, 12.0, FOREST_FOCUS), 2.5, [(2.5, 'stack2')], stagger=(9,),
+         split=[('clip', FOREST, 12.0, FOREST_FOCUS), ('clip', FOREST, 4.0, {'x': 0.78, 'y': 0.2, 'zoom': 1.6})]),  # boy / eyes in the trees
+    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 66.0), 1.25, [(1.25, 'bw')], move='snap'),
+    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 61.2), 3.5, [(3.5, 'stack3')], stagger=(6, 13),
          split=[('clip', NOTLD, 61.2), ('clip', NOTLD, 45.0), ('clip', NOTLD, 91.0)]),  # couch room / TV / zombie presenter
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 66.0), 2, [(2, 'bw')]),
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 67.0), 4, [(4, 'grid')],
-         split=[('clip', NOTLD, 67.0), ('clip', NOTLD, 20.5), ('clip', NOTLD, 4.5), ('clip', NOTLD, 39.5)]),
-    card('f1r-live-video', ('clip', F1R, 158.0), 2, [(2, 'bw')]),
-    card('f1r-live-video', ('clip', F1R, 166.0), 2, [(2, 'duotone')]),
+    card('f1r-live-video', ('clip', F1R, 158.0), 1.5, [(1.5, 'bw')], move='snap'),
+    card('f1r-live-video', ('clip', F1R, 166.0), 1.25, [(1.25, 'duotone')]),
     # Single-image projects split into different regions of the image.
-    card('daft-punk-cover-art', ('still', DAFT), 2, [(2, 'color')]),
-    card('daft-punk-cover-art', ('still', DAFT), 4, [(4, 'grid')],
+    card('daft-punk-cover-art', ('still', DAFT), 1.25, [(1.25, 'color')], move='push'),
+    card('daft-punk-cover-art', ('still', DAFT), 4, [(4, 'grid')], stagger=(5, 12, 7),
          split=[('crop', DAFT, (490, 330, 2.0)), ('crop', DAFT, (1400, 360, 2.0)), ('crop', DAFT, (1180, 650, 2.6)), ('crop', DAFT, (1140, 350, 3.0))]),
-    card('cat-walkman', ('still', CAT), 2.5, [(2.5, 'stack2')],
+    card('cat-walkman', ('still', CAT), 2.5, [(2.5, 'stack2')], stagger=(11,),
          split=[('crop', CAT, (420, 470, 2.2)), ('crop', CAT, (1300, 560, 1.8))]),
-    card('trips', ('still', 'assets/artstation/trips/07-vlx-maftei-landscapes-07.jpg'), 2, [(2, 'bw')]),
-    card('trips', ('still', 'assets/artstation/trips/04-vlx-maftei-landscapes-04.jpg'), 2, [(2, 'color')]),
-    card('dark-forest', ('clip', INK, 12.0), 2, [(2, 'color')]),
-    card('dark-forest', ('clip', INK, 13.0), 3.5, [(3.5, 'stack3')],
+    card('trips', ('still', 'assets/artstation/trips/07-vlx-maftei-landscapes-07.jpg'), 1.25, [(1.25, 'bw')]),
+    card('trips', ('still', 'assets/artstation/trips/04-vlx-maftei-landscapes-04.jpg'), 3, [(3, 'color')], move='pull'),
+    card('dark-forest', ('clip', INK, 12.0), 1.5, [(1.5, 'color')], move='snap'),
+    card('dark-forest', ('clip', INK, 13.0), 3.5, [(3.5, 'stack3')], stagger=(10, 6),
          split=[('clip', INK, 4.0, {'x': 0.86, 'y': 0.2, 'zoom': 2.0}), ('clip', INK, 13.0, {'x': 0.18, 'y': 0.66, 'zoom': 2.2}),
                 ('clip', INK, 18.0, {'x': 0.74, 'y': 0.72, 'zoom': 1.8})]),  # castle / boy / hollow log
-    card('fugi-visualizer', ('still', f'{FUGI}/f1r-character-glitch.png'), 2, [(2, 'color')]),
-    card('fugi-visualizer', ('still', f'{FUGI}/reference-tongue-in.png'), 2, [(2, 'bw')]),
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 100.0), 2, [(1, 'color'), (1, 'bw')]),
-    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 102.0), 4, [(4, 'grid')],
+    card('fugi-visualizer', ('still', f'{FUGI}/f1r-character-glitch.png'), 1.25, [(1.25, 'color')]),
+    card('fugi-visualizer', ('still', f'{FUGI}/reference-tongue-in.png'), 1.25, [(1.25, 'bw')], move='snap'),
+    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 100.0), 1.5, [(1.5, 'color')], move='push'),
+    card('night-of-the-living-dead-ltx-contest', ('clip', NOTLD, 102.0), 4, [(4, 'grid')], stagger=(9, 5, 11),
          split=[('clip', NOTLD, 102.0), ('clip', NOTLD, 52.0), ('clip', NOTLD, 72.5), ('clip', NOTLD, 78.5)]),
     card('f1r-live-video', ('clip', F1R, 184.0), 2, [(2, 'circle')]),
-    card('dark-forest', ('clip', FOREST, 20.0, FOREST_FOCUS), 2, [(2, 'color')]),
-    card('dark-forest', ('clip', FOREST, 21.0, FOREST_FOCUS), 2.5, [(2.5, 'stack2')],
-         split=[('clip', FOREST, 21.0, FOREST_FOCUS), ('clip', FOREST, 26.0, {'x': 0.31, 'y': 0.25, 'zoom': 2.2})]),  # boy / eyes in the trees
+    card('dark-forest', ('clip', FOREST, 21.0, FOREST_FOCUS), 2.5, [(2.5, 'stack2')], stagger=(8,),
+         split=[('clip', FOREST, 21.0, FOREST_FOCUS), ('clip', FOREST, 26.0, {'x': 0.31, 'y': 0.25, 'zoom': 1.6})]),  # boy / eyes in the trees
 ]
 
 TITLES = {}
@@ -247,20 +252,22 @@ def load_titles():
         TITLES[p['slug']] = (merged['title'], TOOLS.get(p['slug'], merged.get('tools', [])[:2]))
 
 
-def camera_move(img, u, card_index):
-    """One slow move per card: push in or pull out 7% with a gentle pan; direction alternates per card."""
-    e = u * u * (3 - 2 * u)
-    zoom_in = card_index % 2 == 0
-    z = 1.0 + 0.07 * (e if zoom_in else 1 - e)
-    pan = (0.025 if card_index % 3 else -0.025) * (e - 0.5)
+def camera_move(img, u, move):
+    """Zoom-only moves (no pans): slow push, slow pull, or a quicker 'snap' push that settles."""
+    if move == 'static':
+        return img
+    if move == 'snap':
+        e = 1 - (1 - min(u * 2.2, 1.0)) ** 3
+        z = 1.0 + 0.1 * e
+    else:
+        e = u * u * (3 - 2 * u)
+        z = 1.0 + 0.06 * (e if move == 'push' else 1 - e)
     cw, ch = W / z, H / z
-    cx = W / 2 + pan * W
-    left = min(max(cx - cw / 2, 0), W - cw)
-    top = (H - ch) / 2
+    left, top = (W - cw) / 2, (H - ch) / 2
     return np.asarray(Image.fromarray(img).resize((W, H), Image.BICUBIC, box=(left, top, left + cw, top + ch)))
 
 
-def render_card(c, card_index):
+def render_card(c):
     n = round(c['beats'] * BEAT)
     frames = load(c['source'], n)
     # Split treatments (stack/grid) show the card's distinct same-project sources, never copies.
@@ -283,15 +290,15 @@ def render_card(c, card_index):
         elif t == 'duotone':
             img = duotone(f)
         elif t in ('stack2', 'stack3'):
-            img = stack(pieces, i, SPLIT_COUNT[t], local)
+            img = stack(pieces, i, SPLIT_COUNT[t], local, c['stagger'])
         elif t == 'grid':
-            img = grid(pieces, i, local)
+            img = grid(pieces, i, local, c['stagger'])
         elif t == 'circle':
             img = circle(f, i, n)
         else:
             img = f
         if t != 'circle':
-            img = camera_move(img, i / max(1, n - 1), card_index)
+            img = camera_move(img, i / max(1, n - 1), c['move'])
         out.append(np.asarray(img))
     return out
 
@@ -307,8 +314,8 @@ def main():
     shots, t = [], 0.0
     grain = RNG.integers(-4, 5, (4, H, W, 1), dtype=np.int16)
     frame_no = 0
-    for index, c in enumerate(EDIT):
-        frames = render_card(c, index)
+    for c in EDIT:
+        frames = render_card(c)
         for f in frames:
             noisy = np.clip(f.astype(np.int16) + grain[frame_no % 4], 0, 255).astype(np.uint8)
             enc.stdin.write(noisy.tobytes())
