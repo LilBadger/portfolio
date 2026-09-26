@@ -234,6 +234,127 @@
     ]
   },
   {
+    "slug": "f1r-live-video",
+    "title": "F1R - Fugi Live",
+    "year": "2026",
+    "role": "AI MUSIC VIDEO / POINT-CLOUD PERFORMANCE / CUDA PIPELINE",
+    "tools": [
+      "Codex",
+      "ComfyUI",
+      "LTX-2.3",
+      "Pi3X / Vista4D",
+      "SAM3",
+      "RAFT",
+      "MediaPipe",
+      "Demucs",
+      "PyTorch + CUDA"
+    ],
+    "tags": [
+      "Latest",
+      "F1R",
+      "AI Video",
+      "Point Cloud",
+      "Music Video"
+    ],
+    "description": "A full-length music video for F1R's song Fugi: an LTX-2.3 singing performance rebuilt as an audio-reactive 3D point cloud, filmed by a virtual handheld camera that can circle the singer.",
+    "cover": "assets/projects/f1r-live-video/cover.jpg",
+    "gallery": [],
+    "layout": "article",
+    "contents": [
+      {
+        "label": "BRIEF",
+        "target": "the-brief"
+      },
+      {
+        "label": "PERFORMANCE",
+        "target": "singing-performance-with-ltx-2-3"
+      },
+      {
+        "label": "POINTS",
+        "target": "from-video-to-points"
+      },
+      {
+        "label": "CAMERA",
+        "target": "a-camera-that-listens"
+      }
+    ],
+    "videos": [
+      {
+        "title": "F1R - Fugi (live point performance), full music video",
+        "url": "assets/projects/f1r-live-video/f1r-live-final.mp4",
+        "platform": "local",
+        "poster": "assets/projects/f1r-live-video/f1r-live-final.poster.jpg"
+      }
+    ],
+    "body": [
+      "## The Brief",
+      "F1R is my AI music and character project. `Fugi` is one of its songs, the same track behind my [Fugi lyric visualizer](/projects/fugi-visualizer/). For the live version I wanted a full-length music video in which the singer never stops performing, yet the camera is free to leave the flat video frame: drift around her, move behind her, pull back and come in close, all driven by the song.",
+      "",
+      "The starting point was a 10-second live-performance clip of the F1R singer, neon rabbit mask and all, and the 4:37 Romanian master. The final film runs 6,660 frames at 24 fps: a singing performance rebuilt as dense, glowing, ordered points inside a 3D network of hearts and signal pulses.",
+      "",
+      "![Original live-performance source frame](assets/projects/f1r-live-video/source-live-frame.jpg)",
+      "",
+      "## Routes That Failed First",
+      "The approved look came out of a long run of rejected versions, and the rejections shaped it as much as the approvals did. The first layered versions used depth passes and SYSTMS TimeSlice cells to hide the seam of a 237-frame loop; they worked, but they were still a flat video with effects on top. A single-frame RGB-D and Gaussian route looked like cardboard the moment the camera moved. A Vista4D whole-video reconstruction produced real points but only allowed a narrow, cautious orbit.",
+      "",
+      "The version that finally worked, and that I approved as the concept, combined a natively generated singing performance, video-based reconstruction, discrete volumetric points and a handheld camera reacting to the music. From there the full song went through nearly 90 more review versions before the final master.",
+      "",
+      "## Singing Performance With LTX-2.3",
+      "Because the song is 4:37 long, the performance had to be generated, not looped. I separated the vocals with Demucs and used the exact vocal-stem interval for each section to drive LTX-2.3 audio-to-video, so the lips, jaw, breathing and head movement follow the Romanian lyrics.",
+      "",
+      "The song was covered by 28 overlapping tiles of 321 frames each. Every tile advances 10 seconds and keeps 81 frames of shared handle. Adjacent tiles share one boundary keyframe: tile N ends on key N+1 and tile N+1 starts from it. The keys were ImageGen variations of one approved frame, held to under about 3 degrees of head turn so identity, mask, microphone and lighting stayed locked.",
+      "",
+      "![Adjacent boundary keyframes that anchor neighbouring LTX tiles](assets/projects/f1r-live-video/boundary-keys.jpg)",
+      "",
+      "![One LTX-2.3 performance tile, six frames across its 13.4 seconds](assets/projects/f1r-live-video/ltx-tile-contact.jpg)",
+      "",
+      "Each tile ran through a two-stage ComfyUI graph: LTX-2.3 22B at 960x544 with static-camera and dynamic LoRAs, then the LTX spatial upscaler and a detailer LoRA refining to 1920x1088.",
+      "",
+      "## Invisible Joins",
+      "Cross-dissolving the tiles would have ghosted the face at every join. Instead, each of the 27 joins is repaired with full-resolution, bidirectional RAFT-Large optical flow over 36 frames (85% flow warp, 15% dissolve) on CUDA. The result is a single continuous 6,660-frame performance, and that file is the only moving source the 3D stage is allowed to see, so no editorial seam can leak into the geometry.",
+      "",
+      "## From Video To Points",
+      "Pi3X, run through the Vista4D tooling in WSL, estimates per-frame depth and camera motion from the performance, with SAM3 masks isolating the singer. The song was solved as 111 overlapping 81-frame windows, and 27 of them are centred on the LTX joins so that no reconstruction boundary ever lands on an editorial one.",
+      "",
+      "Pi3X gives depth, cameras and masks, not a finished image. Custom PyTorch and CUDA code turns the visible surface into points coloured by the LTX frames, using three persistent, ordered sub-lattices. Points never re-sample randomly from frame to frame, which removed an early shimmer and gave the film its woven, screen-printed texture.",
+      "",
+      "![The same moment as the LTX-2.3 performance (left) and the final point render (right)](assets/projects/f1r-live-video/ltx-vs-points.jpg)",
+      "",
+      "::video[Same ten seconds: LTX-2.3 performance and final point render, with the master audio](assets/projects/f1r-live-video/ltx-vs-points.mp4)",
+      "",
+      "## Face, Hair And Volume",
+      "Monocular depth only knows the side of her that the camera saw. MediaPipe's 478-landmark face track adds real relief to the front of the face, a geometry-bound treatment keeps the pink rabbit mask attached to that surface, and extra layers derived from the silhouette give the body thickness. A separate hair-coloured particle shell carries the silhouette when the camera travels behind her.",
+      "",
+      "![Profile of the reconstructed point volume](assets/projects/f1r-live-video/profile-volume.jpg)",
+      "",
+      "![Rear view: hair-coloured point shell during a turn](assets/projects/f1r-live-video/rear-points.jpg)",
+      "",
+      "This is the honest limit of the method. It is 2.5D reconstruction plus procedural volume, not a full 3D scan of a performer, so the most extreme angles are reserved for fast, energetic moments where the music carries the move.",
+      "",
+      "## A Camera That Listens",
+      "From the master mix I extracted 24 fps control curves: energy, accents, impacts, expansion hits, hair gusts and camera hits, across 345 detected musical events, 138 of them strong. Those curves drive point expansion, hair motion and handheld energy, and they decide when the camera commits: calm front and three-quarter dwells in the soft sections; partial arcs, intimate push-ins and occasional full rotations when the song opens up. Her face stays near frame centre through all of it.",
+      "",
+      "![Side view as the camera arcs around the singer](assets/projects/f1r-live-video/side-hair.jpg)",
+      "",
+      "![Camera behind the singer during a full rotation](assets/projects/f1r-live-video/behind-the-head.jpg)",
+      "",
+      "## The Heart Network",
+      "Behind her, a 3D network grows out of the performance: small hearts, broken hearts, tags, radar echoes and travelling light packets that follow hidden routes through space. The connecting lines stay invisible, so only the signals moving along them read. The film opens with the singer assembling from falling points and ends with the inverse dissolve.",
+      "",
+      "![Matrix-style point construction at the start of the film](assets/projects/f1r-live-video/matrix-build.jpg)",
+      "",
+      "![Wide shot with the heart and radar network behind the performer](assets/projects/f1r-live-video/network-wide.jpg)",
+      "",
+      "## Directing An Agent",
+      "I built this with Codex as the production agent. It wrote and ran the ComfyUI, PyTorch and CUDA tooling and kept a strict ledger of every version, while I made the creative calls: which routes to kill, which look to lock and when a take was good enough. Every approved state was frozen with its manifest and hashes, so a later experiment could never silently overwrite a good version. That discipline is what made 90-odd iterations manageable.",
+      "",
+      "The final 16:9 master is 1920x1080 at 24 fps, composited on CUDA and encoded with NVENC. A native 9:16 version was rendered separately from the same 3D data for social, rather than cropped.",
+      "",
+      "## What I Learned",
+      "Generative video gets far more interesting when it stops being the final image and becomes raw material: a performance you can reconstruct, re-light and re-shoot with a camera that did not exist when the clip was made. The hard part was never one model. It was continuity: tiles, joins, reconstruction windows and camera moves all have to agree for 4 minutes 37 seconds."
+    ]
+  },
+  {
     "slug": "cat-walkman",
     "title": "Cat Walkman",
     "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",

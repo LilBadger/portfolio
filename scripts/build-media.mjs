@@ -24,6 +24,7 @@ const FPS = 30;
 const NOTLD = 'assets/projects/night-of-the-living-dead-ltx-contest/night-of-the-living-dead-final.mp4';
 const XP = 'assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations';
 const FUGI = 'assets/projects/fugi-visualizer';
+const F1R_LIVE = 'assets/projects/f1r-live-video/f1r-live-final.mp4';
 
 function run(cmd, args) {
   const result = spawnSync(cmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
@@ -110,6 +111,7 @@ const gallerySlides = (project, count = 4) => {
 };
 
 const customLoops = {
+  'f1r-live-video': [{ clip: F1R_LIVE, start: 158, duration: 4.5 }],
   'night-of-the-living-dead-ltx-contest': [{ clip: NOTLD, start: 64.2, duration: 4 }],
   'x-particles-challenge-2018': [{ clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 0.2, duration: 4.2 }],
   'fugi-visualizer': [
@@ -124,6 +126,7 @@ const customLoops = {
 
 const coverOf = (slug) => projects.find((project) => project.slug === slug)?.cover;
 const reel = [
+  { clip: F1R_LIVE, start: 149, duration: 1.8 },
   { clip: NOTLD, start: 30.4, duration: 1.8 },
   { clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
   { still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
@@ -131,10 +134,10 @@ const reel = [
   { still: coverOf('daft-punk-cover-art'), duration: 1.3 },
   { clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
   { still: coverOf('philips-sensotouch'), duration: 1.3 },
+  { clip: F1R_LIVE, start: 166, duration: 1.8 },
   { clip: NOTLD, start: 20, duration: 1.6 },
-  { still: coverOf('trips'), duration: 1.3 },
   { still: coverOf('cat-walkman'), duration: 1.3 },
-  { still: coverOf('in-spirit'), duration: 1.3 },
+  { clip: F1R_LIVE, start: 184, duration: 1.6 },
   { clip: NOTLD, start: 100, duration: 2 },
   { still: `${FUGI}/f1r-character-glitch.png`, duration: 1.3 }
 ];

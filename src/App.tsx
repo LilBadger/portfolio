@@ -287,7 +287,7 @@ function HomePage() {
           </h1>
           <p className="hero-summary">
             I make cinematic images with 3D, simulation and generative video, from product CGI and
-            digital humans to pose-guided LTX-2 film sequences.
+            digital humans to LTX-2 film sequences and point-cloud music videos.
           </p>
           <HeroTerminalLine />
           <div className="hero-actions">

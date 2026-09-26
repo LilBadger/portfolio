@@ -15,10 +15,10 @@ test('work section leads with a featured grid, an archive list, and discipline f
   const tiles = page.locator('.work-bento .work-tile');
   const rows = page.locator('.archive__list li');
   await expect(tiles).toHaveCount(7);
-  await expect(rows).toHaveCount(6);
-  await expect(tiles.nth(0).locator('h3')).toHaveText('Night of the Living Dead - LTX-2 Contest');
+  await expect(rows).toHaveCount(7);
+  await expect(tiles.nth(0).locator('h3')).toHaveText('F1R - Fugi Live');
   await expect(tiles.nth(0)).toHaveClass(/work-tile--lead/);
-  await expect(tiles.nth(1).locator('h3')).toHaveText('F1R - Fugi Visualizer');
+  await expect(tiles.nth(1).locator('h3')).toHaveText('Night of the Living Dead - LTX-2 Contest');
 
   await page.getByRole('button', { name: '--product', exact: true }).click();
   await expect(page.getByRole('button', { name: '--product', exact: true })).toHaveAttribute('aria-pressed', 'true');
@@ -27,7 +27,7 @@ test('work section leads with a featured grid, an archive list, and discipline f
 
   await page.getByRole('button', { name: '--all', exact: true }).click();
   await expect(page.locator('.work-tile.is-dimmed')).toHaveCount(0);
-  await expect(page.locator('.archive__list li:not([hidden])')).toHaveCount(6);
+  await expect(page.locator('.archive__list li:not([hidden])')).toHaveCount(7);
 });
 
 test('home navigation marks the section currently crossing the viewport', async ({ page }) => {
@@ -260,7 +260,7 @@ test('featured tiles reveal full colour, copy, and motion on hover', async ({ pa
   await tile.hover();
   await expect(tile.locator('.work-tile__media img')).toHaveCSS('filter', 'none');
   await expect(tile.locator('.work-tile__info p')).toHaveCSS('opacity', '1');
-  await expect(tile.locator('video.work-loop')).toHaveAttribute('src', /\/assets\/generated\/loops\/night-of-the-living-dead-ltx-contest\.mp4$/);
+  await expect(tile.locator('video.work-loop')).toHaveAttribute('src', /\/assets\/generated\/loops\/f1r-live-video\.mp4$/);
 });
 
 test('videos precede gallery images and the text toggle reports its state', async ({ page }) => {
@@ -277,4 +277,17 @@ test('videos precede gallery images and the text toggle reports its state', asyn
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.content-hero__excerpt')).toBeHidden();
+});
+
+test('F1R live video case study leads with the film and documents the pipeline', async ({ page }) => {
+  await page.goto('/projects/f1r-live-video/');
+
+  await expect(page).toHaveTitle('F1R - Fugi Live — Vlad Maftei');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('F1R - Fugi Live');
+  await expect(page.getByRole('button', { name: 'Play F1R - Fugi (live point performance), full music video' })).toBeVisible();
+  for (const heading of ['The Brief', 'Singing Performance With LTX-2.3', 'From Video To Points', 'A Camera That Listens']) {
+    await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+  }
+  await expect(page.locator('.content-video__poster')).toHaveCount(1);
+  await expect(page.locator('.project-exit-nav__previous')).toHaveAttribute('href', '/projects/night-of-the-living-dead-ltx-contest/');
 });

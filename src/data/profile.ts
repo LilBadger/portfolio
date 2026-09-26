@@ -29,6 +29,6 @@ export const profileFacts = [
   },
   {
     label: 'AI / code',
-    items: ['ComfyUI', 'LTX-2', 'SDXL + ControlNet', 'Flux', 'Qwen Image Edit', 'Runway', 'Suno', 'Codex', 'WebGL / Canvas']
+    items: ['ComfyUI', 'LTX-2 / LTX-2.3', 'Pi3X / Vista4D', 'SAM3', 'MediaPipe', 'SDXL + ControlNet', 'Flux', 'Qwen Image Edit', 'Suno', 'Codex', 'PyTorch + CUDA', 'WebGL / Canvas']
   }
 ];
