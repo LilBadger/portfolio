@@ -5,7 +5,8 @@ import { BreakdownSlider } from './components/BreakdownSlider';
 import { ContactBlock } from './components/ContactBlock';
 import { ContentPage } from './components/ContentPage';
 import { GlitchText } from './components/GlitchText';
-import { HeroReel } from './components/HeroReel';
+import { HeroReel, type ReelShot } from './components/HeroReel';
+import { NowPlaying } from './components/NowPlaying';
 import { HeroTerminalLine } from './components/HeroTerminalLine';
 import { NotFoundPage } from './components/NotFoundPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
@@ -269,6 +270,7 @@ function useActiveHomeBunny(): ActiveBunny {
 
 function HomePage() {
   const heroRef = useRef<HTMLElement>(null);
+  const [nowPlaying, setNowPlaying] = useState<ReelShot | null>(null);
   const activeBunny = useActiveHomeBunny();
   const activeSection = useActiveHomeSection();
   const breakdownProject = projects.find((project) => project.breakdown?.length);
@@ -281,10 +283,13 @@ function HomePage() {
       <section className="hero" ref={heroRef} aria-labelledby="hero-title">
         {/* The reel owns the first screen; only faint camera-style readouts sit on it. */}
         <div className="hero-stage">
-          <HeroReel sectionRef={heroRef} />
-          <div className="hero-hud" aria-hidden="true">
-            <HeroTerminalLine />
-            <div className="hero-hud__meta">
+          <HeroReel sectionRef={heroRef} onShotChange={setNowPlaying} />
+          <div className="hero-hud">
+            <div className="hero-hud__lines">
+              <NowPlaying shot={nowPlaying} />
+              <HeroTerminalLine />
+            </div>
+            <div className="hero-hud__meta" aria-hidden="true">
               <span>REEL / 2016—2026</span>
             </div>
           </div>

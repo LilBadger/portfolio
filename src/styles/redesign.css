@@ -123,8 +123,7 @@
   z-index: 0;
 }
 
-.hero-reel__video,
-.hero-reel__canvas {
+.hero-reel__video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -134,20 +133,6 @@
 
 .hero-reel__video {
   filter: saturate(0.9) contrast(1.05);
-}
-
-.hero-reel__canvas {
-  opacity: 0;
-  transition: opacity 600ms steps(6);
-}
-
-.hero-reel--shader .hero-reel__canvas {
-  opacity: 1;
-}
-
-/* Keep decoding frames for the shader, but don't show the raw video behind it. */
-.hero-reel--shader .hero-reel__video {
-  opacity: 0;
 }
 
 /* Only a soft fade into the caption bar and under the nav, no darkening of the footage. */
@@ -189,9 +174,45 @@
   letter-spacing: 0.1em;
 }
 
+.hero-hud__lines {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: 60%;
+}
+
+/* Live caption for the reel: which project is on screen, links to it. */
+.now-playing {
+  display: block;
+  max-width: 100%;
+  pointer-events: auto;
+  justify-self: start;
+  overflow: hidden;
+  color: rgba(231, 231, 223, 0.55);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 140ms steps(2);
+}
+
+.now-playing__title {
+  color: #eef0ea;
+}
+
+.now-playing i {
+  color: var(--signal);
+  font-style: normal;
+}
+
+.now-playing:hover .now-playing__title,
+.now-playing:focus-visible .now-playing__title {
+  color: var(--signal);
+}
+
 .hero .hero-hud .hero-terminal-line {
   width: auto;
-  max-width: 60%;
+  max-width: 100%;
   margin: 0;
   min-height: 0;
   color: rgba(159, 184, 195, 0.6);
@@ -1253,8 +1274,13 @@
     min-height: 12.5rem;
   }
 
-  .hero-hud .hero-terminal-line {
+  .hero-hud .hero-terminal-line,
+  .hero-hud__meta {
     display: none;
+  }
+
+  .hero-hud__lines {
+    max-width: 100%;
   }
 
   .hero-identity {

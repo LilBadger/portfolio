@@ -136,23 +136,51 @@ const customLoops = {
 /* ---------- hero reel ---------- */
 
 const coverOf = (slug) => projects.find((project) => project.slug === slug)?.cover;
+// `slug` ties each shot to its project so the site can caption what's on screen (reel.json).
 const reel = [
-  { clip: F1R_LIVE, start: 149, duration: 1.8 },
-  { clip: NOTLD, start: 30.4, duration: 1.8 },
-  { clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
-  { still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
-  { clip: NOTLD, start: 66, duration: 1.8 },
+  { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 149, duration: 1.8 },
+  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 30.4, duration: 1.8 },
+  { slug: 'x-particles-challenge-2018', clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
+  { slug: 'cc-digital-human-contest-2020-gellert-grindelwald', still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
+  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 66, duration: 1.8 },
   // Reframed so the boy and his lantern sit in the middle of the hero's open area, clear of the title.
-  { clip: DARK_FOREST, start: 10, duration: 1.8, focus: { x: 0.35, y: 0.6, zoom: 1.65, at: 0.58, atSmall: 0.5 } },
-  { clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
-  { clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
-  { clip: F1R_LIVE, start: 166, duration: 1.8 },
-  { clip: NOTLD, start: 20, duration: 1.6 },
-  { still: coverOf('cat-walkman'), duration: 1.3 },
-  { clip: F1R_LIVE, start: 184, duration: 1.6 },
-  { clip: NOTLD, start: 100, duration: 2 },
-  { still: `${FUGI}/f1r-character-glitch.png`, duration: 1.3 }
+  { slug: 'dark-forest', tools: ['Hunyuan3D', 'Kimodo', 'Blender'], clip: DARK_FOREST, start: 10, duration: 1.8, focus: { x: 0.35, y: 0.6, zoom: 1.65, at: 0.58, atSmall: 0.5 } },
+  { slug: 'x-particles-challenge-2018', clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
+  { slug: 'dark-forest', tools: ['MiniMax H3', 'DepthCrafter'], clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
+  { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 166, duration: 1.8 },
+  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 20, duration: 1.6 },
+  { slug: 'cat-walkman', still: coverOf('cat-walkman'), duration: 1.3 },
+  { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 184, duration: 1.6 },
+  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 100, duration: 2 },
+  { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/f1r-character-glitch.png`, duration: 1.3 }
 ];
+
+function probeDuration(file) {
+  const result = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]);
+  return Number.parseFloat(result.stdout.toString()) || 0;
+}
+
+// Shot timings + captions for the hero's decrypt band, measured from the rendered segments
+// so frame rounding can't make the captions drift.
+function writeReelManifest(segmentFiles) {
+  const target = path.join(outDir, 'reel', 'reel.json');
+  let time = 0;
+  const shots = reel.map((segment, index) => {
+    const duration = probeDuration(segmentFiles[index]);
+    const project = { ...projects.find((item) => item.slug === segment.slug), ...(overrides[segment.slug] ?? {}) };
+    const shot = {
+      start: +time.toFixed(3),
+      end: +(time + duration).toFixed(3),
+      slug: segment.slug,
+      title: project.title,
+      tools: segment.tools ?? (project.tools ?? []).slice(0, 2)
+    };
+    time += duration;
+    return shot;
+  });
+  ensureDir(target);
+  fs.writeFileSync(target, `${JSON.stringify({ duration: +time.toFixed(3), shots }, null, 2)}\n`);
+}
 
 /* ---------- run ---------- */
 
@@ -181,7 +209,9 @@ try {
   for (const [width, height, crf] of [[1280, 720, 30], [854, 480, 31]]) {
     const target = path.join(outDir, 'reel', `reel-${height}.mp4`);
     if (!needs(target)) continue;
-    concatEncode(renderSegments(reel, width, height, 'reel'), target, crf);
+    const segmentFiles = renderSegments(reel, width, height, 'reel');
+    if (height === 720) writeReelManifest(segmentFiles);
+    concatEncode(segmentFiles, target, crf);
     console.log('reel', path.relative(root, target), `${Math.round(fs.statSync(target).size / 1024)} KB`);
     if (height === 720) poster(target, path.join(outDir, 'reel', 'reel-poster.jpg'));
   }

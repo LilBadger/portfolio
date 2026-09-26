@@ -91,6 +91,12 @@ test('hero shows the reel with a primary call to action', async ({ page }) => {
   await expect(cta).toHaveAttribute('href', '/#work');
   await expect(cta).toHaveCSS('background-color', 'rgb(166, 255, 0)');
 
+  // The reel HUD names the project on screen and links to it.
+  const nowPlaying = page.locator('.now-playing');
+  await expect(nowPlaying).toHaveAttribute('href', /^\/projects\/[a-z0-9-]+\/$/);
+  await expect(nowPlaying).toContainText('now_playing:');
+  await expect(page.locator('.decrypt')).toHaveCount(0);
+
   const socials = page.locator('.hero-social a');
   await expect(socials).toHaveCount(4);
   for (const name of ['ArtStation', 'LinkedIn', 'Instagram', 'X']) {
