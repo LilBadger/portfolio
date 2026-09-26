@@ -652,11 +652,11 @@ EDIT = [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
         Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
-         grade=[(0.5, 0.9, 'bw')]),
+         grade=[]),
     shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 2.5, 'zoom', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([(246, 236, 214), PINK], seed=24, size=78, mode='staff', opacity=0.9)),
     shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 0.75, 'drop', ACID, [
         Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
-         grade=[(0.35, 0.6, 'duotone')]),
+         grade=[(0, 1, 'duotone')]),
     shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 3.0, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([(255, 150, 210)], ['rabbit'], 25, count=16, size=66, opacity=0.8), grade=[(1.25, 1.75, 'bw')]),
     shot('dark-forest', clip('forest_boy_b', 0.3), 1.75, 'cut', ACID, [
         Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
