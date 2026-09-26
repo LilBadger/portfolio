@@ -31,6 +31,7 @@ RED = (255, 52, 60)
 ART = 'assets/artstation'
 FUGI = 'assets/projects/fugi-visualizer'
 RNG = np.random.default_rng(11)
+FG_SCALE = 0.6  # foreground doodles: accents, not stickers
 
 
 def _collage():
@@ -209,11 +210,12 @@ def back_out(t, overshoot=2.2):
 
 
 class Doodle:
-    def __init__(self, kind, u, v, size, colour, appear=0, anchor='bbox', rot=0.0, spin=0.0, drift=(0.0, 0.0), width=1.0):
+    def __init__(self, kind, u, v, size, colour, appear=0, anchor='bbox', rot=0.0, spin=0.0, drift=(0.0, 0.0), width=1.0, scale=FG_SCALE):
         self.kind, self.u, self.v, self.size, self.colour = kind, u, v, size, colour
         self.appear, self.anchor, self.rot, self.spin, self.drift, self.width = appear, anchor, rot, spin, np.array(drift), width
         self.parts = [(resample(np.asarray(p, float), c), c, f) for p, c, f in shape(kind)]
         self.seed = int(RNG.integers(1 << 30))
+        self.scale_mult = scale
 
     def draw(self, draw, i, box):
         age = i - self.appear
@@ -227,12 +229,13 @@ class Doodle:
             scale = self.size * (H if self.anchor == 'follow' else (y1 - y0))
         else:
             cx, cy, scale = self.u * W, self.v * H, self.size * H
+        scale *= self.scale_mult
         cx, cy = cx + self.drift[0] * age, cy + self.drift[1] * age
         boil = age // 2  # redrawn on twos, like hand animation
         wiggle = 4 * math.sin(boil * 1.7 + self.seed % 7)
         a = math.radians(self.rot + self.spin * age + wiggle)
         rot = np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
-        line = max(2.0, scale * 0.07) * self.width * SS
+        line = max(1.6, scale * 0.06) * self.width * SS
         for k, (pts, closed, filled) in enumerate(self.parts):
             p = wobble(pts, self.seed + boil * 101 + k, 0.018) @ rot.T * scale * pop
             p = [(float((cx + x) * SS), float((cy + y) * SS)) for x, y in p]
@@ -248,7 +251,7 @@ class Doodle:
                 draw.ellipse((x - r, y - r, x + r, y + r), fill=self.colour + (255,))
 
 
-def outline(matte, i, colour, width=5):
+def outline(matte, i, colour, width=3):
     """Boiling hand-drawn outline hugging the subject: a ring around the matte, displaced by noise on twos."""
     small = Image.fromarray(matte).resize((W // 2, H // 2), Image.BILINEAR).point(lambda v: 255 if v > 110 else 0)
     outer = small.filter(ImageFilter.MaxFilter(2 * width + 3))
@@ -266,6 +269,28 @@ def outline(matte, i, colour, width=5):
     layer = Image.new('RGBA', (W, H), colour + (0,))
     layer.putalpha(alpha)
     return layer
+
+
+def wallpaper(colours, kinds, seed, density=(8, 4)):
+    """A scattered hand-drawn pattern covering the frame (drawn behind the subject), popping in fast."""
+    rng = np.random.default_rng(seed)
+    cols, rows = density
+    out = []
+    for r in range(rows):
+        for c in range(cols):
+            u = (c + 0.5 + rng.uniform(-0.3, 0.3)) / cols
+            v = (r + 0.5 + rng.uniform(-0.3, 0.3)) / rows
+            appear = int(rng.integers(0, 8))
+            out.append(Doodle(kinds[int(rng.integers(len(kinds)))], u, v, float(rng.uniform(0.045, 0.07)),
+                              colours[int(rng.integers(len(colours)))], appear, anchor='frame', rot=float(rng.uniform(-30, 30)),
+                              spin=float(rng.choice([0, 0, 2, -2])), width=0.8, scale=1.0))
+    return out
+
+
+def subject_hole(matte):
+    """Alpha that is 0 over the subject (slightly grown) and 1 elsewhere, for background-only doodles."""
+    grown = Image.fromarray(matte).resize((W // 2, H // 2)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(2))
+    return 1 - np.asarray(grown.resize((W, H), Image.BILINEAR), np.float32) / 255
 
 
 # ---------------------------------------------------------------- psychedelic burst
@@ -324,12 +349,13 @@ def clip(name, start=0.0, zoom=1.0):
     return ('clip', name, start, zoom)
 
 
-def shot(slug, source, seconds, enter, outline_colour, doodles, grade=(), split=None):
+def shot(slug, source, seconds, enter, outline_colour, doodles, grade=(), split=None, background=None):
     """enter: 'burst' (kaleidoscope) or a collage transition ('cut', 'whip', 'zoom', 'spin', 'slam', 'drop').
     grade: [(from_s, to_s, 'bw'|'duotone')] quick treatment flips; the doodles stay in colour on top.
-    split: optional (layout, [cached clip names of the same project], arrivals) for a split screen."""
+    split: optional (layout, [cached clip names of the same project], arrivals) for a split screen.
+    background: optional wallpaper doodles drawn behind the subject (alternates with foreground doodles)."""
     return dict(slug=slug, source=source, seconds=seconds, enter=enter, outline=outline_colour, doodles=doodles,
-                grade=list(grade), split=split)
+                grade=list(grade), split=split, background=background or [])
 
 
 NOTLD = 'night-of-the-living-dead-ltx-contest'
@@ -338,38 +364,27 @@ EDIT = [
         Doodle('notes', 0.95, 0.12, 0.2, WHITE, 3, rot=12), Doodle('heart', 0.08, 0.2, 0.13, PINK, 8, rot=-15),
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
         Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
-    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [
-        Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5), Doodle('eyes', 0.26, 0.1, 0.05, WHITE, 8, anchor='frame'),
-        Doodle('eyes', 0.63, 0.14, 0.045, WHITE, 14, anchor='frame'), Doodle('sparkle', 0.5, -0.4, 0.09, ACID, 20, anchor='follow'),
-        Doodle('bang', 1.9, 0.0, 0.1, PINK, 26, anchor='follow'), Doodle('eyes', 0.82, 0.08, 0.05, WHITE, 34, anchor='frame')]),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=wallpaper([ACID, WHITE], ['sparkle', 'eyes', 'star', 'squiggle'], 21)),
     shot(NOTLD, clip('notld_carry', 0.3), 1.5, 'whip', ACID, [
         Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
         Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
-    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [
-        Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10), Doodle('spiral', 0.32, 0.28, 0.1, ACID, 7, spin=-6),
-        Doodle('crown', 0.25, -0.02, 0.1, ACID, 12, rot=-8), Doodle('drops', 0.05, 0.55, 0.1, RED, 18)], grade=[(1.0, 1.5, 'duotone')]),
+    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=wallpaper([RED, WHITE], ['skull', 'drops', 'bolt', 'spiral'], 22), grade=[(1.0, 1.5, 'duotone')]),
     # Split: four NOTLD shots slam in one by one, doodles on top.
     shot(NOTLD, clip('notld_tv', 0.2), 2.0, 'slam', None, [
         Doodle('bolt', 0.47, 0.42, 0.12, ACID, 6, anchor='frame', rot=-12), Doodle('skull', 0.92, 0.12, 0.1, WHITE, 12, anchor='frame', rot=10),
         Doodle('sparkle', 0.08, 0.9, 0.09, PINK, 16, anchor='frame')],
          split=('grid', ['notld_tv', 'notld_presenter', 'notld_carry', 'notld_armchair'], (0, 4, 9, 13))),
-    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [
-        Doodle('halo', 0.5, -0.06, 0.12, ACID, 3), Doodle('bolt', 0.1, 0.25, 0.14, PINK, 8, rot=-20),
-        Doodle('skull', 0.95, 0.2, 0.14, WHITE, 14, rot=12), Doodle('fire', 0.08, 0.8, 0.14, RED, 20)], grade=[(0.75, 1.25, 'bw')]),
+    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=wallpaper([PINK], ['bolt', 'sparkle', 'skull', 'squiggle'], 23), grade=[(0.75, 1.25, 'bw')]),
     shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.5, 'zoom', None, [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
         Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
          grade=[(1.5, 2.0, 'bw')]),
-    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [
-        Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8), Doodle('notes', 0.66, 0.35, 0.09, WHITE, 7, anchor='frame', rot=-8),
-        Doodle('note', 0.8, 0.2, 0.07, ACID, 12, anchor='frame', rot=10), Doodle('heart', 1.15, 0.85, 0.16, PINK, 16)]),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=wallpaper([PINK, WHITE], ['heart', 'note', 'notes', 'sparkle'], 24)),
     shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 1.75, 'drop', ACID, [
         Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
          grade=[(0.9, 1.4, 'duotone')]),
-    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [
-        Doodle('crown', 0.5, -0.02, 0.14, ACID, 2), Doodle('heart', 0.08, 0.35, 0.1, PINK, 7, rot=-12), Doodle('heart', 0.93, 0.3, 0.12, PINK, 11, rot=14),
-        Doodle('sparkle', 0.12, 0.7, 0.1, WHITE, 16), Doodle('smiley', 0.92, 0.75, 0.13, ACID, 22, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
+    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=wallpaper([PINK, ACID], ['heart', 'star', 'sparkle', 'smiley'], 25), grade=[(1.25, 1.75, 'bw')]),
     shot('dark-forest', clip('forest_boy_b', 0.3), 2.75, 'whip', ACID, [
         Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
         Doodle('eyes', 0.73, 0.18, 0.045, WHITE, 14, anchor='frame'), Doodle('heart', -1.2, -0.1, 0.09, PINK, 20, anchor='follow'),
@@ -393,6 +408,14 @@ def render_shot(s, frames_n):
             if start * FPS <= i < end * FPS:
                 f = COLLAGE.bw(f) if kind == 'bw' else COLLAGE.duotone(f)
         base = Image.fromarray(np.ascontiguousarray(f)).convert('RGBA')
+        if s['background']:
+            back = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))
+            back_draw = ImageDraw.Draw(back)
+            for d in s['background']:
+                d.draw(back_draw, i, boxes[i])
+            back = np.asarray(back.resize((W, H), Image.LANCZOS)).copy()
+            back[..., 3] = (back[..., 3] * subject_hole(mattes[i]) * 0.72).astype(np.uint8)
+            base.alpha_composite(Image.fromarray(back, 'RGBA'))
         if s['outline'] is not None and i >= 1:
             base.alpha_composite(outline(mattes[i], i, s['outline']))
         layer = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))
