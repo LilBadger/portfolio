@@ -297,20 +297,17 @@ function HomePage() {
               <GlitchText text="MAFTEI" as="span" className="hero-name-line" />
             </h1>
             <p className="eyebrow">3D generalist / VFX / AI video — Bucharest</p>
+            <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
           </div>
           <p className="hero-summary">
             I make cinematic images with 3D, simulation and generative video, from product CGI and
             digital humans to LTX-2 film sequences and point-cloud music videos.
           </p>
+          {/* Buttons and social icons share one row so they always line up. */}
           <div className="hero-identity__actions">
-            <div className="hero-actions">
-              <a className="button button--signal" href={homeSectionHref('work')}>&gt; View work_</a>
-              <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
-            </div>
-            <div className="hero-identity__meta">
-              <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
-              <SocialIcons className="hero-social" />
-            </div>
+            <a className="button button--signal" href={homeSectionHref('work')}>&gt; View work_</a>
+            <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
+            <SocialIcons className="hero-social" />
           </div>
         </div>
       </section>
