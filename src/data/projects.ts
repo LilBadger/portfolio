@@ -29,10 +29,10 @@ export type PortfolioProject = {
   featured?: boolean;
   /** Filter categories shown as `--ai`, `--3d`, ... flags on the work section. */
   kind?: ProjectKind[];
-  /** Position in the featured grid (1 = lead). Projects without it go to the archive list. */
+  /** Set to put the project in the featured grid; projects without it go to the archive list. */
   feature?: number;
-  /** Tile shape in the featured grid. */
-  tile?: 'lead' | 'tall' | 'wide';
+  /** Release date (YYYY-MM-DD) used to sort work newest first. */
+  date?: string;
   /** Same-shot pass pairs for the drag-to-wipe breakdown slider. */
   breakdown?: BreakdownPair[];
   /** Width / height of the breakdown frames (defaults to the 1432x1080 NOTLD passes). */
@@ -147,12 +147,10 @@ export function getProject(slug: string): PortfolioProject | undefined {
   return projects.find((project) => (project.slug ?? slugify(project.title)) === slug || project.aliases?.includes(slug));
 }
 
-export const featuredProjects = projects
-  .filter((project) => project.feature !== undefined)
-  .sort((first, second) => (first.feature ?? 0) - (second.feature ?? 0));
+// Newest first: exact date when known, else the year, undated work last.
+const sortKey = (project: PortfolioProject) => project.date ?? (project.year ? `${project.year}-00-00` : '0000');
+const byDateDesc = (first: PortfolioProject, second: PortfolioProject) => sortKey(second).localeCompare(sortKey(first));
 
-const yearValue = (project: PortfolioProject) => Number.parseInt(project.year ?? '', 10) || 0;
+export const featuredProjects = projects.filter((project) => project.feature !== undefined).sort(byDateDesc);
 
-export const archiveProjects = projects
-  .filter((project) => project.feature === undefined)
-  .sort((first, second) => yearValue(second) - yearValue(first));
+export const archiveProjects = projects.filter((project) => project.feature === undefined).sort(byDateDesc);

@@ -14,6 +14,10 @@ const filters: Array<{ kind: ProjectKind | 'all'; label: string }> = [
 ];
 
 const slugOf = (project: PortfolioProject) => project.slug ?? '';
+
+// Tile shapes follow position (not project) so the grid stays balanced whatever the order.
+const tilePattern = ['lead', 'tall', 'std', 'std', 'wide', 'std', 'std'] as const;
+const tileAt = (index: number) => tilePattern[index % tilePattern.length];
 const matches = (project: PortfolioProject, filter: ProjectKind | 'all') => filter === 'all' || Boolean(project.kind?.includes(filter));
 const kindLabel = (project: PortfolioProject) => (project.kind ?? []).filter((kind) => kind !== 'code').join(' / ').toUpperCase();
 
@@ -67,11 +71,12 @@ function HoverLoop({ slug, active }: { slug: string; active: boolean }) {
 function WorkTile({ project, index, dimmed }: { project: PortfolioProject; index: number; dimmed: boolean }) {
   const [active, setActive] = useState(false);
   const slug = slugOf(project);
-  const lead = project.tile === 'lead';
+  const tile = tileAt(index);
+  const lead = tile === 'lead';
 
   return (
     <article
-      className={`work-tile work-tile--${project.tile ?? 'std'}${dimmed ? ' is-dimmed' : ''}`}
+      className={`work-tile work-tile--${tile}${dimmed ? ' is-dimmed' : ''}`}
       data-reveal
       onPointerEnter={() => setActive(true)}
       onPointerLeave={() => setActive(false)}

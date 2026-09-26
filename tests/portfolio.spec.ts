@@ -16,10 +16,17 @@ test('work section leads with a featured grid, an archive list, and discipline f
   const rows = page.locator('.archive__list li');
   await expect(tiles).toHaveCount(7);
   await expect(rows).toHaveCount(8);
-  await expect(tiles.nth(0).locator('h3')).toHaveText('F1R - Fugi Live');
+  // Newest first, and the lead shape always goes to the first tile.
+  await expect(tiles.locator('h3')).toHaveText([
+    'Dark Forest',
+    'F1R - Fugi Live',
+    'Night of the Living Dead - LTX-2 Contest',
+    'F1R - Fugi Visualizer',
+    'Daft Punk cover art',
+    'Grindelwald Digital Human',
+    'X-Particles Challenge 2018'
+  ]);
   await expect(tiles.nth(0)).toHaveClass(/work-tile--lead/);
-  await expect(tiles.nth(1).locator('h3')).toHaveText('Dark Forest');
-  await expect(tiles.nth(2).locator('h3')).toHaveText('Night of the Living Dead - LTX-2 Contest');
 
   await page.getByRole('button', { name: '--product', exact: true }).click();
   await expect(page.getByRole('button', { name: '--product', exact: true })).toHaveAttribute('aria-pressed', 'true');
@@ -273,7 +280,7 @@ test('featured tiles reveal full colour, copy, and motion on hover', async ({ pa
   await tile.hover();
   await expect(tile.locator('.work-tile__media img')).toHaveCSS('filter', 'none');
   await expect(tile.locator('.work-tile__info p')).toHaveCSS('opacity', '1');
-  await expect(tile.locator('video.work-loop')).toHaveAttribute('src', /\/assets\/generated\/loops\/f1r-live-video\.mp4$/);
+  await expect(tile.locator('video.work-loop')).toHaveAttribute('src', /\/assets\/generated\/loops\/dark-forest\.mp4$/);
 });
 
 test('videos precede gallery images and the text toggle reports its state', async ({ page }) => {
@@ -345,4 +352,10 @@ test('Dark Forest page has draggable turntables and an inline pass breakdown', a
   const breakdown = page.locator('.content-renderer .breakdown');
   await expect(breakdown).toHaveCount(1);
   await expect(breakdown.locator('.breakdown__stages button')).toHaveCount(5);
+});
+
+test('the hero reel only features 2025-2026 work', async ({ request }) => {
+  const manifest = await (await request.get('/assets/generated/reel/reel.json')).json();
+  const recent = ['f1r-live-video', 'dark-forest', 'night-of-the-living-dead-ltx-contest', 'fugi-visualizer', 'cat-walkman', 'daft-punk-cover-art'];
+  for (const shot of manifest.shots) expect(recent, shot.slug).toContain(shot.slug);
 });

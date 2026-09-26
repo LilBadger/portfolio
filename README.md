@@ -37,8 +37,8 @@ Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/asset
 
 Set these per project in `content/project-overrides.json`:
 
-- `feature` (1 = lead) puts a project in the featured grid; everything else goes to the archive list, newest first.
-- `tile`: `lead`, `tall` or `wide` shape in the featured grid.
+- `feature` puts a project in the featured grid; everything else goes to the archive list.
+- `date` (YYYY-MM-DD) sorts both the grid and the archive newest first; tile shapes follow position (first tile is the large lead).
 - `kind`: filter flags (`ai`, `3d`, `vfx`, `product`, `realtime`, `code`).
 - `year`: shown in the grid and archive.
 - `breakdown`: same-shot `before`/`after` pass pairs for the drag-to-wipe slider (homepage Process section and the project page).

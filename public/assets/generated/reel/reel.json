@@ -1,5 +1,5 @@
 {
-  "duration": 23.033,
+  "duration": 21.533,
   "shots": [
     {
       "start": 0,
@@ -23,37 +23,7 @@
     },
     {
       "start": 3.667,
-      "end": 5.267,
-      "slug": "x-particles-challenge-2018",
-      "title": "X-Particles Challenge 2018",
-      "tools": [
-        "Cinema 4D",
-        "X-Particles"
-      ]
-    },
-    {
-      "start": 5.267,
-      "end": 6.667,
-      "slug": "cc-digital-human-contest-2020-gellert-grindelwald",
-      "title": "Grindelwald Digital Human",
-      "tools": [
-        "Character Creator",
-        "iClone"
-      ]
-    },
-    {
-      "start": 6.667,
-      "end": 8.5,
-      "slug": "night-of-the-living-dead-ltx-contest",
-      "title": "Night of the Living Dead - LTX-2 Contest",
-      "tools": [
-        "ComfyUI",
-        "LTX-2"
-      ]
-    },
-    {
-      "start": 8.5,
-      "end": 10.333,
+      "end": 5.5,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
@@ -63,18 +33,38 @@
       ]
     },
     {
-      "start": 10.333,
-      "end": 11.833,
-      "slug": "x-particles-challenge-2018",
-      "title": "X-Particles Challenge 2018",
+      "start": 5.5,
+      "end": 6.9,
+      "slug": "daft-punk-cover-art",
+      "title": "Daft Punk cover art",
       "tools": [
-        "Cinema 4D",
-        "X-Particles"
+        "ComfyUI",
+        "SDXL"
       ]
     },
     {
-      "start": 11.833,
-      "end": 13.333,
+      "start": 6.9,
+      "end": 8.733,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 8.733,
+      "end": 10.567,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 10.567,
+      "end": 12.067,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
@@ -83,28 +73,8 @@
       ]
     },
     {
-      "start": 13.333,
-      "end": 15.167,
-      "slug": "f1r-live-video",
-      "title": "F1R - Fugi Live",
-      "tools": [
-        "LTX-2.3",
-        "Pi3X point cloud"
-      ]
-    },
-    {
-      "start": 15.167,
-      "end": 16.8,
-      "slug": "night-of-the-living-dead-ltx-contest",
-      "title": "Night of the Living Dead - LTX-2 Contest",
-      "tools": [
-        "ComfyUI",
-        "LTX-2"
-      ]
-    },
-    {
-      "start": 16.8,
-      "end": 18.1,
+      "start": 12.067,
+      "end": 13.467,
       "slug": "cat-walkman",
       "title": "Cat Walkman",
       "tools": [
@@ -113,18 +83,8 @@
       ]
     },
     {
-      "start": 18.1,
-      "end": 19.733,
-      "slug": "f1r-live-video",
-      "title": "F1R - Fugi Live",
-      "tools": [
-        "LTX-2.3",
-        "Pi3X point cloud"
-      ]
-    },
-    {
-      "start": 19.733,
-      "end": 21.733,
+      "start": 13.467,
+      "end": 15.1,
       "slug": "night-of-the-living-dead-ltx-contest",
       "title": "Night of the Living Dead - LTX-2 Contest",
       "tools": [
@@ -133,8 +93,38 @@
       ]
     },
     {
-      "start": 21.733,
-      "end": 23.033,
+      "start": 15.1,
+      "end": 16.5,
+      "slug": "fugi-visualizer",
+      "title": "F1R - Fugi Visualizer",
+      "tools": [
+        "Codex",
+        "WebGL"
+      ]
+    },
+    {
+      "start": 16.5,
+      "end": 18.133,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 18.133,
+      "end": 20.133,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 20.133,
+      "end": 21.533,
       "slug": "fugi-visualizer",
       "title": "F1R - Fugi Visualizer",
       "tools": [

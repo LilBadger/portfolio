@@ -6,7 +6,7 @@
       "3d"
     ],
     "feature": 1,
-    "tile": "lead"
+    "date": "2026-08-02"
   },
   "dark-forest": {
     "kind": [
@@ -14,7 +14,6 @@
       "ai"
     ],
     "feature": 2,
-    "tile": "tall",
     "coverFocus": "28% 50%",
     "breakdownRatio": 1.7778,
     "breakdown": [
@@ -117,14 +116,16 @@
         "frames": 36,
         "note": "A forest spirit: procedural Blender geometry with animated eyes and head"
       }
-    ]
+    ],
+    "date": "2026-09-23"
   },
   "fugi-visualizer": {
     "kind": [
       "ai",
       "code"
     ],
-    "feature": 4
+    "feature": 4,
+    "date": "2026-07-04"
   },
   "night-of-the-living-dead-ltx-contest": {
     "kind": [
@@ -166,7 +167,8 @@
           "src": "assets/projects/night-of-the-living-dead-ltx-contest/qwen-composite.preview.webp"
         }
       }
-    ]
+    ],
+    "date": "2026-07-10"
   },
   "cat-walkman": {
     "year": "2025",
@@ -181,7 +183,8 @@
       "Illustration",
       "Music"
     ],
-    "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno."
+    "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno.",
+    "date": "2025-01-07"
   },
   "daft-punk-cover-art": {
     "year": "2025",
@@ -196,7 +199,8 @@
       "Cover Art",
       "Characters"
     ],
-    "description": "AI-driven cover-art workflow using ComfyUI, SDXL, posing tools, and Photoshop cleanup for multi-character direction."
+    "description": "AI-driven cover-art workflow using ComfyUI, SDXL, posing tools, and Photoshop cleanup for multi-character direction.",
+    "date": "2025-01-06"
   },
   "trips": {
     "title": "Trips",
@@ -204,7 +208,8 @@
     "kind": [
       "ai",
       "3d"
-    ]
+    ],
+    "date": "2024-08-13"
   },
   "x-particles-challenge-2018": {
     "year": "2018",
@@ -213,7 +218,7 @@
       "vfx"
     ],
     "feature": 5,
-    "tile": "wide"
+    "date": "2018-12-20"
   },
   "philips-sensotouch": {
     "kind": [
@@ -243,20 +248,23 @@
       "3d",
       "vfx"
     ],
-    "feature": 6
+    "feature": 6,
+    "date": "2020-11-18"
   },
   "breakdance": {
     "year": "2016",
     "kind": [
       "3d"
-    ]
+    ],
+    "date": "2016-08-30"
   },
   "restart": {
     "year": "2019",
     "kind": [
       "3d",
       "vfx"
-    ]
+    ],
+    "date": "2019-01-23"
   },
   "in-spirit": {
     "kind": [
@@ -268,6 +276,7 @@
     "kind": [
       "realtime",
       "3d"
-    ]
+    ],
+    "date": "2018-06-03"
   }
 }

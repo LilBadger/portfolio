@@ -138,21 +138,21 @@ const customLoops = {
 const coverOf = (slug) => projects.find((project) => project.slug === slug)?.cover;
 // `slug` ties each shot to its project so the site can caption what's on screen (reel.json).
 const reel = [
+  // Only 2025-2026 work.
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 149, duration: 1.8 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 30.4, duration: 1.8 },
-  { slug: 'x-particles-challenge-2018', clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
-  { slug: 'cc-digital-human-contest-2020-gellert-grindelwald', still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
-  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 66, duration: 1.8 },
   // Reframed so the boy and his lantern sit in the middle of the hero's open area, clear of the title.
   { slug: 'dark-forest', tools: ['Hunyuan3D', 'Kimodo', 'Blender'], clip: DARK_FOREST, start: 10, duration: 1.8, focus: { x: 0.35, y: 0.6, zoom: 1.65, at: 0.58, atSmall: 0.5 } },
-  { slug: 'x-particles-challenge-2018', clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
-  { slug: 'dark-forest', tools: ['MiniMax H3', 'DepthCrafter'], clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
+  { slug: 'daft-punk-cover-art', still: coverOf('daft-punk-cover-art'), duration: 1.4 },
+  { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 66, duration: 1.8 },
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 166, duration: 1.8 },
+  { slug: 'dark-forest', tools: ['MiniMax H3', 'DepthCrafter'], clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
+  { slug: 'cat-walkman', still: coverOf('cat-walkman'), duration: 1.4 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 20, duration: 1.6 },
-  { slug: 'cat-walkman', still: coverOf('cat-walkman'), duration: 1.3 },
+  { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/f1r-character-glitch.png`, duration: 1.4 },
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 184, duration: 1.6 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 100, duration: 2 },
-  { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/f1r-character-glitch.png`, duration: 1.3 }
+  { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/reference-tongue-in.png`, duration: 1.4 }
 ];
 
 function probeDuration(file) {
