@@ -1,9 +1,9 @@
 {
-  "duration": 23.5,
+  "duration": 26.625,
   "shots": [
     {
       "start": 0.0,
-      "end": 2.25,
+      "end": 3.0,
       "slug": "f1r-live-video",
       "title": "F1R - Fugi Live",
       "tools": [
@@ -12,8 +12,8 @@
       ]
     },
     {
-      "start": 2.25,
-      "end": 4.75,
+      "start": 3.0,
+      "end": 3.5,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
@@ -23,8 +23,8 @@
       ]
     },
     {
-      "start": 4.75,
-      "end": 12.5,
+      "start": 3.5,
+      "end": 4.0,
       "slug": "night-of-the-living-dead-ltx-contest",
       "title": "Night of the Living Dead - LTX-2 Contest",
       "tools": [
@@ -33,8 +33,8 @@
       ]
     },
     {
-      "start": 12.5,
-      "end": 15.0,
+      "start": 4.0,
+      "end": 4.625,
       "slug": "daft-punk-cover-art",
       "title": "Daft Punk cover art",
       "tools": [
@@ -43,18 +43,29 @@
       ]
     },
     {
-      "start": 15.0,
-      "end": 16.75,
-      "slug": "cat-walkman",
-      "title": "Cat Walkman",
+      "start": 4.625,
+      "end": 7.875,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
       "tools": [
-        "SDXL",
-        "Suno"
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
       ]
     },
     {
-      "start": 16.75,
-      "end": 18.5,
+      "start": 7.875,
+      "end": 13.375,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 13.375,
+      "end": 13.875,
       "slug": "trips",
       "title": "Trips",
       "tools": [
@@ -63,8 +74,58 @@
       ]
     },
     {
-      "start": 18.5,
-      "end": 20.75,
+      "start": 13.875,
+      "end": 14.375,
+      "slug": "cat-walkman",
+      "title": "Cat Walkman",
+      "tools": [
+        "SDXL",
+        "Suno"
+      ]
+    },
+    {
+      "start": 14.375,
+      "end": 17.375,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 17.375,
+      "end": 18.625,
+      "slug": "daft-punk-cover-art",
+      "title": "Daft Punk cover art",
+      "tools": [
+        "ComfyUI",
+        "SDXL"
+      ]
+    },
+    {
+      "start": 18.625,
+      "end": 21.125,
+      "slug": "cat-walkman",
+      "title": "Cat Walkman",
+      "tools": [
+        "SDXL",
+        "Suno"
+      ]
+    },
+    {
+      "start": 21.125,
+      "end": 21.875,
+      "slug": "trips",
+      "title": "Trips",
+      "tools": [
+        "Flux",
+        "Runway"
+      ]
+    },
+    {
+      "start": 21.875,
+      "end": 24.875,
       "slug": "fugi-visualizer",
       "title": "F1R - Fugi Visualizer",
       "tools": [
@@ -73,8 +134,8 @@
       ]
     },
     {
-      "start": 20.75,
-      "end": 23.5,
+      "start": 24.875,
+      "end": 26.625,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [

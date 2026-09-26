@@ -989,11 +989,11 @@
 
 /* ---------- scroll reveal: scanline decode ---------- */
 
-.reveal-ready [data-reveal]:not(.is-revealed) {
+.reveal-ready [data-reveal]:not([data-revealed]) {
   clip-path: inset(0 0 100% 0);
 }
 
-.reveal-ready [data-reveal].is-revealed {
+.reveal-ready [data-reveal][data-revealed] {
   animation: scanDecode 620ms steps(9) both;
 }
 

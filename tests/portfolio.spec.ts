@@ -380,3 +380,20 @@ test('the Selected work heading matches the small nav name mark', async ({ page 
   ]);
   expect(heading).toBe(brand);
 });
+
+test('switching work filters never hides tiles that match', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Filter interaction checked once');
+  await page.goto('/#work');
+  // Scroll through the grid so every tile has been revealed once.
+  for (const tile of await page.locator('.work-tile').all()) await tile.scrollIntoViewIfNeeded();
+  await page.locator('.work-filters').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(800);
+  for (const filter of ['--ai', '--3d', '--product', '--vfx', '--all', '--ai', '--all']) {
+    await page.getByRole('button', { name: filter, exact: true }).click();
+    await page.waitForTimeout(300);
+    const hidden = await page.locator('.work-tile:not(.is-dimmed)').evaluateAll((tiles) =>
+      tiles.filter((tile) => getComputedStyle(tile).clipPath.includes('100%')).length);
+    expect(hidden, `visible tiles clipped away after ${filter}`).toBe(0);
+  }
+  await expect(page.locator('.work-tile.is-dimmed')).toHaveCount(0);
+});
