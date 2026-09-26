@@ -271,26 +271,160 @@ def outline(matte, i, colour, width=3):
     return layer
 
 
-def wallpaper(colours, kinds, seed, density=(8, 4)):
-    """A scattered hand-drawn pattern covering the frame (drawn behind the subject), popping in fast."""
-    rng = np.random.default_rng(seed)
-    cols, rows = density
-    out = []
-    for r in range(rows):
-        for c in range(cols):
-            u = (c + 0.5 + rng.uniform(-0.3, 0.3)) / cols
-            v = (r + 0.5 + rng.uniform(-0.3, 0.3)) / rows
-            appear = int(rng.integers(0, 8))
-            out.append(Doodle(kinds[int(rng.integers(len(kinds)))], u, v, float(rng.uniform(0.045, 0.07)),
-                              colours[int(rng.integers(len(colours)))], appear, anchor='frame', rot=float(rng.uniform(-30, 30)),
-                              spin=float(rng.choice([0, 0, 2, -2])), width=0.8, scale=1.0))
-    return out
+# ---------------------------------------------------------------- doodles painted into the scene
+
+def _blur_up(arr, factor=8, radius=2.0):
+    """Cheap large blur: downsample, blur, upsample (for lighting)."""
+    small = Image.fromarray(arr).resize((W // factor, H // factor), Image.BILINEAR).filter(ImageFilter.GaussianBlur(radius))
+    return np.asarray(small.resize((W, H), Image.BILINEAR), np.float32)
 
 
-def subject_hole(matte):
-    """Alpha that is 0 over the subject (slightly grown) and 1 elsewhere, for background-only doodles."""
-    grown = Image.fromarray(matte).resize((W // 2, H // 2)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(2))
-    return 1 - np.asarray(grown.resize((W, H), Image.BILINEAR), np.float32) / 255
+def _bilinear(field, x, y):
+    """Sample an (h, w, ...) field at float pixel coords given in full-res units of a W x H frame."""
+    h, w = field.shape[:2]
+    fx = np.clip(x * (w / W), 0, w - 1.001)
+    fy = np.clip(y * (h / H), 0, h - 1.001)
+    x0, y0 = fx.astype(np.int32), fy.astype(np.int32)
+    ax, ay = fx - x0, fy - y0
+    if field.ndim == 3:
+        ax, ay = ax[..., None], ay[..., None]
+    top = field[y0, x0] * (1 - ax) + field[y0, x0 + 1] * ax
+    bottom = field[y0 + 1, x0] * (1 - ax) + field[y0 + 1, x0 + 1] * ax
+    return top * (1 - ay) + bottom * ay
+
+
+class ScenePaint:
+    """Doodles painted onto the background: placed on real surfaces (depth), carried by the scene's
+    optical flow (or the still's push), foreshortened on slanted surfaces, occluded per pixel by anything
+    nearer, shaded by the local light and drawn on stroke by stroke before they boil."""
+
+    def __init__(self, colours, kinds, seed, count=14, size=60.0, track='dense'):
+        self.colours, self.kinds, self.seed, self.count, self.size, self.track = colours, kinds, seed, count, size, track
+
+    def prepare(self, spec, frames, mattes, frames_n):
+        self.n = frames_n
+        name = spec[1] if spec[0] == 'clip' else spec[2]
+        if spec[0] == 'clip':
+            first = round(spec[2] * FPS)
+            files = sorted((CACHE / 'depth' / name).glob('*.png'))[first:first + frames_n]
+            self.depths = [np.asarray(Image.open(f).convert('L').resize((W, H), Image.BILINEAR), np.float32) / 255 for f in files]
+            self.flow = np.load(CACHE / 'flow' / f'{name}.npy').astype(np.float32)[first:first + frames_n]
+            self.push = None
+        else:
+            depth = cover(Image.open(ROOT / '.depth-cache' / name / '0000.png').convert('L'))
+            self.depths, self.push = [], 0.06
+            for i in range(frames_n):
+                z = 1 + self.push * i / max(1, frames_n - 1)
+                cw, ch = W / z, H / z
+                box = ((W - cw) / 2, (H - ch) / 2, (W + cw) / 2, (H + ch) / 2)
+                self.depths.append(np.asarray(depth.resize((W, H), Image.BILINEAR, box=box), np.float32) / 255)
+            self.flow = None
+        while len(self.depths) < frames_n:
+            self.depths.append(self.depths[-1])
+        # Normalise depth for the whole shot (inverse depth: 1 = nearest).
+        lo, hi = np.percentile(self.depths[0], (1, 99))
+        self.depths = [np.clip((d - lo) / max(hi - lo, 1e-3), 0, 1) for d in self.depths]
+        self._place(frames[0], mattes[0])
+
+    def _place(self, frame, matte):
+        rng = np.random.default_rng(self.seed)
+        depth = self.depths[0]
+        near_subject = np.asarray(Image.fromarray(matte).filter(ImageFilter.MaxFilter(31)), np.float32) / 255
+        subject_depth = float(np.median(depth[matte > 128])) if (matte > 128).any() else 1.0
+        smooth = _blur_up((depth * 255).astype(np.uint8), 4, 3) / 255
+        gy, gx = np.gradient(smooth)
+        self.items, taken, tries = [], [], 0
+        while len(self.items) < self.count and tries < 4000:
+            tries += 1
+            x, y = rng.uniform(0.06, 0.94) * W, rng.uniform(0.08, 0.92) * H
+            xi, yi = int(x), int(y)
+            d = float(depth[yi, xi])
+            if near_subject[yi, xi] > 0.05 or d > subject_depth + 0.04:
+                continue  # background or the subject's own surface (a tabletop), never on or next to the subject
+            size = self.size * (0.7 + 0.6 * d)
+            if any((x - tx) ** 2 + (y - ty) ** 2 < (0.9 * (size + ts)) ** 2 for tx, ty, ts in taken):
+                continue
+            taken.append((x, y, size))
+            kind = self.kinds[len(self.items) % len(self.kinds)]
+            angle = math.radians(float(rng.uniform(-35, 35)))
+            rot = np.array([[math.cos(angle), -math.sin(angle)], [math.sin(angle), math.cos(angle)]])
+            # Foreshorten along the depth gradient: strokes lie on the surface, not face the camera.
+            g = np.array([gx[yi, xi], gy[yi, xi]])
+            mag = float(np.linalg.norm(g))
+            normal = g / mag if mag > 1e-6 else np.array([0.0, 1.0])
+            squash = max(0.35, 1 / (1 + mag * 250))
+            parts = []
+            for pts, closed, filled in shape(kind):
+                q = resample(np.asarray(pts, float), closed) @ rot.T
+                q = q - np.outer(q @ normal, normal) * (1 - squash)
+                parts.append((q * size + [x, y], closed, filled))
+            self.items.append({'parts': parts, 'anchor': np.array([x, y]), 'colour': self.colours[len(self.items) % len(self.colours)],
+                               'appear': int(rng.integers(0, 10)), 'size': size, 'seed': int(rng.integers(1 << 30))})
+
+    def report(self, name):
+        print(f'  scene paint {name}: {len(self.items)} doodles placed', flush=True)
+
+    def _advect(self, pts, i, matte):
+        """Move points from frame i to i + 1 with the scene."""
+        if self.flow is None:  # still: known push about the centre
+            z0 = 1 + self.push * i / max(1, self.n - 1)
+            z1 = 1 + self.push * (i + 1) / max(1, self.n - 1)
+            c = np.array([W / 2, H / 2])
+            return c + (pts - c) * (z1 / z0)
+        field = self.flow[min(i, len(self.flow) - 1)]
+        if self.track == 'global':
+            # Robust camera motion: median flow over the background only.
+            bg = np.asarray(Image.fromarray(matte).resize((W // 2, H // 2)), np.float32) < 40
+            motion = np.median(field[bg], axis=0) if bg.any() else np.zeros(2)
+            return pts + motion
+        return pts + _bilinear(field, pts[:, 0], pts[:, 1])
+
+    def advance(self, i, matte):
+        for item in self.items:
+            item['anchor'] = self._advect(item['anchor'][None], i, matte)[0]
+            item['parts'] = [(self._advect(p, i, matte), c, f) for p, c, f in item['parts']]
+
+    def composite(self, base, i, frame, matte):
+        """Paint the doodles into frame i (a uint8 RGB array) and return the result."""
+        paint = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))
+        ref = Image.new('L', (W * SS, H * SS), 0)
+        dp, dr = ImageDraw.Draw(paint), ImageDraw.Draw(ref)
+        depth = self.depths[min(i, len(self.depths) - 1)]
+        for item in self.items:
+            age = i - item['appear']
+            if age < 0:
+                continue
+            ax, ay = item['anchor']
+            if not (0 <= ax < W and 0 <= ay < H):
+                continue
+            surface = float(depth[int(ay), int(ax)])
+            reveal = min(1.0, (age + 1) / 5)  # draw-on: the stroke is laid down over 5 frames
+            boil = age // 2
+            width = max(1.5, item['size'] * 0.075) * SS
+            for k, (pts, closed, filled) in enumerate(item['parts']):
+                wob = pts + (np.random.default_rng(item['seed'] + boil * 97 + k).normal(0, item['size'] * 0.012, pts.shape))
+                cut = max(2, int(len(wob) * reveal))
+                line = [(float(x * SS), float(y * SS)) for x, y in wob[:cut]]
+                if filled and reveal >= 1 and len(line) > 2:
+                    dp.polygon(line, fill=item['colour'] + (255,))
+                    dr.polygon(line, fill=int(surface * 255))
+                dp.line(line, fill=item['colour'] + (255,), width=int(width), joint='curve')
+                dr.line(line, fill=int(surface * 255), width=int(width), joint='curve')
+        paint = np.asarray(paint.resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.5)), np.float32)
+        ref = np.asarray(ref.resize((W, H), Image.BILINEAR), np.float32) / 255
+        alpha = paint[..., 3] / 255
+        # Occlusion: anything nearer than the painted surface (subject, furniture, foliage) covers the paint.
+        visible = np.clip(1 - (depth - ref - 0.04) / 0.05, 0, 1)
+        visible *= 1 - np.asarray(Image.fromarray(matte).filter(ImageFilter.MaxFilter(5)), np.float32) / 255
+        # Lighting: the paint takes the local light and a little of the local colour.
+        scene = frame.astype(np.float32)
+        light = _blur_up(np.clip(scene.mean(-1), 0, 255).astype(np.uint8)) / 255
+        # Marker paint reads even in shadow, but still falls off with the local light.
+        shade = np.clip(0.62 + 0.75 * light ** 0.6, 0.6, 1.2)[..., None]
+        tint = np.stack([_blur_up(frame[..., c].copy()) for c in range(3)], -1) / 255
+        rgb = paint[..., :3] * shade * (0.88 + 0.22 * tint)
+        a = (alpha * visible * 0.92)[..., None]
+        return (base.astype(np.float32) * (1 - a) + np.clip(rgb, 0, 255) * a).astype(np.uint8)
 
 
 # ---------------------------------------------------------------- psychedelic burst
@@ -353,9 +487,9 @@ def shot(slug, source, seconds, enter, outline_colour, doodles, grade=(), split=
     """enter: 'burst' (kaleidoscope) or a collage transition ('cut', 'whip', 'zoom', 'spin', 'slam', 'drop').
     grade: [(from_s, to_s, 'bw'|'duotone')] quick treatment flips; the doodles stay in colour on top.
     split: optional (layout, [cached clip names of the same project], arrivals) for a split screen.
-    background: optional wallpaper doodles drawn behind the subject (alternates with foreground doodles)."""
+    background: optional ScenePaint, doodles painted into the scene behind the subject (alternates with foreground doodles)."""
     return dict(slug=slug, source=source, seconds=seconds, enter=enter, outline=outline_colour, doodles=doodles,
-                grade=list(grade), split=split, background=background or [])
+                grade=list(grade), split=split, background=background)
 
 
 NOTLD = 'night-of-the-living-dead-ltx-contest'
@@ -364,27 +498,27 @@ EDIT = [
         Doodle('notes', 0.95, 0.12, 0.2, WHITE, 3, rot=12), Doodle('heart', 0.08, 0.2, 0.13, PINK, 8, rot=-15),
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
         Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
-    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=wallpaper([ACID, WHITE], ['sparkle', 'eyes', 'star', 'squiggle'], 21)),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([ACID, WHITE], ['sparkle', 'star', 'squiggle', 'spiral', 'eyes'], 21, count=14, size=70, track='dense')),
     shot(NOTLD, clip('notld_carry', 0.3), 1.5, 'whip', ACID, [
         Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
         Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
-    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=wallpaper([RED, WHITE], ['skull', 'drops', 'bolt', 'spiral'], 22), grade=[(1.0, 1.5, 'duotone')]),
+    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=ScenePaint([RED, WHITE], ['skull', 'bolt', 'spiral', 'drops', 'squiggle'], 22, count=12, size=80, track='global'), grade=[(1.0, 1.5, 'duotone')]),
     # Split: four NOTLD shots slam in one by one, doodles on top.
     shot(NOTLD, clip('notld_tv', 0.2), 2.0, 'slam', None, [
         Doodle('bolt', 0.47, 0.42, 0.12, ACID, 6, anchor='frame', rot=-12), Doodle('skull', 0.92, 0.12, 0.1, WHITE, 12, anchor='frame', rot=10),
         Doodle('sparkle', 0.08, 0.9, 0.09, PINK, 16, anchor='frame')],
          split=('grid', ['notld_tv', 'notld_presenter', 'notld_carry', 'notld_armchair'], (0, 4, 9, 13))),
-    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=wallpaper([PINK], ['bolt', 'sparkle', 'skull', 'squiggle'], 23), grade=[(0.75, 1.25, 'bw')]),
+    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=ScenePaint([PINK, WHITE], ['bolt', 'sparkle', 'squiggle', 'star'], 23, count=12, size=78, track='global'), grade=[(0.75, 1.25, 'bw')]),
     shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.5, 'zoom', None, [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
         Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
          grade=[(1.5, 2.0, 'bw')]),
-    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=wallpaper([PINK, WHITE], ['heart', 'note', 'notes', 'sparkle'], 24)),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([PINK, WHITE], ['heart', 'note', 'sparkle', 'notes'], 24, count=10, size=70)),
     shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 1.75, 'drop', ACID, [
         Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
          grade=[(0.9, 1.4, 'duotone')]),
-    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=wallpaper([PINK, ACID], ['heart', 'star', 'sparkle', 'smiley'], 25), grade=[(1.25, 1.75, 'bw')]),
+    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([PINK, ACID], ['heart', 'star', 'sparkle', 'smiley'], 25, count=12, size=66), grade=[(1.25, 1.75, 'bw')]),
     shot('dark-forest', clip('forest_boy_b', 0.3), 2.75, 'whip', ACID, [
         Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
         Doodle('eyes', 0.73, 0.18, 0.045, WHITE, 14, anchor='frame'), Doodle('heart', -1.2, -0.1, 0.09, PINK, 20, anchor='follow'),
@@ -401,6 +535,10 @@ def render_shot(s, frames_n):
         pieces = [load_clip(name, spec[2], frames_n)[0] for name in names]
         frames = [COLLAGE.split(pieces, i, layout, i, list(arrivals)) for i in range(frames_n)]
     boxes = smooth_boxes(mattes[:frames_n])
+    scene_paint = s['background']
+    if scene_paint:
+        scene_paint.prepare(spec, frames, mattes, frames_n)
+        scene_paint.report(spec[1] if spec[0] == 'clip' else spec[2])
     out = []
     for i in range(frames_n):
         f = frames[i]
@@ -408,14 +546,9 @@ def render_shot(s, frames_n):
             if start * FPS <= i < end * FPS:
                 f = COLLAGE.bw(f) if kind == 'bw' else COLLAGE.duotone(f)
         base = Image.fromarray(np.ascontiguousarray(f)).convert('RGBA')
-        if s['background']:
-            back = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))
-            back_draw = ImageDraw.Draw(back)
-            for d in s['background']:
-                d.draw(back_draw, i, boxes[i])
-            back = np.asarray(back.resize((W, H), Image.LANCZOS)).copy()
-            back[..., 3] = (back[..., 3] * subject_hole(mattes[i]) * 0.72).astype(np.uint8)
-            base.alpha_composite(Image.fromarray(back, 'RGBA'))
+        if scene_paint:
+            base = Image.fromarray(scene_paint.composite(np.asarray(base.convert('RGB')), i, frames[i], mattes[i])).convert('RGBA')
+            scene_paint.advance(i, mattes[i])
         if s['outline'] is not None and i >= 1:
             base.alpha_composite(outline(mattes[i], i, s['outline']))
         layer = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))

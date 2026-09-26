@@ -39,7 +39,7 @@ Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/asset
 
 ## Doodle montage (the hero)
 
-`npm run build:doodle` renders a hand-drawn doodle montage in the style of adidas' "There Will Be Haters": longer shots with boiling marker doodles and emoticons that track each subject, a wobbling outline around it, and ~0.3 s kaleidoscope bursts on some cuts. It reads the SAM3 mattes and clips in the git-ignored `.collage-cache/` (made with `scripts/comfy-passes.py`). It is the default hero reel (`?reel=collage` and `?reel=classic` show the alternates); edit the `EDIT` list in `scripts/build-doodle-reel.py` to change shots and doodles.
+`npm run build:doodle` renders a hand-drawn doodle montage in the style of adidas' "There Will Be Haters": longer shots with boiling marker doodles and emoticons that track each subject, a wobbling outline around it, and ~0.3 s kaleidoscope bursts on some cuts. It reads clips, SAM3 mattes (`scripts/comfy-passes.py matte-video`), DepthCrafter depth (`scripts/comfy-passes.py video <clip> .collage-cache/depth/<name>`) and optical flow (`scripts/track-flow.py`, run with a Python that has OpenCV, e.g. ComfyUI's venv) from the git-ignored `.collage-cache/`. Background shots paint doodles into the scene: they sit on real surfaces, move with the flow, are occluded by anything nearer and take the local light. It is the default hero reel (`?reel=collage` and `?reel=classic` show the alternates); edit the `EDIT` list in `scripts/build-doodle-reel.py` to change shots and doodles.
 
 ## Featured grid, archive, filters, breakdowns
 
