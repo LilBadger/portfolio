@@ -16,11 +16,11 @@ export function HeroReel({
   const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [isPlaying, setIsPlaying] = useState(!reducedMotion);
   const [manifest, setManifest] = useState<ReelManifest | null>(null);
-  // The beat-cut collage edit (scripts/build-collage-reel.py) is the hero. Previews: `?reel=classic`
-  // (plain reel) and `?reel=doodle` (hand-drawn doodle montage, scripts/build-doodle-reel.py).
+  // The hand-drawn doodle montage (scripts/build-doodle-reel.py) is the hero. Alternates:
+  // `?reel=collage` (scripts/build-collage-reel.py) and `?reel=classic` (plain reel).
   const [variant] = useState(() => {
     const requested = new URLSearchParams(window.location.search).get('reel');
-    return requested === 'classic' ? 'reel' : requested === 'doodle' ? 'reel-doodle' : 'reel-collage';
+    return requested === 'classic' ? 'reel' : requested === 'collage' ? 'reel-collage' : 'reel-doodle';
   });
   const [source] = useState(() => assetPath(`assets/generated/reel/${variant}-${window.matchMedia('(max-width: 760px)').matches ? 480 : 720}.mp4`));
   const poster = assetPath(`assets/generated/reel/${variant}-poster.jpg`);

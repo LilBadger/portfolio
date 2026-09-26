@@ -355,16 +355,28 @@ test('Dark Forest page has draggable turntables and an inline pass breakdown', a
 });
 
 test('the hero reel only features recent work (2025-2026 plus Trips)', async ({ request }) => {
-  for (const file of ['reel.json', 'reel-collage.json']) {
+  for (const file of ['reel.json', 'reel-collage.json', 'reel-doodle.json']) {
     const manifest = await (await request.get(`/assets/generated/reel/${file}`)).json();
   const recent = ['f1r-live-video', 'dark-forest', 'night-of-the-living-dead-ltx-contest', 'fugi-visualizer', 'cat-walkman', 'daft-punk-cover-art', 'trips'];
     for (const shot of manifest.shots) expect(recent, shot.slug).toContain(shot.slug);
   }
 });
 
-test('the hero plays the collage reel by default and the classic reel on request', async ({ page }) => {
+test('the hero plays the doodle montage by default, with collage and classic on request', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('.hero-reel__video')).toHaveAttribute('src', /reel-doodle-(720|480)\.mp4$/);
+  await expect(page.locator('.hero-hud__meta')).toContainText('REEL / 2025—2026');
+  await page.goto('/?reel=collage');
   await expect(page.locator('.hero-reel__video')).toHaveAttribute('src', /reel-collage-(720|480)\.mp4$/);
   await page.goto('/?reel=classic');
   await expect(page.locator('.hero-reel__video')).toHaveAttribute('src', /\/reel-(720|480)\.mp4$/);
+});
+
+test('the Selected work heading matches the small nav name mark', async ({ page }) => {
+  await page.goto('/');
+  const [brand, heading] = await page.evaluate(() => [
+    getComputedStyle(document.querySelector('.site-nav__brand span')!).fontSize,
+    getComputedStyle(document.querySelector('#work-title')!).fontSize
+  ]);
+  expect(heading).toBe(brand);
 });

@@ -33,13 +33,13 @@ npm run build:media -- --force # rebuild everything
 
 Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/assets/generated/` and are committed, so CI does not need either tool. Every project gets `thumbs/<slug>-{640,1280}.{avif,webp}` and a silent `loops/<slug>.mp4`; edit the `reel` and `customLoops` lists in `scripts/build-media.mjs` to change shots. Each reel shot carries the project `slug` it shows; the script writes `reel/reel.json` with measured shot timings, which drives the hero's `$ now_playing:` line. Run it after adding a project.
 
-## Collage reel (the hero)
+## Collage reel (alternate)
 
-`npm run build:collage` renders a beat-cut, text-free collage edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. It is the default hero reel (`?reel=classic` shows the plain reel); edit the `EDIT` list in `scripts/build-collage-reel.py` to change shots and treatments.
+`npm run build:collage` renders a beat-cut, text-free collage edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. Preview it with `?reel=collage`; edit the `EDIT` list in `scripts/build-collage-reel.py` to change shots and treatments.
 
-## Doodle montage (preview)
+## Doodle montage (the hero)
 
-`npm run build:doodle` renders a hand-drawn doodle montage in the style of adidas' "There Will Be Haters": longer shots with boiling marker doodles and emoticons that track each subject, a wobbling outline around it, and ~0.3 s kaleidoscope bursts on some cuts. It reads the SAM3 mattes and clips in the git-ignored `.collage-cache/` (made with `scripts/comfy-passes.py`). Preview it with `?reel=doodle`; edit the `EDIT` list in `scripts/build-doodle-reel.py` to change shots and doodles.
+`npm run build:doodle` renders a hand-drawn doodle montage in the style of adidas' "There Will Be Haters": longer shots with boiling marker doodles and emoticons that track each subject, a wobbling outline around it, and ~0.3 s kaleidoscope bursts on some cuts. It reads the SAM3 mattes and clips in the git-ignored `.collage-cache/` (made with `scripts/comfy-passes.py`). It is the default hero reel (`?reel=collage` and `?reel=classic` show the alternates); edit the `EDIT` list in `scripts/build-doodle-reel.py` to change shots and doodles.
 
 ## Featured grid, archive, filters, breakdowns
 
