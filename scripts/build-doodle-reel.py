@@ -626,32 +626,39 @@ def shot(slug, source, seconds, enter, outline_colour, doodles, grade=(), split=
 
 NOTLD = 'night-of-the-living-dead-ltx-contest'
 EDIT = [
-    shot('f1r-live-video', clip('f1r_singer', 0.2), 2.25, 'cut', PINK, [
+    shot('f1r-live-video', clip('f1r_singer', 0.2), 3.0, 'cut', PINK, [
         Doodle('notes', 0.95, 0.12, 0.2, WHITE, 3, rot=12), Doodle('heart', 0.08, 0.2, 0.13, PINK, 8, rot=-15),
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
         Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
-    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([(214, 226, 214)], ['ghost', 'peeker', 'eyeblob', 'ghost', 'peeker'], 21, count=9, size=92, track='dense', opacity=0.95)),
-    shot(NOTLD, clip('notld_carry', 0.3), 1.5, 'whip', ACID, [
+    # Hard-cut flurry: quick flips before the forest holds.
+    shot('dark-forest', clip('forest_boy_b', 2.8), 0.5, 'cut', None, [], grade=[(0, 1, 'bw')]),
+    shot(NOTLD, clip('notld_carry', 2.6), 0.5, 'cut', None, [], grade=[(0, 1, 'duotone')]),
+    shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 0.625, 'cut', None, []),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 3.25, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([(214, 226, 214)], ['ghost', 'peeker', 'eyeblob', 'ghost', 'peeker'], 21, count=9, size=92, track='dense', opacity=0.95)),
+    shot(NOTLD, clip('notld_carry', 0.3), 1.0, 'cut', ACID, [
         Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
         Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
-    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=ScenePaint([(222, 230, 220)], seed=22, size=13, track='global', mode='hatch', opacity=0.55, dim=0.35), grade=[(1.0, 1.5, 'duotone')]),
+    shot(NOTLD, clip('notld_armchair', 0.5), 2.75, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=ScenePaint([(222, 230, 220)], seed=22, size=13, track='global', mode='hatch', opacity=0.55, dim=0.35), grade=[(1.0, 1.5, 'duotone')]),
     # Split: four NOTLD shots slam in one by one, doodles on top.
-    shot(NOTLD, clip('notld_tv', 0.2), 2.0, 'slam', None, [
+    shot(NOTLD, clip('notld_tv', 0.2), 1.75, 'slam', None, [
         Doodle('bolt', 0.47, 0.42, 0.12, ACID, 6, anchor='frame', rot=-12), Doodle('skull', 0.92, 0.12, 0.1, WHITE, 12, anchor='frame', rot=10),
         Doodle('sparkle', 0.08, 0.9, 0.09, PINK, 16, anchor='frame')],
          split=('grid', ['notld_tv', 'notld_presenter', 'notld_carry', 'notld_armchair'], (0, 4, 9, 13))),
-    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=ScenePaint([WHITE, PINK], seed=23, track='global', mode='radial', opacity=0.9), grade=[(0.75, 1.25, 'bw')]),
-    shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.5, 'zoom', None, [
+    # Second flurry before the presenter.
+    shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 0.5, 'cut', None, [], grade=[(0, 1, 'bw')]),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 0.5, 'cut', None, [], grade=[(0, 1, 'duotone')]),
+    shot(NOTLD, clip('notld_presenter', 0.4), 3.0, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=ScenePaint([WHITE, PINK], seed=23, track='global', mode='radial', opacity=0.9), grade=[(0.75, 1.25, 'bw')]),
+    shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 1.25, 'cut', None, [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
         Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
-         grade=[(1.5, 2.0, 'bw')]),
-    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([(246, 236, 214), PINK], seed=24, size=78, mode='staff', opacity=0.9)),
-    shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 1.75, 'drop', ACID, [
+         grade=[(0.5, 0.9, 'bw')]),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 2.5, 'zoom', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([(246, 236, 214), PINK], seed=24, size=78, mode='staff', opacity=0.9)),
+    shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 0.75, 'drop', ACID, [
         Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
-         grade=[(0.9, 1.4, 'duotone')]),
-    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([(255, 150, 210)], ['rabbit'], 25, count=16, size=66, opacity=0.8), grade=[(1.25, 1.75, 'bw')]),
-    shot('dark-forest', clip('forest_boy_b', 0.3), 2.75, 'whip', ACID, [
+         grade=[(0.35, 0.6, 'duotone')]),
+    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 3.0, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([(255, 150, 210)], ['rabbit'], 25, count=16, size=66, opacity=0.8), grade=[(1.25, 1.75, 'bw')]),
+    shot('dark-forest', clip('forest_boy_b', 0.3), 1.75, 'cut', ACID, [
         Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
         Doodle('eyes', 0.73, 0.18, 0.045, WHITE, 14, anchor='frame'), Doodle('heart', -1.2, -0.1, 0.09, PINK, 20, anchor='follow'),
         Doodle('star', 2.2, -0.2, 0.09, ACID, 28, anchor='follow', spin=6)]),
