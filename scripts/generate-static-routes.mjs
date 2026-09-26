@@ -10,7 +10,12 @@ const defaultImage = 'assets/projects/fugi-visualizer/reference-tongue-in.png';
 const baseHtml = await fs.readFile(path.join(dist, 'index.html'), 'utf8');
 const importedProjects = JSON.parse(await fs.readFile(path.join(root, 'src/data/artstation-projects.json'), 'utf8'));
 const manualProjects = JSON.parse(await fs.readFile(path.join(root, 'content/manual-projects.json'), 'utf8'));
-const projects = importedProjects.length > 0 ? importedProjects : manualProjects;
+const overrides = JSON.parse(await fs.readFile(path.join(root, 'content/project-overrides.json'), 'utf8'));
+// Mirror src/data/projects.ts: curated overrides win over imported/manual fields.
+const projects = (importedProjects.length > 0 ? importedProjects : manualProjects).map((project) => ({
+  ...project,
+  ...(overrides[project.slug || slugify(project.title)] ?? {})
+}));
 const articles = await readMarkdownDocuments(root, 'content/articles', 'article');
 const pages = await readMarkdownDocuments(root, 'content/pages', 'page');
 
@@ -27,8 +32,8 @@ function absoluteAsset(asset = defaultImage) {
   return `${siteUrl}/${String(asset).replace(/^\//, '')}`;
 }
 
-function routeMeta({ title, description, route, image = defaultImage, type = 'website' }) {
-  const canonical = `${siteUrl}/${route ? `${route.replace(/^\/+|\/+$/g, '')}/` : ''}`;
+function routeMeta({ title, description, route, canonicalRoute = route, image = defaultImage, type = 'website' }) {
+  const canonical = `${siteUrl}/${canonicalRoute ? `${canonicalRoute.replace(/^\/+|\/+$/g, '')}/` : ''}`;
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
   const safeImage = escapeHtml(absoluteAsset(image));
@@ -91,7 +96,14 @@ for (const document of [...articles, ...pages]) {
   });
 }
 
-for (const route of routeEntries) await writeRoute(route);
+// Old slugs of merged projects keep working and point search engines at the surviving page.
+const aliasEntries = projects.flatMap((project) => (project.aliases ?? []).map((alias) => ({
+  ...routeEntries.find((entry) => entry.route === `projects/${project.slug || slugify(project.title)}`),
+  route: `projects/${alias}`,
+  canonicalRoute: `projects/${project.slug || slugify(project.title)}`
+})));
+
+for (const route of [...routeEntries, ...aliasEntries]) await writeRoute(route);
 
 const sitemapRoutes = ['', ...routeEntries.map((entry) => `${entry.route}/`)];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

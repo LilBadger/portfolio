@@ -1,23 +1,17 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
+// Each line doubles as a micro-credential: the tools and pipeline steps behind the work.
 const commands = [
-  'ssh guest@vlad-maftei.net',
-  'auth method: public_dossier_key',
-  'cd /srv/portfolio/projects',
-  'ls -lah ./artstation_cache',
-  'find ./ -type f -name "*.jpg" | wc -l',
-  'rsync -av --dry-run ./cat-walkman ./local_mirror',
-  'curl -I /projects/trips/gallery.tar',
-  'sha256sum ./daft-punk-cover-art/finalupscaled.jpg',
-  'grep -R "sourceUrl" ./manifest.json',
-  'tar -tvf ./client_preview_bundle.tar',
-  'scp -C guest@vlad-maftei.net:/work/restart/*.jpg ./vault',
-  'ffprobe ./breakdance/motion_ref.vimeo',
-  'status: read-only tunnel active',
-  'download queue: denied by portfolio firewall',
-  'retrying with public ArtStation mirror',
-  'wget --spider /assets/artstation/**/*.jpg',
-  'checksum ok: project files indexed'
+  'houdini -b ./sim/pyro_v012.hip --frames 1-240',
+  'comfyui --queue ./ltx2_pose_guided_i2v.json',
+  'qwen-edit --restyle ./notld/shot_014.png',
+  'c4d -render ./xparticles/cells_v07.c4d',
+  'blender -b ./grindelwald.blend -a',
+  'substance --bake ./lookdev/hero_mat.spp',
+  'unreal --render ./mixer/scene_final.umap',
+  'ffmpeg -i ./renders/%04d.exr -c:v prores ./delivery.mov',
+  'status: shot approved \u2713',
+  'status: available for freelance + studio work'
 ];
 
 export function HeroTerminalLine() {

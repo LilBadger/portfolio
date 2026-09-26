@@ -1,14 +1,20 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ArticleIndex } from './components/ArticleIndex';
 import { AsciiBunny } from './components/AsciiBunny';
+import { BreakdownSlider } from './components/BreakdownSlider';
+import { ContactBlock } from './components/ContactBlock';
 import { ContentPage } from './components/ContentPage';
 import { GlitchText } from './components/GlitchText';
+import { HeroReel } from './components/HeroReel';
 import { HeroTerminalLine } from './components/HeroTerminalLine';
 import { NotFoundPage } from './components/NotFoundPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
-import { WorkGrid } from './components/WorkGrid';
+import { WorkShowcase } from './components/WorkShowcase';
 import { articles, featuredArticle, getArticle, getPage, pages } from './data/content';
-import { getProject, projects } from './data/projects';
+import { archiveProjects, featuredProjects, getProject, projects } from './data/projects';
+import { availability, contactEmail, profileFacts } from './data/profile';
+import { useReveal } from './hooks/useReveal';
+import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { assetPath } from './utils/assetPath';
 import { articleHref, homeHref, homeSectionHref, pageHref, pathWithoutBase, projectHref } from './utils/routes';
 
@@ -31,12 +37,12 @@ const navLinks: Array<{ href: string; label: string; section: HomeSection }> = [
   { href: homeSectionHref('contact'), label: 'Contact', section: 'contact' }
 ];
 
-const socialLinks = [
-  { href: 'https://x.com/Badgerz', label: 'X', icon: 'X' },
-  { href: 'https://www.instagram.com/_vladski_/', label: 'Instagram', icon: 'IG' },
-  { href: 'https://www.linkedin.com/in/vladmaftei/', label: 'LinkedIn', icon: 'in' },
-  { href: 'https://vladmaftei.artstation.com/', label: 'ArtStation', icon: 'AS' },
-  { href: 'mailto:vladmaftei@gmail.com', label: 'Email', icon: '@' }
+
+const processSteps = [
+  { title: 'Concept / Reference', text: 'Reference pulls, boards and timing locked to picture and sound before anything renders.' },
+  { title: 'Structure', text: '3D blockouts, pose and depth guides, so generated passes follow the camera and the performance.' },
+  { title: 'Generate / Simulate', text: 'ComfyUI graphs, LTX-2, X-Particles and cloth sims, iterated as short tests instead of long gambles.' },
+  { title: 'Comp / Deliver', text: 'Cleanup, grade and conform back into the original edit, delivered as masters.' }
 ];
 
 function parseRouteValue(cleaned: string): Route {
@@ -261,72 +267,67 @@ function useActiveHomeBunny(): ActiveBunny {
 }
 
 function HomePage() {
+  const heroRef = useRef<HTMLElement>(null);
   const activeBunny = useActiveHomeBunny();
   const activeSection = useActiveHomeSection();
-  const contactLinks = [
-    { href: 'mailto:vladmaftei@gmail.com', label: 'Email', value: 'vladmaftei@gmail.com' },
-    { href: 'https://vladmaftei.artstation.com/', label: 'ArtStation', value: 'vladmaftei.artstation.com' },
-    { href: 'https://www.linkedin.com/in/vladmaftei/', label: 'LinkedIn', value: 'linkedin.com/in/vladmaftei' },
-    { href: 'https://www.instagram.com/_vladski_/', label: 'Instagram', value: '@_vladski_' },
-    { href: 'https://x.com/Badgerz', label: 'X', value: '@Badgerz' }
-  ];
+  const breakdownProject = projects.find((project) => project.breakdown?.length);
+  useReveal('home');
 
   return (
     <>
       <SiteNav activeSection={activeSection} />
 
-      <section className="hero" aria-labelledby="hero-title">
+      <section className="hero" ref={heroRef} aria-labelledby="hero-title">
+        <HeroReel sectionRef={heroRef} />
         <div className="hero-identity">
-          <p className="eyebrow">_ARTIST DOSSIER</p>
+          <p className="eyebrow">_3D GENERALIST / VFX / AI VIDEO — BUCHAREST</p>
           <h1 id="hero-title">
             <GlitchText text="VLAD" as="span" className="hero-name-line hero-name-line--vlad" intensity="heavy" />
             <GlitchText text="MAFTEI" as="span" className="hero-name-line" intensity="heavy" />
           </h1>
-          <p className="role-line">VFX <span>/</span> 3D <span>/</span> AI</p>
           <p className="hero-summary">
-            Cinematic visual work across 3D, procedural systems, product imagery, character experiments,
-            and AI-assisted image/video workflows.
+            I make cinematic images with 3D, simulation and generative video, from product CGI and
+            digital humans to pose-guided LTX-2 film sequences.
           </p>
           <HeroTerminalLine />
           <div className="hero-actions">
-            <a className="enter-link" href={homeSectionHref('work')}>&gt; VIEW WORK_</a>
-            <a className="secondary-link" href={homeSectionHref('process')}>PROCESS</a>
-            <div className="hero-socials" aria-label="Social links">
-              {socialLinks.map((link) => (
-                <a href={link.href} aria-label={link.label} key={link.label} rel="noreferrer" target={link.href.startsWith('mailto:') ? undefined : '_blank'}>
-                  {link.icon}
-                </a>
-              ))}
-            </div>
+            <a className="button button--signal" href={homeSectionHref('work')}>&gt; View work_</a>
+            <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
+            <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
           </div>
         </div>
-        {activeBunny === 'hero' ? <AsciiBunny key="hero-bunny" /> : null}
+        <div className="hero-hud" aria-hidden="true">
+          <span>REEL / 2016—2026</span>
+          <span>MOVE CURSOR TO DECODE_</span>
+        </div>
       </section>
 
       <section id="work" className="work-section" aria-labelledby="work-title">
         {activeBunny === 'work' ? <AsciiBunny key="work-bunny" variant="work" /> : null}
-        <div className="work-terminal-header">
-          <p className="eyebrow">_WORK ARCHIVE</p>
-        </div>
-        <h2 id="work-title" className="visually-hidden">Selected Projects</h2>
-        <WorkGrid projects={projects} />
+        <SectionHeader eyebrow="WORK" titleId="work-title" title="Selected work">
+          <p>AI video, CGI, simulation and product work. Pieces play on hover (or as you scroll on a phone); older projects live in the archive below.</p>
+        </SectionHeader>
+        <WorkShowcase featured={featuredProjects} archive={archiveProjects} />
       </section>
 
       <section id="process" className="process-section" aria-labelledby="process-title">
-        <SectionHeader eyebrow="PROCESS" titleId="process-title" title="Pipeline Notes">
+        <SectionHeader eyebrow="PROCESS" titleId="process-title" title="Pipeline, not prompts">
           <p>
-            Clear breakdowns of concept, asset build, procedural work, render,
-            AI exploration, and final grade.
+            AI shots are steered by structure: pose, depth and restyle passes lock performance, framing and
+            timing to the edit. Drag through the passes from{' '}
+            {breakdownProject ? <a href={projectHref(breakdownProject.slug ?? '')}>{breakdownProject.title}</a> : 'a recent shot'}.
           </p>
         </SectionHeader>
-        <div className="process-grid">
-          {['Concept / Reference', 'Asset / Lookdev', 'Simulation / Motion', 'Render / Delivery'].map((item, index) => (
-            <article className="process-card" key={item}>
+        {breakdownProject?.breakdown ? <BreakdownSlider pairs={breakdownProject.breakdown} title={breakdownProject.title} /> : null}
+        <ol className="process-steps">
+          {processSteps.map((step, index) => (
+            <li key={step.title} data-reveal>
               <span>_{String(index + 1).padStart(2, '0')}</span>
-              <h3>{item}</h3>
-            </article>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
       {articles.length > 0 ? (
@@ -340,40 +341,29 @@ function HomePage() {
         </section>
       ) : null}
 
-      <section id="about" className="pages-section" aria-labelledby="about-title">
-        <SectionHeader eyebrow="ABOUT" titleId="about-title" title="Artist Profile">
+      <section id="about" className="pages-section about-section" aria-labelledby="about-title">
+        <SectionHeader eyebrow="ABOUT" titleId="about-title" title="Artist profile">
           <p>
-            I work as a 3D generalist across VFX, product imagery, character experiments,
-            procedural motion, and AI-assisted image/video workflows.
+            3D generalist from Bucharest working across VFX, product CGI, digital humans, procedural motion and
+            AI-driven image and video. I like projects where image-making, lookdev, motion and technical problem
+            solving meet. <a href={pageHref('about')}>Full profile -&gt;</a>
           </p>
         </SectionHeader>
-        {pages.length > 0 ? (
-          <div className="page-link-grid">
-            {pages.map((page) => (
-              <a className="page-link-card" href={page.href} key={page.slug}>
-                <span>_{page.title}</span>
-                <p>{page.excerpt ?? 'Open page.'}</p>
-              </a>
-            ))}
-          </div>
-        ) : null}
+        <dl className="profile-facts">
+          {profileFacts.map((group) => (
+            <div key={group.label} data-reveal>
+              <dt>{group.label}</dt>
+              {group.items.map((item) => <dd key={item}>{item}</dd>)}
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section id="contact" className="contact-section" aria-labelledby="contact-title">
-        <SectionHeader eyebrow="CONTACT" titleId="contact-title" title="Commission / Collaboration Signal">
-          <p>
-            For commissions, collaborations, project breakdowns, or availability,
-            email me directly or use one of the public channels below.
-          </p>
+        <SectionHeader eyebrow="CONTACT" titleId="contact-title" title="Let's make something">
+          <p>Commissions, collaborations, breakdown requests or availability: email is fastest.</p>
         </SectionHeader>
-        <div className="contact-links" aria-label="Contact and social links">
-          {contactLinks.map((link) => (
-            <a className="contact-link" href={link.href} key={link.label} rel="noreferrer" target={link.href.startsWith('mailto:') ? undefined : '_blank'}>
-              <span>{link.label}</span>
-              <strong>{link.value}</strong>
-            </a>
-          ))}
-        </div>
+        <ContactBlock />
       </section>
     </>
   );
@@ -381,6 +371,7 @@ function HomePage() {
 
 export function App() {
   const route = useLocationRoute();
+  useSmoothScroll();
   useHomeSectionScroll(route);
   const article = route.type === 'article' ? getArticle(route.slug) : undefined;
   const page = route.type === 'page' ? getPage(route.slug) : undefined;

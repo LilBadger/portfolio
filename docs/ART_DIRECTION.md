@@ -42,6 +42,13 @@ Use almost-black as the actual background. The design should be mostly monochrom
 - Hot magenta: `#ff1aa8`, `#d60f84`
 - Error red should be rare and only for tiny UI noise.
 
+## Current implementation notes (2026-09 redesign)
+
+- Accent: `--signal` (`#a6ff00`) is reserved for interactive/active states (CTAs, active nav, filters, focus). `--acid` stays as the cool secondary text tone. Magenta only appears in glitch artifacts.
+- Type: self-hosted OFL fonts — JetBrains Mono (UI/labels) and Archivo at 125% width, 800–900 weight (name and headings). No system-font fallback roulette.
+- Hero: the reel rendered through a luminance-to-ASCII WebGL shader with a pointer-driven "decode lens" showing clean footage; short tearing bursts. Reduced motion shows the poster with a play button.
+- Artwork: tiles are slightly desaturated with scanlines by default and go full colour + play a loop on hover, as specified below.
+
 ## Typography
 
 - Use monospace or square/technical type for UI labels.

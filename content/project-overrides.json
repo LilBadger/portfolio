@@ -1,6 +1,62 @@
 {
+  "fugi-visualizer": {
+    "kind": [
+      "ai",
+      "code"
+    ],
+    "feature": 2,
+    "tile": "tall"
+  },
+  "night-of-the-living-dead-ltx-contest": {
+    "kind": [
+      "ai",
+      "vfx"
+    ],
+    "feature": 1,
+    "tile": "lead",
+    "breakdown": [
+      {
+        "shot": "TV broadcast",
+        "before": {
+          "label": "1968 source frame",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/original-scene-frame.preview.webp"
+        },
+        "after": {
+          "label": "Final LTX-2 frame",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/final-frame-cover.preview.webp"
+        }
+      },
+      {
+        "shot": "Doorway",
+        "before": {
+          "label": "Depth guide",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/structure-depth.preview.webp"
+        },
+        "after": {
+          "label": "HED edges",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/structure-hed.preview.webp"
+        }
+      },
+      {
+        "shot": "Doorway",
+        "before": {
+          "label": "HED edges",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/structure-hed.preview.webp"
+        },
+        "after": {
+          "label": "Qwen composite",
+          "src": "assets/projects/night-of-the-living-dead-ltx-contest/qwen-composite.preview.webp"
+        }
+      }
+    ]
+  },
   "cat-walkman": {
+    "year": "2025",
     "featured": true,
+    "kind": [
+      "ai"
+    ],
+    "feature": 3,
     "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",
     "tags": [
       "Featured",
@@ -11,6 +67,12 @@
     "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno."
   },
   "daft-punk-cover-art": {
+    "year": "2025",
+    "kind": [
+      "ai",
+      "3d"
+    ],
+    "feature": 4,
     "role": "AI ILLUSTRATION / CHARACTER POSING",
     "tags": [
       "AI",
@@ -19,7 +81,29 @@
     ],
     "description": "AI-driven cover-art workflow using ComfyUI, SDXL, posing tools, and Photoshop cleanup for multi-character direction."
   },
+  "trips": {
+    "title": "Trips",
+    "year": "2024",
+    "kind": [
+      "ai",
+      "3d"
+    ],
+    "feature": 7
+  },
+  "x-particles-challenge-2018": {
+    "year": "2018",
+    "kind": [
+      "3d",
+      "vfx"
+    ],
+    "feature": 5,
+    "tile": "wide"
+  },
   "philips-sensotouch": {
+    "kind": [
+      "product",
+      "3d"
+    ],
     "role": "RIGGING / ANIMATION / CAMERA / RENDERING",
     "tags": [
       "Product",
@@ -27,6 +111,47 @@
       "Animation",
       "Rendering"
     ],
-    "description": "Presentation video work for Philips Sensotouch, including shaver rigging, animation, camera work, and rendered shots while at INDG."
+    "description": "Presentation video work for Philips Sensotouch, including shaver rigging, animation, camera work, and rendered shots while at INDG.",
+    "videos": []
+  },
+  "philips-product-renders": {
+    "kind": [
+      "product",
+      "3d"
+    ]
+  },
+  "cc-digital-human-contest-2020-gellert-grindelwald": {
+    "title": "Grindelwald Digital Human",
+    "year": "2020",
+    "kind": [
+      "3d",
+      "vfx"
+    ],
+    "feature": 6
+  },
+  "breakdance": {
+    "year": "2016",
+    "kind": [
+      "3d"
+    ]
+  },
+  "restart": {
+    "year": "2019",
+    "kind": [
+      "3d",
+      "vfx"
+    ]
+  },
+  "in-spirit": {
+    "kind": [
+      "3d"
+    ]
+  },
+  "quixel-mixer-contest": {
+    "year": "2018",
+    "kind": [
+      "realtime",
+      "3d"
+    ]
   }
 }

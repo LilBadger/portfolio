@@ -349,92 +349,6 @@
     ]
   },
   {
-    "slug": "xparticles-challenge-2018-animation-tests-and-explorations",
-    "title": "Xparticles Challenge 2018 Animation Tests and Explorations",
-    "role": "MOTION TESTS / PROCEDURAL EXPLORATION",
-    "tools": [
-      "Cinema 4D",
-      "X-Particles"
-    ],
-    "tags": [
-      "Procedural",
-      "Motion",
-      "Tests"
-    ],
-    "description": "Animation tests and iterations made while exploring visual directions for the X-Particles Challenge 2018.",
-    "cover": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg",
-    "gallery": [
-      "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg"
-    ],
-    "sourceUrl": "https://vladmaftei.artstation.com/projects/JeK0Dd",
-    "videos": [
-      {
-        "title": "Xparticles Challenge 2018 animation test 01",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 02",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 03",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 04",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 05",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 06",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 07",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 08",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 09",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40-poster.jpg"
-      },
-      {
-        "title": "Xparticles Challenge 2018 animation test 10",
-        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45.mp4",
-        "platform": "local",
-        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45-poster.jpg"
-      }
-    ],
-    "body": [
-      "## Iteration Notes",
-      "These clips collect the different passes I went through for the X-Particles Challenge 2018. They work best as a sequence: each short test is a slightly different look, camera direction, or procedural behavior while I was searching for the right motion language."
-    ]
-  },
-  {
     "slug": "philips-sensotouch",
     "title": "Philips Sensotouch",
     "role": "RIGGING / ANIMATION / CAMERA / RENDERING",
@@ -643,8 +557,8 @@
   },
   {
     "slug": "x-particles-challenge-2018",
-    "title": "X-particles Challenge 2018",
-    "role": "PROCEDURAL SIMULATION / CHALLENGE ENTRY",
+    "title": "X-Particles Challenge 2018",
+    "role": "PROCEDURAL SIMULATION / MOTION TESTS / CHALLENGE ENTRY",
     "tools": [
       "Cinema 4D",
       "X-Particles"
@@ -652,11 +566,13 @@
     "tags": [
       "Procedural",
       "Simulation",
+      "Motion",
       "Challenge"
     ],
-    "description": "X-Particles challenge entry focused on a cellular procedural look within the contest scene constraints.",
-    "cover": "assets/artstation/x-particles-challenge-2018/01-vlx-maftei-x1.jpg",
+    "description": "X-Particles Challenge 2018 entry with a cellular procedural look, plus the animation tests and camera explorations made while finding the direction.",
+    "cover": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg",
     "gallery": [
+      "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-vlx-maftei-vlcsnap-2022-10-03-10h29m07s781.jpg",
       "assets/artstation/x-particles-challenge-2018/01-vlx-maftei-x1.jpg",
       "assets/artstation/x-particles-challenge-2018/02-vlx-maftei-x2.jpg",
       "assets/artstation/x-particles-challenge-2018/03-vlx-maftei-x3.jpg"
@@ -667,7 +583,74 @@
         "title": "XPC2018 Challenge at 4k",
         "url": "https://player.vimeo.com/video/307570158?app_id=122963&dnt=1",
         "platform": "vimeo"
+      },
+      {
+        "title": "X-Particles animation test 01",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/01-xparticles-animation-test-camera-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 02",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/02-xparticles-animation-test-camera10-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 03",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/03-xparticles-animation-test-camera22-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 04",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/04-xparticles-animation-test-camera26a-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 05",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/05-xparticles-animation-test-camera26b-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 06",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/06-xparticles-animation-test-camera27-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 07",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/07-xparticles-animation-test-camera28-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 08",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/08-xparticles-animation-test-camera31-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 09",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/09-xparticles-animation-test-camera40-poster.jpg"
+      },
+      {
+        "title": "X-Particles animation test 10",
+        "url": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45.mp4",
+        "platform": "local",
+        "poster": "assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations/10-xparticles-animation-test-camera45-poster.jpg"
       }
+    ],
+    "body": [
+      "## Iteration Notes",
+      "These clips collect the different passes I went through for the X-Particles Challenge 2018. They work best as a sequence: each short test is a slightly different look, camera direction, or procedural behavior while I was searching for the right motion language."
+    ],
+    "aliases": [
+      "xparticles-challenge-2018-animation-tests-and-explorations"
     ]
   },
   {

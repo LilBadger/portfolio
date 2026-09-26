@@ -1,5 +1,5 @@
 Project: Vlad Maftei cyberpunk portfolio
-Status: Chrome ArtStation asset import complete; 37 local images copied and wired into manual project data
+Status: Dynamic artist redesign on branch redesign/dynamic-artist (reel hero, featured grid, archive, breakdown slider, generated media)
 Current phase: 07 — Artwork QA, optimization, and missing thumbnails
 
 Known source inputs:

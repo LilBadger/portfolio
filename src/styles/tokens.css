@@ -5,12 +5,19 @@
   --ink: #e7e7df;
   --ink-muted: #a0a69f;
   --ink-faint: #747c75;
+  /* Cool secondary tone for small UI text. */
   --acid: #9fb8c3;
   --acid-dim: #6f8792;
+  /* The one electric accent: reserved for things you can click or that are active. */
+  --signal: #a6ff00;
+  --signal-dim: #86d900;
+  --signal-glow: 0 0 18px rgba(166, 255, 0, 0.35);
   --magenta: #ff1aa8;
   --panel: rgba(8, 11, 10, 0.72);
   --line: rgba(231, 231, 223, 0.18);
-  --line-hot: rgba(159, 184, 195, 0.55);
-  --shadow-acid: 0 0 22px rgba(159, 184, 195, 0.22);
-  --font-mono: "Ubuntu Mono", "DejaVu Sans Mono", "Liberation Mono", "Cascadia Mono", "Lucida Console", Consolas, "Courier New", monospace;
+  --line-hot: rgba(166, 255, 0, 0.55);
+  --shadow-acid: 0 0 22px rgba(166, 255, 0, 0.22);
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-display: "Archivo Variable", "Arial Black", "Helvetica Neue", sans-serif;
+  --gutter: clamp(1rem, 5vw, 6rem);
 }

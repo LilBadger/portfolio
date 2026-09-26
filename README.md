@@ -24,6 +24,25 @@ npm run dev
 
 Then open the local Vite URL shown in the terminal.
 
+## Regenerate media (thumbnails, hover loops, hero reel)
+
+```bash
+npm run build:media            # only builds what is missing
+npm run build:media -- --force # rebuild everything
+```
+
+Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/assets/generated/` and are committed, so CI does not need either tool. Every project gets `thumbs/<slug>-{640,1280}.{avif,webp}` and a silent `loops/<slug>.mp4`; edit the `reel` and `customLoops` lists in `scripts/build-media.mjs` to change shots. Run it after adding a project.
+
+## Featured grid, archive, filters, breakdowns
+
+Set these per project in `content/project-overrides.json`:
+
+- `feature` (1 = lead) puts a project in the featured grid; everything else goes to the archive list, newest first.
+- `tile`: `lead`, `tall` or `wide` shape in the featured grid.
+- `kind`: filter flags (`ai`, `3d`, `vfx`, `product`, `realtime`, `code`).
+- `year`: shown in the grid and archive.
+- `breakdown`: same-shot `before`/`after` pass pairs for the drag-to-wipe slider (homepage Process section and the project page).
+
 ## Pull public ArtStation projects
 
 ```bash

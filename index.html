@@ -23,6 +23,18 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Cross-document view transitions are progressive enhancement. Headless/automated browsers
+      // can't paint through them, and none should ever be allowed to hold the page hostage.
+      window.addEventListener('pageswap', function (event) {
+        if (event.viewTransition && navigator.webdriver) event.viewTransition.skipTransition();
+      });
+      window.addEventListener('pagereveal', function (event) {
+        if (!event.viewTransition) return;
+        if (navigator.webdriver) event.viewTransition.skipTransition();
+        else setTimeout(function () { event.viewTransition.skipTransition(); }, 1500);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

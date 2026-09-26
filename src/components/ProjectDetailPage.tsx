@@ -7,6 +7,10 @@ import { homeHref, homeSectionHref, projectHref } from '../utils/routes';
 import { imagePresentation } from '../utils/imagePreview';
 import { ProjectContentsNav, type ProjectContentsItem } from './ProjectContentsNav';
 import { ImageViewer, type ViewerImage } from './ImageViewer';
+import { BreakdownSlider } from './BreakdownSlider';
+import { useReveal } from '../hooks/useReveal';
+import { ProjectThumb } from './ProjectThumb';
+import { viewTransitionName } from '../utils/projectMedia';
 
 type ProjectVideoData = NonNullable<PortfolioProject['videos']>[number];
 
@@ -59,7 +63,21 @@ export function ProjectDetailPage({
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
   const gallery = project.gallery?.length ? project.gallery : [project.cover];
   const videos = project.videos ?? [];
-  const meta = [project.year, project.role, ...(project.tags ?? []).slice(0, 5)].filter(Boolean);
+  // Role and tags overlap ("ANIMATION / RENDERING" in both), so split and dedupe case-insensitively.
+  const meta = [...new Map(
+    [project.year, ...(project.role ?? '').split('/'), ...(project.tags ?? [])]
+      .map((item) => item?.trim())
+      .filter((item): item is string => Boolean(item))
+      .map((item) => [item.toLowerCase(), item] as const)
+  ).values()].slice(0, 8);
+  const slug = project.slug ?? '';
+  useReveal(slug);
+  const terminalLines = [
+    `$ cd ./projects/${slug}`,
+    ...(project.tools ?? []).slice(0, 4).map((tool) => `$ launch ${tool.toLowerCase().replace(/[^a-z0-9.+]+/g, '-')}`),
+    '$ render --final --aov beauty,depth',
+    '$ status: delivered \u2713'
+  ];
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
   const isArticleLayout = project.layout === 'article';
   const contentImages = body ? extractContentImages(body) : [];
@@ -98,27 +116,22 @@ export function ProjectDetailPage({
           </button>
           {project.sourceUrl ? (
             <a href={project.sourceUrl} target="_blank" rel="noreferrer">
-              OPEN {project.sourceLabel ?? 'SOURCE'}
+              OPEN {project.sourceLabel ?? (project.sourceUrl.includes('artstation') ? 'ARTSTATION' : 'SOURCE')}
             </a>
           ) : null}
         </div>
         <ProjectContentsNav items={contents} />
       </div>
 
+      <div className="project-cover" style={{ viewTransitionName: viewTransitionName(slug) }}>
+        <ProjectThumb slug={slug} alt="" sizes="100vw" eager />
+      </div>
+
       <header className="content-hero project-detail-hero">
         <p className="eyebrow">_PROJECT DOSSIER</p>
         <div className="project-title-shell">
           <pre className="project-title-shell__terminal" aria-hidden="true">
-            {[
-              '$ nmap -sV portfolio.local',
-              '$ hydra -l guest -P /dev/null project-vault',
-              '$ ./crack_manifest --target ./assets/artstation',
-              '$ strings ./gallery.bundle | grep sourceUrl',
-              '$ openssl dgst -sha256 final_render.jpg',
-              '$ rsync --dry-run ./project_files ./client_preview',
-              '$ access denied: read-only dossier',
-              '$ retry --public-mirror --no-auth'
-            ].join('\n')}
+            {terminalLines.join('\n')}
           </pre>
           <h1>{project.title}</h1>
         </div>
@@ -164,6 +177,7 @@ export function ProjectDetailPage({
               <AsciiBunny variant="love" />
             </div>
           ) : null}
+          {project.breakdown?.length ? <BreakdownSlider pairs={project.breakdown} title={project.title} /> : null}
           <ContentRenderer body={body} onImageOpen={openImage} />
         </section>
       ) : null}

@@ -27,6 +27,29 @@ export type PortfolioProject = {
   }>;
   layout?: 'gallery' | 'article';
   featured?: boolean;
+  /** Filter categories shown as `--ai`, `--3d`, ... flags on the work section. */
+  kind?: ProjectKind[];
+  /** Position in the featured grid (1 = lead). Projects without it go to the archive list. */
+  feature?: number;
+  /** Tile shape in the featured grid. */
+  tile?: 'lead' | 'tall' | 'wide';
+  /** Same-shot pass pairs for the drag-to-wipe breakdown slider. */
+  breakdown?: BreakdownPair[];
+  /** Old slugs that should still resolve to this project. */
+  aliases?: string[];
+};
+
+export type ProjectKind = 'ai' | '3d' | 'vfx' | 'product' | 'realtime' | 'code';
+
+export type BreakdownStage = {
+  label: string;
+  src: string;
+};
+
+export type BreakdownPair = {
+  shot: string;
+  before: BreakdownStage;
+  after: BreakdownStage;
 };
 
 type ProjectOverride = Partial<PortfolioProject>;
@@ -107,5 +130,15 @@ export const projects: PortfolioProject[] = normalizedImportedProjects.length > 
     : fallbackProjects.map(normalizeProject);
 
 export function getProject(slug: string): PortfolioProject | undefined {
-  return projects.find((project) => (project.slug ?? slugify(project.title)) === slug);
+  return projects.find((project) => (project.slug ?? slugify(project.title)) === slug || project.aliases?.includes(slug));
 }
+
+export const featuredProjects = projects
+  .filter((project) => project.feature !== undefined)
+  .sort((first, second) => (first.feature ?? 0) - (second.feature ?? 0));
+
+const yearValue = (project: PortfolioProject) => Number.parseInt(project.year ?? '', 10) || 0;
+
+export const archiveProjects = projects
+  .filter((project) => project.feature === undefined)
+  .sort((first, second) => yearValue(second) - yearValue(first));

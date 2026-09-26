@@ -12,9 +12,13 @@
     "import:artstation": "node scripts/import-artstation.mjs",
     "validate:content": "node scripts/validate-content.mjs",
     "new:article": "node scripts/new-article.mjs",
-    "new:page": "node scripts/new-page.mjs"
+    "new:page": "node scripts/new-page.mjs",
+    "build:media": "node scripts/build-media.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "lenis": "^1.3.26",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },
