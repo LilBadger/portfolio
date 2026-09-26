@@ -85,6 +85,7 @@ function WorkTile({ project, index, dimmed }: { project: PortfolioProject; index
             alt={`${project.title} artwork`}
             sizes={lead ? '(max-width: 760px) 100vw, 50vw' : '(max-width: 760px) 100vw, 25vw'}
             eager={lead}
+            focus={project.coverFocus}
           />
           <HoverLoop slug={slug} active={active} />
         </div>

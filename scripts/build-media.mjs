@@ -25,6 +25,8 @@ const NOTLD = 'assets/projects/night-of-the-living-dead-ltx-contest/night-of-the
 const XP = 'assets/artstation/xparticles-challenge-2018-animation-tests-and-explorations';
 const FUGI = 'assets/projects/fugi-visualizer';
 const F1R_LIVE = 'assets/projects/f1r-live-video/f1r-live-final.mp4';
+const DARK_FOREST = 'assets/projects/dark-forest/dark-forest-final.mp4';
+const DARK_FOREST_INK = 'assets/projects/dark-forest/look-dev-ink-edit.mp4';
 
 function run(cmd, args) {
   const result = spawnSync(cmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
@@ -112,6 +114,7 @@ const gallerySlides = (project, count = 4) => {
 
 const customLoops = {
   'f1r-live-video': [{ clip: F1R_LIVE, start: 158, duration: 4.5 }],
+  'dark-forest': [{ clip: DARK_FOREST, start: 9, duration: 4.5 }],
   'night-of-the-living-dead-ltx-contest': [{ clip: NOTLD, start: 64.2, duration: 4 }],
   'x-particles-challenge-2018': [{ clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 0.2, duration: 4.2 }],
   'fugi-visualizer': [
@@ -131,9 +134,9 @@ const reel = [
   { clip: `${XP}/06-xparticles-animation-test-camera27.mp4`, start: 2.4, duration: 1.6 },
   { still: coverOf('cc-digital-human-contest-2020-gellert-grindelwald'), duration: 1.4 },
   { clip: NOTLD, start: 66, duration: 1.8 },
-  { still: coverOf('daft-punk-cover-art'), duration: 1.3 },
+  { clip: DARK_FOREST, start: 10, duration: 1.8 },
   { clip: `${XP}/04-xparticles-animation-test-camera26a.mp4`, start: 2.6, duration: 1.5 },
-  { still: coverOf('philips-sensotouch'), duration: 1.3 },
+  { clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
   { clip: F1R_LIVE, start: 166, duration: 1.8 },
   { clip: NOTLD, start: 20, duration: 1.6 },
   { still: coverOf('cat-walkman'), duration: 1.3 },

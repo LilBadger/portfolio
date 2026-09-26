@@ -8,20 +8,130 @@
     "feature": 1,
     "tile": "lead"
   },
+  "dark-forest": {
+    "kind": [
+      "3d",
+      "ai"
+    ],
+    "feature": 2,
+    "tile": "tall",
+    "coverFocus": "28% 50%",
+    "breakdownRatio": 1.7778,
+    "breakdown": [
+      {
+        "shot": "Frame one",
+        "before": {
+          "label": "Wireframe",
+          "src": "assets/projects/dark-forest/surface-clay-wireframe-v2.webp"
+        },
+        "after": {
+          "label": "White clay",
+          "src": "assets/projects/dark-forest/surface-clay.webp"
+        }
+      },
+      {
+        "shot": "Frame one",
+        "before": {
+          "label": "White clay",
+          "src": "assets/projects/dark-forest/surface-clay.webp"
+        },
+        "after": {
+          "label": "Base materials",
+          "src": "assets/projects/dark-forest/surface-base-materials.webp"
+        }
+      },
+      {
+        "shot": "Frame one",
+        "before": {
+          "label": "Base materials",
+          "src": "assets/projects/dark-forest/surface-base-materials.webp"
+        },
+        "after": {
+          "label": "Painted finish",
+          "src": "assets/projects/dark-forest/surface-strokes-on.webp"
+        }
+      },
+      {
+        "shot": "Light",
+        "before": {
+          "label": "Forest light",
+          "src": "assets/projects/dark-forest/light-forest.webp"
+        },
+        "after": {
+          "label": "+ Moonlight",
+          "src": "assets/projects/dark-forest/light-moonlight.webp"
+        }
+      },
+      {
+        "shot": "Light",
+        "before": {
+          "label": "+ Moonlight",
+          "src": "assets/projects/dark-forest/light-moonlight.webp"
+        },
+        "after": {
+          "label": "+ Lantern light",
+          "src": "assets/projects/dark-forest/light-lantern.webp"
+        }
+      }
+    ],
+    "turntables": [
+      {
+        "label": "Traveller",
+        "dir": "assets/projects/dark-forest/turntables/traveller",
+        "frames": 36,
+        "note": "The traveller: Hunyuan3D mesh from four generated views, fitted rig and surface brushstrokes"
+      },
+      {
+        "label": "Lantern",
+        "dir": "assets/projects/dark-forest/turntables/lantern",
+        "frames": 36,
+        "note": "The lantern: generated mesh with painted surface and its own warm light"
+      },
+      {
+        "label": "Backpack",
+        "dir": "assets/projects/dark-forest/turntables/backpack",
+        "frames": 36,
+        "note": "The backpack: canvas and leather, straps fitted to the rig"
+      },
+      {
+        "label": "Conifer",
+        "dir": "assets/projects/dark-forest/turntables/conifer",
+        "frames": 36,
+        "note": "A conifer: generated mesh, instanced with variation for the canopy and tree line"
+      },
+      {
+        "label": "Boulder",
+        "dir": "assets/projects/dark-forest/turntables/boulder",
+        "frames": 36,
+        "note": "A boulder: generated stone, varied in scale, rotation and burial depth"
+      },
+      {
+        "label": "Stump + trunk",
+        "dir": "assets/projects/dark-forest/turntables/deadfall",
+        "frames": 36,
+        "note": "Deadfall: a gnarled stump and a broken hollow trunk, joined with moss and debris"
+      },
+      {
+        "label": "Forest spirit",
+        "dir": "assets/projects/dark-forest/turntables/monster",
+        "frames": 36,
+        "note": "A forest spirit: procedural Blender geometry with animated eyes and head"
+      }
+    ]
+  },
   "fugi-visualizer": {
     "kind": [
       "ai",
       "code"
     ],
-    "feature": 3
+    "feature": 4
   },
   "night-of-the-living-dead-ltx-contest": {
     "kind": [
       "ai",
       "vfx"
     ],
-    "feature": 2,
-    "tile": "tall",
+    "feature": 3,
     "breakdown": [
       {
         "shot": "TV broadcast",
@@ -64,7 +174,6 @@
     "kind": [
       "ai"
     ],
-    "feature": 7,
     "role": "AI ILLUSTRATION / MUSIC / EXPERIMENT",
     "tags": [
       "Featured",
@@ -80,7 +189,7 @@
       "ai",
       "3d"
     ],
-    "feature": 4,
+    "feature": 7,
     "role": "AI ILLUSTRATION / CHARACTER POSING",
     "tags": [
       "AI",

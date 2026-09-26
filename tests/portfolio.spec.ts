@@ -15,10 +15,11 @@ test('work section leads with a featured grid, an archive list, and discipline f
   const tiles = page.locator('.work-bento .work-tile');
   const rows = page.locator('.archive__list li');
   await expect(tiles).toHaveCount(7);
-  await expect(rows).toHaveCount(7);
+  await expect(rows).toHaveCount(8);
   await expect(tiles.nth(0).locator('h3')).toHaveText('F1R - Fugi Live');
   await expect(tiles.nth(0)).toHaveClass(/work-tile--lead/);
-  await expect(tiles.nth(1).locator('h3')).toHaveText('Night of the Living Dead - LTX-2 Contest');
+  await expect(tiles.nth(1).locator('h3')).toHaveText('Dark Forest');
+  await expect(tiles.nth(2).locator('h3')).toHaveText('Night of the Living Dead - LTX-2 Contest');
 
   await page.getByRole('button', { name: '--product', exact: true }).click();
   await expect(page.getByRole('button', { name: '--product', exact: true })).toHaveAttribute('aria-pressed', 'true');
@@ -27,7 +28,7 @@ test('work section leads with a featured grid, an archive list, and discipline f
 
   await page.getByRole('button', { name: '--all', exact: true }).click();
   await expect(page.locator('.work-tile.is-dimmed')).toHaveCount(0);
-  await expect(page.locator('.archive__list li:not([hidden])')).toHaveCount(7);
+  await expect(page.locator('.archive__list li:not([hidden])')).toHaveCount(8);
 });
 
 test('home navigation marks the section currently crossing the viewport', async ({ page }) => {
@@ -290,4 +291,28 @@ test('F1R live video case study leads with the film and documents the pipeline',
   }
   await expect(page.locator('.content-video__poster')).toHaveCount(1);
   await expect(page.locator('.project-exit-nav__previous')).toHaveAttribute('href', '/projects/night-of-the-living-dead-ltx-contest/');
+});
+
+test('Dark Forest page has draggable turntables and an inline pass breakdown', async ({ page }) => {
+  await page.goto('/projects/dark-forest/');
+
+  await expect(page).toHaveTitle('Dark Forest — Vlad Maftei');
+  await expect(page.getByRole('button', { name: 'Play Dark Forest, final shot (28 seconds, with sound)' })).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/castlevania|staticvfx/i);
+
+  const turntable = page.locator('.turntable');
+  await expect(turntable.locator('.turntable__assets button')).toHaveCount(7);
+  const stage = turntable.locator('.turntable__stage');
+  await stage.scrollIntoViewIfNeeded();
+  await stage.focus();
+  await page.keyboard.press('ArrowRight');
+  const before = Number(await stage.getAttribute('aria-valuenow'));
+  await page.keyboard.press('ArrowRight');
+  await expect(stage).toHaveAttribute('aria-valuenow', String((before + 10) % 360));
+  await turntable.getByRole('button', { name: /Lantern/ }).click();
+  await expect(stage.locator('img')).toHaveAttribute('src', /turntables\/lantern\/00\.webp$/);
+
+  const breakdown = page.locator('.content-renderer .breakdown');
+  await expect(breakdown).toHaveCount(1);
+  await expect(breakdown.locator('.breakdown__stages button')).toHaveCount(5);
 });

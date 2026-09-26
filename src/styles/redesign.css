@@ -559,7 +559,13 @@
 /* ---------- breakdown slider ---------- */
 
 .breakdown {
+  width: min(100%, 66rem, calc(74vh * var(--breakdown-ratio, 1.326)));
   margin: 0 0 clamp(2.5rem, 5vw, 4rem);
+}
+
+.breakdown .breakdown__frame,
+.breakdown figcaption {
+  width: 100%;
 }
 
 .breakdown__stages {
@@ -594,8 +600,8 @@
 
 .breakdown__frame {
   position: relative;
-  width: min(100%, 66rem, calc(74vh * 1.326));
-  aspect-ratio: 1432 / 1080;
+  width: min(100%, 66rem, calc(74vh * var(--breakdown-ratio, 1.326)));
+  aspect-ratio: var(--breakdown-ratio, 1.326);
   overflow: hidden;
   background: #000;
   user-select: none;
@@ -672,7 +678,7 @@
 .breakdown figcaption {
   display: flex;
   justify-content: space-between;
-  width: min(100%, 66rem, calc(74vh * 1.326));
+  width: min(100%, 66rem, calc(74vh * var(--breakdown-ratio, 1.326)));
   margin-top: 0.6rem;
   color: var(--ink-faint);
   font-size: 0.74rem;
@@ -1015,4 +1021,96 @@
   background: none;
   -webkit-text-fill-color: currentColor;
   color: #eef0ea;
+}
+
+/* ---------- turntable viewer ---------- */
+
+.turntable {
+  width: min(100%, 60rem);
+  margin: clamp(1.5rem, 4vw, 3rem) auto;
+}
+
+.turntable__assets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.8rem;
+}
+
+.turntable__assets button,
+.turntable figcaption button {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-muted);
+  font: 700 0.74rem var(--font-mono);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.turntable__assets button span {
+  color: var(--ink-faint);
+}
+
+.turntable__assets button[aria-pressed="true"] {
+  border-color: var(--signal);
+  color: var(--ink);
+}
+
+.turntable__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(166, 255, 0, 0.06), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(231, 231, 223, 0.04) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(0deg, rgba(231, 231, 223, 0.04) 0 1px, transparent 1px 48px),
+    #070909;
+  border: 1px solid var(--line);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.turntable__stage:active {
+  cursor: grabbing;
+}
+
+.turntable__stage:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 4px;
+}
+
+.turntable__stage img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.turntable__hud {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 0.7rem;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.turntable__hud b {
+  margin-right: 0.5rem;
+  color: var(--signal);
+}
+
+.turntable figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.6rem;
+  color: var(--ink-faint);
+  font-size: 0.74rem;
 }

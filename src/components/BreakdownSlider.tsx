@@ -5,7 +5,7 @@ import { assetPath } from '../utils/assetPath';
 const fileLabel = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, '_');
 
 /** Drag-to-wipe comparison between two passes of the same shot. */
-export function BreakdownSlider({ pairs, title }: { pairs: BreakdownPair[]; title: string }) {
+export function BreakdownSlider({ pairs, title, ratio = 1432 / 1080 }: { pairs: BreakdownPair[]; title: string; ratio?: number }) {
   const [pairIndex, setPairIndex] = useState(0);
   const [position, setPosition] = useState(50);
   if (pairs.length === 0) return null;
@@ -13,7 +13,7 @@ export function BreakdownSlider({ pairs, title }: { pairs: BreakdownPair[]; titl
   const { before, after } = pairs[pairIndex];
 
   return (
-    <figure className="breakdown" data-reveal>
+    <figure className="breakdown" data-reveal style={{ '--breakdown-ratio': ratio } as React.CSSProperties}>
       <div className="breakdown__stages" role="group" aria-label={`${title} pipeline passes`}>
         {pairs.map((pair, index) => (
           <button

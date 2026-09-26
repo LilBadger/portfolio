@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { AsciiBunny } from './AsciiBunny';
 import type { PortfolioProject } from '../data/projects';
 import { assetPath } from '../utils/assetPath';
-import { ContentRenderer, extractContentHeadings, extractContentImages } from './ContentRenderer';
+import { ContentRenderer, extractContentEmbeds, extractContentHeadings, extractContentImages } from './ContentRenderer';
+import { TurntableViewer } from './TurntableViewer';
 import { homeHref, homeSectionHref, projectHref } from '../utils/routes';
 import { imagePresentation } from '../utils/imagePreview';
 import { ProjectContentsNav, type ProjectContentsItem } from './ProjectContentsNav';
@@ -81,6 +82,14 @@ export function ProjectDetailPage({
   const body = Array.isArray(project.body) ? project.body.join('\n') : project.body;
   const isArticleLayout = project.layout === 'article';
   const contentImages = body ? extractContentImages(body) : [];
+  const bodyEmbeds = body ? extractContentEmbeds(body) : [];
+  const breakdownSlider = project.breakdown?.length
+    ? <BreakdownSlider pairs={project.breakdown} title={project.title} ratio={project.breakdownRatio} />
+    : null;
+  const embeds = {
+    breakdown: breakdownSlider,
+    turntables: project.turntables?.length ? <TurntableViewer turntables={project.turntables} title={project.title} /> : null
+  };
   const viewerImages: ViewerImage[] = [
     ...(isArticleLayout ? [] : gallery.map((src, index) => ({ src, alt: `${project.title} artwork ${index + 1}` }))),
     ...contentImages.map((item, index) => ({
@@ -124,7 +133,7 @@ export function ProjectDetailPage({
       </div>
 
       <div className="project-cover" style={{ viewTransitionName: viewTransitionName(slug) }}>
-        <ProjectThumb slug={slug} alt="" sizes="100vw" eager />
+        <ProjectThumb slug={slug} alt="" sizes="100vw" eager focus={project.coverFocus} />
       </div>
 
       <header className="content-hero project-detail-hero">
@@ -177,8 +186,8 @@ export function ProjectDetailPage({
               <AsciiBunny variant="love" />
             </div>
           ) : null}
-          {project.breakdown?.length ? <BreakdownSlider pairs={project.breakdown} title={project.title} /> : null}
-          <ContentRenderer body={body} onImageOpen={openImage} />
+          {project.breakdown?.length && !bodyEmbeds.includes('breakdown') ? breakdownSlider : null}
+          <ContentRenderer body={body} onImageOpen={openImage} embeds={embeds} />
         </section>
       ) : null}
 

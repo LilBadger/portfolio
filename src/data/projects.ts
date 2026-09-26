@@ -35,6 +35,12 @@ export type PortfolioProject = {
   tile?: 'lead' | 'tall' | 'wide';
   /** Same-shot pass pairs for the drag-to-wipe breakdown slider. */
   breakdown?: BreakdownPair[];
+  /** Width / height of the breakdown frames (defaults to the 1432x1080 NOTLD passes). */
+  breakdownRatio?: number;
+  /** Pre-rendered 360° turntables, placed in the body with `::embed[turntables]`. */
+  turntables?: Turntable[];
+  /** CSS object-position for the cover when a tile crops it (e.g. "30% 50%"). */
+  coverFocus?: string;
   /** Old slugs that should still resolve to this project. */
   aliases?: string[];
 };
@@ -44,6 +50,14 @@ export type ProjectKind = 'ai' | '3d' | 'vfx' | 'product' | 'realtime' | 'code';
 export type BreakdownStage = {
   label: string;
   src: string;
+};
+
+export type Turntable = {
+  label: string;
+  /** Folder holding 00.webp, 01.webp, ... */
+  dir: string;
+  frames?: number;
+  note?: string;
 };
 
 export type BreakdownPair = {

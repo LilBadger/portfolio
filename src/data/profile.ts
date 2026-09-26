@@ -25,7 +25,7 @@ export const profileFacts = [
   },
   {
     label: '3D / VFX',
-    items: ['Houdini', 'Cinema 4D', 'X-Particles', 'Blender', 'Marvelous Designer', 'Substance Painter', 'Character Creator', 'Unreal Engine']
+    items: ['Houdini', 'Cinema 4D', 'X-Particles', 'Blender + Geometry Nodes', 'Hunyuan3D', 'Kimodo', 'Marvelous Designer', 'Substance Painter', 'Character Creator', 'Unreal Engine']
   },
   {
     label: 'AI / code',

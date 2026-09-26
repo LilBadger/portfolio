@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import { assetPath } from '../utils/assetPath';
 import { imagePresentation } from '../utils/imagePreview';
 
@@ -10,6 +10,7 @@ type MarkdownBlock =
   | { type: 'image'; alt: string; src: string }
   | { type: 'video'; title: string; url: string }
   | { type: 'code'; code: string }
+  | { type: 'embed'; name: string }
   | { type: 'rule' };
 
 export type ContentHeading = {
@@ -128,6 +129,13 @@ function parseMarkdown(markdown: string): MarkdownBlock[] {
       continue;
     }
 
+    const embed = trimmed.match(/^::embed\[([a-z0-9-]+)\]$/);
+    if (embed) {
+      blocks.push({ type: 'embed', name: embed[1] });
+      index += 1;
+      continue;
+    }
+
     const video = trimmed.match(/^::video\[([^\]]+)\]\(([^)]+)\)$/);
     if (video) {
       blocks.push({ type: 'video', title: video[1], url: video[2] });
@@ -171,7 +179,7 @@ function parseMarkdown(markdown: string): MarkdownBlock[] {
       !/^[-*]\s+/.test(lines[index].trim()) &&
       !lines[index].trim().startsWith('```') &&
       !lines[index].trim().startsWith('>') &&
-      !lines[index].trim().match(/^::video\[([^\]]+)\]\(([^)]+)\)$/) &&
+      !lines[index].trim().startsWith('::') &&
       !lines[index].trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
     ) {
       paragraphLines.push(lines[index].trim());
@@ -215,7 +223,21 @@ function renderInline(text: string): ReactNode[] {
   return nodes;
 }
 
-export function ContentRenderer({ body, onImageOpen }: { body: string; onImageOpen?: (src: string) => void }) {
+/** Names referenced by `::embed[name]` lines in the article body. */
+export function extractContentEmbeds(markdown: string): string[] {
+  return parseMarkdown(markdown).flatMap((block) => block.type === 'embed' ? [block.name] : []);
+}
+
+export function ContentRenderer({
+  body,
+  onImageOpen,
+  embeds = {}
+}: {
+  body: string;
+  onImageOpen?: (src: string) => void;
+  /** Interactive pieces placed with `::embed[name]` lines. */
+  embeds?: Record<string, ReactNode>;
+}) {
   const blocks = parseMarkdown(body);
 
   return (
@@ -268,6 +290,10 @@ export function ContentRenderer({ body, onImageOpen }: { body: string; onImageOp
 
         if (block.type === 'video') {
           return <ContentVideo title={block.title} url={block.url} key={index} />;
+        }
+
+        if (block.type === 'embed') {
+          return embeds[block.name] ? <Fragment key={index}>{embeds[block.name]}</Fragment> : null;
         }
 
         if (block.type === 'code') {
