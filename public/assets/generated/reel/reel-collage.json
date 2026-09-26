@@ -1,5 +1,5 @@
 {
-  "duration": 16.0,
+  "duration": 28.75,
   "shots": [
     {
       "start": 0.0,
@@ -13,7 +13,7 @@
     },
     {
       "start": 1.0,
-      "end": 2.75,
+      "end": 3.25,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
@@ -23,8 +23,8 @@
       ]
     },
     {
-      "start": 2.75,
-      "end": 5.25,
+      "start": 3.25,
+      "end": 9.5,
       "slug": "night-of-the-living-dead-ltx-contest",
       "title": "Night of the Living Dead - LTX-2 Contest",
       "tools": [
@@ -33,8 +33,8 @@
       ]
     },
     {
-      "start": 5.25,
-      "end": 7.0,
+      "start": 9.5,
+      "end": 11.5,
       "slug": "f1r-live-video",
       "title": "F1R - Fugi Live",
       "tools": [
@@ -43,8 +43,8 @@
       ]
     },
     {
-      "start": 7.0,
-      "end": 8.0,
+      "start": 11.5,
+      "end": 14.5,
       "slug": "daft-punk-cover-art",
       "title": "Daft Punk cover art",
       "tools": [
@@ -53,8 +53,8 @@
       ]
     },
     {
-      "start": 8.0,
-      "end": 9.0,
+      "start": 14.5,
+      "end": 15.75,
       "slug": "cat-walkman",
       "title": "Cat Walkman",
       "tools": [
@@ -63,8 +63,8 @@
       ]
     },
     {
-      "start": 9.0,
-      "end": 10.25,
+      "start": 15.75,
+      "end": 17.75,
       "slug": "trips",
       "title": "Trips",
       "tools": [
@@ -73,8 +73,8 @@
       ]
     },
     {
-      "start": 10.25,
-      "end": 11.25,
+      "start": 17.75,
+      "end": 20.5,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
@@ -84,8 +84,8 @@
       ]
     },
     {
-      "start": 11.25,
-      "end": 12.5,
+      "start": 20.5,
+      "end": 22.5,
       "slug": "fugi-visualizer",
       "title": "F1R - Fugi Visualizer",
       "tools": [
@@ -94,8 +94,8 @@
       ]
     },
     {
-      "start": 12.5,
-      "end": 14.0,
+      "start": 22.5,
+      "end": 25.5,
       "slug": "night-of-the-living-dead-ltx-contest",
       "title": "Night of the Living Dead - LTX-2 Contest",
       "tools": [
@@ -104,8 +104,8 @@
       ]
     },
     {
-      "start": 14.0,
-      "end": 15.0,
+      "start": 25.5,
+      "end": 26.5,
       "slug": "f1r-live-video",
       "title": "F1R - Fugi Live",
       "tools": [
@@ -114,8 +114,8 @@
       ]
     },
     {
-      "start": 15.0,
-      "end": 16.0,
+      "start": 26.5,
+      "end": 28.75,
       "slug": "dark-forest",
       "title": "Dark Forest",
       "tools": [
