@@ -37,6 +37,10 @@ Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/asset
 
 `npm run build:collage` renders a beat-cut, text-free collage edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. It is the default hero reel (`?reel=classic` shows the plain reel); edit the `EDIT` list in `scripts/build-collage-reel.py` to change shots and treatments.
 
+## Doodle montage (preview)
+
+`npm run build:doodle` renders a hand-drawn doodle montage in the style of adidas' "There Will Be Haters": longer shots with boiling marker doodles and emoticons that track each subject, a wobbling outline around it, and ~0.3 s kaleidoscope bursts on some cuts. It reads the SAM3 mattes and clips in the git-ignored `.collage-cache/` (made with `scripts/comfy-passes.py`). Preview it with `?reel=doodle`; edit the `EDIT` list in `scripts/build-doodle-reel.py` to change shots and doodles.
+
 ## Featured grid, archive, filters, breakdowns
 
 Set these per project in `content/project-overrides.json`:

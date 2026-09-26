@@ -14,7 +14,8 @@
     "new:article": "node scripts/new-article.mjs",
     "new:page": "node scripts/new-page.mjs",
     "build:media": "node scripts/build-media.mjs",
-    "build:collage": "python3 scripts/build-collage-reel.py"
+    "build:collage": "python3 scripts/build-collage-reel.py",
+    "build:doodle": "python3 scripts/build-doodle-reel.py"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

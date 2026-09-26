@@ -1,0 +1,87 @@
+{
+  "duration": 26.5,
+  "shots": [
+    {
+      "start": 0.0,
+      "end": 2.5,
+      "slug": "f1r-live-video",
+      "title": "F1R - Fugi Live",
+      "tools": [
+        "LTX-2.3",
+        "Pi3X point cloud"
+      ]
+    },
+    {
+      "start": 2.5,
+      "end": 5.5,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
+      "tools": [
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
+      ]
+    },
+    {
+      "start": 5.5,
+      "end": 14.25,
+      "slug": "night-of-the-living-dead-ltx-contest",
+      "title": "Night of the Living Dead - LTX-2 Contest",
+      "tools": [
+        "ComfyUI",
+        "LTX-2"
+      ]
+    },
+    {
+      "start": 14.25,
+      "end": 17.0,
+      "slug": "daft-punk-cover-art",
+      "title": "Daft Punk cover art",
+      "tools": [
+        "ComfyUI",
+        "SDXL"
+      ]
+    },
+    {
+      "start": 17.0,
+      "end": 19.25,
+      "slug": "cat-walkman",
+      "title": "Cat Walkman",
+      "tools": [
+        "SDXL",
+        "Suno"
+      ]
+    },
+    {
+      "start": 19.25,
+      "end": 21.25,
+      "slug": "trips",
+      "title": "Trips",
+      "tools": [
+        "Flux",
+        "Runway"
+      ]
+    },
+    {
+      "start": 21.25,
+      "end": 23.5,
+      "slug": "fugi-visualizer",
+      "title": "F1R - Fugi Visualizer",
+      "tools": [
+        "Codex",
+        "WebGL"
+      ]
+    },
+    {
+      "start": 23.5,
+      "end": 26.5,
+      "slug": "dark-forest",
+      "title": "Dark Forest",
+      "tools": [
+        "Hunyuan3D",
+        "Kimodo",
+        "Blender"
+      ]
+    }
+  ]
+}
