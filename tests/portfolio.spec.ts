@@ -312,6 +312,24 @@ test('Dark Forest page has draggable turntables and an inline pass breakdown', a
   await turntable.getByRole('button', { name: /Lantern/ }).click();
   await expect(stage.locator('img')).toHaveAttribute('src', /turntables\/lantern\/00\.webp$/);
 
+  // Every asset's rendered (object-fit: contain) frame must sit inside the stage, never cropped.
+  for (const name of ['Traveller', 'Backpack', 'Stump + trunk', 'Forest spirit']) {
+    await turntable.getByRole('button', { name: new RegExp(name.replace('+', '\\+')) }).click();
+    const fits = await stage.evaluate(async (element) => {
+      const image = element.querySelector('img') as HTMLImageElement;
+      await image.decode().catch(() => undefined);
+      const box = element.getBoundingClientRect();
+      const rect = image.getBoundingClientRect();
+      const scale = Math.min(rect.width / image.naturalWidth, rect.height / image.naturalHeight);
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      const left = rect.left + (rect.width - width) / 2;
+      const top = rect.top + (rect.height - height) / 2;
+      return left >= box.left - 1 && top >= box.top - 1 && left + width <= box.right + 1 && top + height <= box.bottom + 1;
+    });
+    expect(fits, name).toBe(true);
+  }
+
   const breakdown = page.locator('.content-renderer .breakdown');
   await expect(breakdown).toHaveCount(1);
   await expect(breakdown.locator('.breakdown__stages button')).toHaveCount(5);
