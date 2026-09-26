@@ -35,7 +35,7 @@ Needs `ffmpeg` and ImageMagick 7 (`magick`) locally. Outputs go to `public/asset
 
 ## Collage reel (alternate hero)
 
-`npm run build:collage` renders a beat-cut collage/lyric edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. Open the site with `?reel=collage` to see it in the hero; edit the `EDIT` list in `scripts/build-collage-reel.py` to change cards, treatments and words.
+`npm run build:collage` renders a beat-cut, text-free collage edit of the recent work (needs Python with Pillow + numpy and ffmpeg) to `public/assets/generated/reel/reel-collage-*`. Open the site with `?reel=collage` to see it in the hero; edit the `EDIT` list in `scripts/build-collage-reel.py` to change shots and treatments.
 
 ## Featured grid, archive, filters, breakdowns
 
