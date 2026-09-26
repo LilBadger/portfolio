@@ -207,10 +207,6 @@
   white-space: nowrap;
 }
 
-.hero-hud__meta span:last-child {
-  color: rgba(166, 255, 0, 0.7);
-}
-
 /* Caption bar. */
 .hero-identity {
   position: relative;
@@ -1267,13 +1263,6 @@
 
   .hero-summary {
     font-size: 0.9rem;
-  }
-}
-
-/* Touch screens have no cursor: the decode lens drifts on its own there. */
-@media (hover: none) {
-  .hero-hud__meta span:last-child {
-    display: none;
   }
 }
 

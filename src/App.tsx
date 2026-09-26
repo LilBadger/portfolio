@@ -286,7 +286,6 @@ function HomePage() {
             <HeroTerminalLine />
             <div className="hero-hud__meta">
               <span>REEL / 2016—2026</span>
-              <span>MOVE CURSOR TO DECODE_</span>
             </div>
           </div>
         </div>
