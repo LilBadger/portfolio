@@ -631,10 +631,10 @@ EDIT = [
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
         Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
     # Hard-cut flurry: quick flips before the forest holds.
-    shot('dark-forest', clip('forest_kimodo', 1.0), 0.5, 'cut', None, []),
+    shot('dark-forest', clip('forest_anime', 3.0), 0.5, 'cut', None, []),
     shot(NOTLD, clip('notld_carry', 2.6), 0.5, 'cut', None, [], grade=[(0, 1, 'duotone')]),
     shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 0.625, 'cut', None, []),
-    shot('dark-forest', clip('forest_boy_a', 0.5), 3.25, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([(214, 226, 214)], ['ghost', 'peeker', 'eyeblob', 'ghost', 'peeker'], 21, count=9, size=92, track='dense', opacity=0.95)),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 3.25, 'burst', None, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([(214, 226, 214)], ['ghost', 'peeker', 'eyeblob', 'ghost', 'peeker'], 21, count=9, size=92, track='dense', opacity=0.95)),
     shot(NOTLD, clip('notld_carry', 0.3), 1.0, 'cut', ACID, [
         Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
         Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
