@@ -1328,3 +1328,18 @@
   .hero-identity__actions { order: 2; }
   .hero-summary { order: 3; }
 }
+
+/* The work heading matches the name in the hero caption bar: small and quiet, the work is the headline. */
+.work-section .section-header h2 {
+  font-size: clamp(1.3rem, 1.9vw, 1.9rem);
+  line-height: 1;
+}
+
+.work-section .section-header {
+  align-items: center;
+  row-gap: 0.6rem;
+}
+
+.work-section .section-header .eyebrow {
+  margin-bottom: 0;
+}
