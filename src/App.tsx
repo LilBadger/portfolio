@@ -279,28 +279,39 @@ function HomePage() {
       <SiteNav activeSection={activeSection} />
 
       <section className="hero" ref={heroRef} aria-labelledby="hero-title">
-        <HeroReel sectionRef={heroRef} />
+        {/* The reel owns the first screen; only faint camera-style readouts sit on it. */}
+        <div className="hero-stage">
+          <HeroReel sectionRef={heroRef} />
+          <div className="hero-hud" aria-hidden="true">
+            <HeroTerminalLine />
+            <div className="hero-hud__meta">
+              <span>REEL / 2016—2026</span>
+              <span>MOVE CURSOR TO DECODE_</span>
+            </div>
+          </div>
+        </div>
         <div className="hero-identity">
-          <p className="eyebrow">_3D GENERALIST / VFX / AI VIDEO — BUCHAREST</p>
-          <h1 id="hero-title">
-            <GlitchText text="VLAD" as="span" className="hero-name-line hero-name-line--vlad" />
-            <GlitchText text="MAFTEI" as="span" className="hero-name-line" />
-          </h1>
+          <div className="hero-identity__name">
+            <h1 id="hero-title">
+              <GlitchText text="VLAD" as="span" className="hero-name-line hero-name-line--vlad" />
+              <GlitchText text="MAFTEI" as="span" className="hero-name-line" />
+            </h1>
+            <p className="eyebrow">3D generalist / VFX / AI video — Bucharest</p>
+          </div>
           <p className="hero-summary">
             I make cinematic images with 3D, simulation and generative video, from product CGI and
             digital humans to LTX-2 film sequences and point-cloud music videos.
           </p>
-          <HeroTerminalLine />
-          <div className="hero-actions">
-            <a className="button button--signal" href={homeSectionHref('work')}>&gt; View work_</a>
-            <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
-            <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
+          <div className="hero-identity__actions">
+            <div className="hero-actions">
+              <a className="button button--signal" href={homeSectionHref('work')}>&gt; View work_</a>
+              <a className="button" href={`mailto:${contactEmail}`}>Email me</a>
+            </div>
+            <div className="hero-identity__meta">
+              <p className="hero-status"><i aria-hidden="true" /> {availability}</p>
+              <SocialIcons className="hero-social" />
+            </div>
           </div>
-          <SocialIcons className="hero-social" />
-        </div>
-        <div className="hero-hud" aria-hidden="true">
-          <span>REEL / 2016—2026</span>
-          <span>MOVE CURSOR TO DECODE_</span>
         </div>
       </section>
 
