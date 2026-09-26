@@ -184,7 +184,8 @@
       "Music"
     ],
     "description": "AI illustration experiment built with SDXL and ControlNet workflows, with music created in Suno.",
-    "date": "2025-01-07"
+    "date": "2025-01-07",
+    "feature": 1
   },
   "daft-punk-cover-art": {
     "year": "2025",
@@ -209,7 +210,8 @@
       "ai",
       "3d"
     ],
-    "date": "2024-08-13"
+    "date": "2024-08-13",
+    "feature": 1
   },
   "x-particles-challenge-2018": {
     "year": "2018",
@@ -217,7 +219,6 @@
       "3d",
       "vfx"
     ],
-    "feature": 5,
     "date": "2018-12-20"
   },
   "philips-sensotouch": {
@@ -248,7 +249,6 @@
       "3d",
       "vfx"
     ],
-    "feature": 6,
     "date": "2020-11-18"
   },
   "breakdance": {

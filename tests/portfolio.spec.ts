@@ -22,9 +22,9 @@ test('work section leads with a featured grid, an archive list, and discipline f
     'F1R - Fugi Live',
     'Night of the Living Dead - LTX-2 Contest',
     'F1R - Fugi Visualizer',
+    'Cat Walkman',
     'Daft Punk cover art',
-    'Grindelwald Digital Human',
-    'X-Particles Challenge 2018'
+    'Trips'
   ]);
   await expect(tiles.nth(0)).toHaveClass(/work-tile--lead/);
 
@@ -354,8 +354,8 @@ test('Dark Forest page has draggable turntables and an inline pass breakdown', a
   await expect(breakdown.locator('.breakdown__stages button')).toHaveCount(5);
 });
 
-test('the hero reel only features 2025-2026 work', async ({ request }) => {
+test('the hero reel only features recent work (2025-2026 plus Trips)', async ({ request }) => {
   const manifest = await (await request.get('/assets/generated/reel/reel.json')).json();
-  const recent = ['f1r-live-video', 'dark-forest', 'night-of-the-living-dead-ltx-contest', 'fugi-visualizer', 'cat-walkman', 'daft-punk-cover-art'];
+  const recent = ['f1r-live-video', 'dark-forest', 'night-of-the-living-dead-ltx-contest', 'fugi-visualizer', 'cat-walkman', 'daft-punk-cover-art', 'trips'];
   for (const shot of manifest.shots) expect(recent, shot.slug).toContain(shot.slug);
 });

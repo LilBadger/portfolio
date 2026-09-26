@@ -138,7 +138,7 @@ const customLoops = {
 const coverOf = (slug) => projects.find((project) => project.slug === slug)?.cover;
 // `slug` ties each shot to its project so the site can caption what's on screen (reel.json).
 const reel = [
-  // Only 2025-2026 work.
+  // Only recent work: 2025-2026, plus Trips (2024).
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 149, duration: 1.8 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 30.4, duration: 1.8 },
   // Reframed so the boy and his lantern sit in the middle of the hero's open area, clear of the title.
@@ -148,10 +148,12 @@ const reel = [
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 166, duration: 1.8 },
   { slug: 'dark-forest', tools: ['MiniMax H3', 'DepthCrafter'], clip: DARK_FOREST_INK, start: 12, duration: 1.5 },
   { slug: 'cat-walkman', still: coverOf('cat-walkman'), duration: 1.4 },
+  { slug: 'trips', tools: ['Flux', 'Runway'], still: 'assets/artstation/trips/04-vlx-maftei-landscapes-04.jpg', duration: 1.5 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 20, duration: 1.6 },
   { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/f1r-character-glitch.png`, duration: 1.4 },
   { slug: 'f1r-live-video', tools: ['LTX-2.3', 'Pi3X point cloud'], clip: F1R_LIVE, start: 184, duration: 1.6 },
   { slug: 'night-of-the-living-dead-ltx-contest', clip: NOTLD, start: 100, duration: 2 },
+  { slug: 'trips', tools: ['Flux', 'Runway'], still: 'assets/artstation/trips/07-vlx-maftei-landscapes-07.jpg', duration: 1.5 },
   { slug: 'fugi-visualizer', tools: ['Codex', 'WebGL'], still: `${FUGI}/reference-tongue-in.png`, duration: 1.4 }
 ];
 
