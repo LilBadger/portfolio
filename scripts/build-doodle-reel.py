@@ -11,7 +11,11 @@ Outputs: public/assets/generated/reel/reel-doodle-{720,480}.mp4, -poster.jpg, .j
 """
 import json
 import math
+import multiprocessing
+import os
 import subprocess
+import tempfile
+import time
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +35,20 @@ RED = (255, 52, 60)
 ART = 'assets/artstation'
 FUGI = 'assets/projects/fugi-visualizer'
 RNG = np.random.default_rng(11)
+
+
+def _has_nvenc():
+    probe = subprocess.run(['ffmpeg', '-hide_banner', '-encoders'], capture_output=True, text=True).stdout
+    return 'h264_nvenc' in probe
+
+
+# Encode on the GPU (NVENC) when available; x264 on the CPU otherwise.
+if _has_nvenc():
+    ENCODER = ['-c:v', 'h264_nvenc', '-preset', 'p6', '-tune', 'hq', '-rc', 'vbr', '-cq', '30', '-b:v', '0']
+    ENCODER_SMALL = ['-c:v', 'h264_nvenc', '-preset', 'p6', '-tune', 'hq', '-rc', 'vbr', '-cq', '31', '-b:v', '0']
+else:
+    ENCODER = ['-c:v', 'libx264', '-preset', 'slow', '-crf', '24']
+    ENCODER_SMALL = ['-c:v', 'libx264', '-preset', 'slow', '-crf', '26']
 FG_SCALE = 0.6  # foreground doodles: accents, not stickers
 
 
@@ -180,6 +198,32 @@ def shape(kind):
     if kind == 'fire':
         return [(np.array([[0, -1], [0.45, -0.3], [0.3, -0.45], [0.7, 0.2], [0.55, 0.85], [0, 1], [-0.55, 0.85], [-0.7, 0.2],
                            [-0.3, -0.2], [-0.2, 0.1], [-0.05, -0.4]]), True, True)]
+    # Background sketch motifs: line art, not emoticons.
+    if kind == 'ghost':
+        top = circle_pts(20, 0.62, 0.62, 0, -0.25, math.pi, math.pi)
+        hem = [[0.62, 0.75], [0.35, 0.95], [0.12, 0.72], [-0.12, 0.95], [-0.38, 0.72], [-0.62, 0.95]]
+        return [(np.vstack([top, [[0.62, -0.25]], hem, [[-0.62, -0.25]]]), True, False),
+                (circle_pts(10, 0.1, 0.16, -0.22, -0.3), True, True), (circle_pts(10, 0.1, 0.16, 0.22, -0.3), True, True),
+                (circle_pts(10, 0.14, 0.08, 0, 0.05), True, False)]
+    if kind == 'eyeblob':
+        t = np.linspace(0, 2 * math.pi, 30)
+        r = 0.8 + 0.12 * np.sin(t * 5) + 0.06 * np.cos(t * 3)
+        body = np.stack([r * np.cos(t), 0.75 * r * np.sin(t)], 1)
+        eyes = [(circle_pts(10, 0.16, 0.16, x, y), True, False) for x, y in ((-0.35, -0.15), (0.2, -0.3), (0.4, 0.15))]
+        pupils = [(circle_pts(6, 0.06, 0.06, x, y), True, True) for x, y in ((-0.33, -0.12), (0.22, -0.27), (0.42, 0.18))]
+        return [(body, True, False)] + eyes + pupils
+    if kind == 'peeker':
+        grin = np.array([[-0.7, 0.35], [-0.45, 0.6], [-0.25, 0.4], [0, 0.65], [0.25, 0.4], [0.45, 0.6], [0.7, 0.35]])
+        return [(circle_pts(14, 0.3, 0.3, -0.42, -0.2), True, False), (circle_pts(7, 0.09, 0.09, -0.36, -0.14), True, True),
+                (circle_pts(14, 0.3, 0.3, 0.42, -0.2), True, False), (circle_pts(7, 0.09, 0.09, 0.48, -0.14), True, True),
+                (grin, False, False)]
+    if kind == 'rabbit':
+        head = circle_pts(24, 0.5, 0.42, 0, 0.35)
+        ear_l = np.array([[-0.28, 0.02], [-0.5, -0.95], [-0.12, -0.2]])
+        ear_r = np.array([[0.28, 0.02], [0.5, -0.95], [0.12, -0.2]])
+        return [(head, True, False), (ear_l, False, False), (ear_r, False, False),
+                (np.array([[-0.25, 0.3], [-0.1, 0.3]]), False, False), (np.array([[0.1, 0.3], [0.25, 0.3]]), False, False),
+                (shape('heart')[0][0] * 0.08 + [0, 0.5], True, True)]
     raise KeyError(kind)
 
 
@@ -298,8 +342,12 @@ class ScenePaint:
     optical flow (or the still's push), foreshortened on slanted surfaces, occluded per pixel by anything
     nearer, shaded by the local light and drawn on stroke by stroke before they boil."""
 
-    def __init__(self, colours, kinds, seed, count=14, size=60.0, track='dense'):
-        self.colours, self.kinds, self.seed, self.count, self.size, self.track = colours, kinds, seed, count, size, track
+    def __init__(self, colours, kinds=(), seed=0, count=14, size=60.0, track='dense', mode='motifs', opacity=0.85, dim=0.0):
+        """mode: 'motifs' (sketched creatures/patterns on surfaces), 'hatch' (hatching over the background),
+        'radial' (comic focus lines + signal arcs around the subject), 'staff' (flowing music staves).
+        dim: darken the background under the sketch so the subject stands out."""
+        self.colours, self.kinds, self.seed, self.count, self.size, self.track = colours, list(kinds), seed, count, size, track
+        self.mode, self.opacity, self.dim = mode, opacity, dim
 
     def prepare(self, spec, frames, mattes, frames_n):
         self.n = frames_n
@@ -324,9 +372,88 @@ class ScenePaint:
         # Normalise depth for the whole shot (inverse depth: 1 = nearest).
         lo, hi = np.percentile(self.depths[0], (1, 99))
         self.depths = [np.clip((d - lo) / max(hi - lo, 1e-3), 0, 1) for d in self.depths]
-        self._place(frames[0], mattes[0])
+        getattr(self, f'_place_{self.mode}')(frames[0], mattes[0])
 
-    def _place(self, frame, matte):
+    def _item(self, parts, anchor, size, appear, width=None, wobble=None, depth=None, colour=None):
+        return {'parts': parts, 'anchor': np.asarray(anchor, float), 'size': size, 'appear': appear,
+                'colour': colour or self.colours[0], 'seed': int(np.random.default_rng(len(self.items) + self.seed).integers(1 << 30)),
+                'width': width or max(1.2, size * 0.045), 'wobble': size * 0.012 if wobble is None else wobble, 'depth': depth}
+
+    def _backdrop(self, matte):
+        depth = self.depths[0]
+        subject_depth = float(np.median(depth[matte > 128])) if (matte > 128).any() else 1.0
+        near = np.asarray(Image.fromarray(matte).filter(ImageFilter.MaxFilter(31)), np.float32) / 255
+        return (depth < subject_depth - 0.03) & (near < 0.05), subject_depth
+
+    def _place_hatch(self, frame, matte):
+        """Hand-drawn hatching over the background; darker areas get a second, crossing pass."""
+        self.items = []
+        back, subject_depth = self._backdrop(matte)
+        dark = _blur_up(frame.mean(-1).astype(np.uint8)) / 255 < 0.33
+        rng = np.random.default_rng(self.seed)
+        for angle, spacing, region in ((38, self.size, back), (-52, self.size * 1.35, back & dark)):
+            a = math.radians(angle)
+            direction, normal = np.array([math.cos(a), math.sin(a)]), np.array([-math.sin(a), math.cos(a)])
+            reach = math.hypot(W, H)
+            for offset in np.arange(-reach / 2, reach / 2, spacing):
+                origin = np.array([W / 2, H / 2]) + normal * (offset + rng.uniform(-spacing * 0.2, spacing * 0.2))
+                t = np.arange(-reach / 2, reach / 2, 6.0)
+                pts = origin + np.outer(t, direction)
+                inside = (pts[:, 0] >= 0) & (pts[:, 0] < W) & (pts[:, 1] >= 0) & (pts[:, 1] < H)
+                ok = np.zeros(len(pts), bool)
+                ok[inside] = region[pts[inside, 1].astype(int), pts[inside, 0].astype(int)]
+                # Split into runs; short hand strokes rather than ruler lines.
+                run = []
+                for keep, pt in zip(ok, pts):
+                    if keep and len(run) < rng.integers(10, 26):
+                        run.append(pt)
+                        continue
+                    if len(run) >= 4:
+                        seg = np.array(run)
+                        self.items.append(self._item([(seg, False, False)], seg[len(seg) // 2], spacing,
+                                                     appear=int(seg[0][0] / W * 10), width=1.3, wobble=0.9,
+                                                     depth=subject_depth - 0.03))
+                    run = [pt] if keep else []
+
+    def _place_radial(self, frame, matte):
+        """Comic focus lines converging on the subject, plus broadcast arcs around the head."""
+        self.items = []
+        back, subject_depth = self._backdrop(matte)
+        ys, xs = np.where(matte > 128)
+        cx, cy = (xs.mean(), ys.min() + (ys.max() - ys.min()) * 0.25) if len(xs) else (W / 2, H / 2)
+        head = (ys.max() - ys.min()) * 0.28 if len(xs) else 120
+        rng = np.random.default_rng(self.seed)
+        for k, a in enumerate(np.linspace(0, 2 * math.pi, 34, endpoint=False)):
+            a += rng.uniform(-0.05, 0.05)
+            r0, r1 = head * rng.uniform(1.9, 2.6), head * rng.uniform(4.2, 6.5)
+            seg = np.array([[cx + math.cos(a) * r, cy + math.sin(a) * r] for r in np.linspace(r0, r1, 10)])
+            self.items.append(self._item([(seg, False, False)], seg[0], head * 0.3, appear=k % 6, width=2.8, wobble=1.2, depth=1.0))
+        for j, radius in enumerate((1.25, 1.5, 1.75)):
+            for side in (-1, 1):
+                arc = circle_pts(14, head * radius, head * radius, cx, cy, math.pi / 2 - side * 0.75 * math.pi / 2 - 0.45 + (math.pi if side < 0 else 0), 0.9)
+                self.items.append(self._item([(arc, False, False)], arc[7], head * 0.3, appear=6 + j * 3, width=2.6, wobble=1.0,
+                                             depth=1.0, colour=self.colours[-1]))
+
+    def _place_staff(self, frame, matte):
+        """Two hand-drawn music staves flowing across the table, with notes riding them."""
+        self.items = []
+        back, subject_depth = self._backdrop(matte)
+        rng = np.random.default_rng(self.seed)
+        for k, (y0, amp, phase) in enumerate(((0.3, 0.07, 0.4), (0.74, 0.06, 2.1))):
+            xs = np.linspace(-0.05, 1.05, 60) * W
+            gap = self.size * 0.22
+            base_y = H * y0 + H * amp * np.sin(xs / W * 2 * math.pi * 1.2 + phase)
+            for line in range(5):
+                seg = np.stack([xs, base_y + (line - 2) * gap], 1)
+                self.items.append(self._item([(seg, False, False)], seg[30], self.size, appear=k * 6 + line, width=2.4, wobble=1.0,
+                                             depth=None))
+            for x in np.linspace(0.12, 0.88, 6) * W + rng.uniform(-30, 30, 6):
+                y = H * y0 + H * amp * math.sin(x / W * 2 * math.pi * 1.2 + phase) + rng.integers(-2, 3) * gap
+                parts = [((p * self.size * 0.45) + [x, y], c, f) for p, c, f in shape('note' if rng.random() < 0.6 else 'notes')]
+                self.items.append(self._item([(resample(np.asarray(q, float), c), c, f) for q, c, f in parts], (x, y), self.size * 0.45,
+                                             appear=k * 6 + 8 + int(rng.integers(0, 8)), width=3.0, colour=self.colours[-1]))
+
+    def _place_motifs(self, frame, matte):
         rng = np.random.default_rng(self.seed)
         depth = self.depths[0]
         near_subject = np.asarray(Image.fromarray(matte).filter(ImageFilter.MaxFilter(31)), np.float32) / 255
@@ -334,6 +461,7 @@ class ScenePaint:
         smooth = _blur_up((depth * 255).astype(np.uint8), 4, 3) / 255
         gy, gx = np.gradient(smooth)
         self.items, taken, tries = [], [], 0
+        subject_depth = min(subject_depth, 1.0)
         while len(self.items) < self.count and tries < 4000:
             tries += 1
             x, y = rng.uniform(0.06, 0.94) * W, rng.uniform(0.08, 0.92) * H
@@ -358,31 +486,31 @@ class ScenePaint:
                 q = resample(np.asarray(pts, float), closed) @ rot.T
                 q = q - np.outer(q @ normal, normal) * (1 - squash)
                 parts.append((q * size + [x, y], closed, filled))
-            self.items.append({'parts': parts, 'anchor': np.array([x, y]), 'colour': self.colours[len(self.items) % len(self.colours)],
-                               'appear': int(rng.integers(0, 10)), 'size': size, 'seed': int(rng.integers(1 << 30))})
+            self.items.append(self._item(parts, (x, y), size, int(rng.integers(0, 10)), colour=self.colours[len(self.items) % len(self.colours)]))
 
     def report(self, name):
         print(f'  scene paint {name}: {len(self.items)} doodles placed', flush=True)
 
-    def _advect(self, pts, i, matte):
-        """Move points from frame i to i + 1 with the scene."""
+    def _motion(self, i, matte):
+        """The frame's motion, computed once per frame (not once per stroke): a callable pts -> pts."""
         if self.flow is None:  # still: known push about the centre
             z0 = 1 + self.push * i / max(1, self.n - 1)
             z1 = 1 + self.push * (i + 1) / max(1, self.n - 1)
             c = np.array([W / 2, H / 2])
-            return c + (pts - c) * (z1 / z0)
+            return lambda pts: c + (pts - c) * (z1 / z0)
         field = self.flow[min(i, len(self.flow) - 1)]
         if self.track == 'global':
             # Robust camera motion: median flow over the background only.
             bg = np.asarray(Image.fromarray(matte).resize((W // 2, H // 2)), np.float32) < 40
             motion = np.median(field[bg], axis=0) if bg.any() else np.zeros(2)
-            return pts + motion
-        return pts + _bilinear(field, pts[:, 0], pts[:, 1])
+            return lambda pts: pts + motion
+        return lambda pts: pts + _bilinear(field, pts[:, 0], pts[:, 1])
 
     def advance(self, i, matte):
+        move = self._motion(i, matte)
         for item in self.items:
-            item['anchor'] = self._advect(item['anchor'][None], i, matte)[0]
-            item['parts'] = [(self._advect(p, i, matte), c, f) for p, c, f in item['parts']]
+            item['anchor'] = move(item['anchor'][None])[0]
+            item['parts'] = [(move(p), c, f) for p, c, f in item['parts']]
 
     def composite(self, base, i, frame, matte):
         """Paint the doodles into frame i (a uint8 RGB array) and return the result."""
@@ -394,15 +522,13 @@ class ScenePaint:
             age = i - item['appear']
             if age < 0:
                 continue
-            ax, ay = item['anchor']
-            if not (0 <= ax < W and 0 <= ay < H):
-                continue
-            surface = float(depth[int(ay), int(ax)])
+            ax, ay = np.clip(item['anchor'], [0, 0], [W - 1, H - 1])
+            surface = item['depth'] if item['depth'] is not None else float(depth[int(ay), int(ax)])
             reveal = min(1.0, (age + 1) / 5)  # draw-on: the stroke is laid down over 5 frames
             boil = age // 2
-            width = max(1.5, item['size'] * 0.075) * SS
+            width = item['width'] * SS
             for k, (pts, closed, filled) in enumerate(item['parts']):
-                wob = pts + (np.random.default_rng(item['seed'] + boil * 97 + k).normal(0, item['size'] * 0.012, pts.shape))
+                wob = pts + (np.random.default_rng(item['seed'] + boil * 97 + k).normal(0, item['wobble'], pts.shape))
                 cut = max(2, int(len(wob) * reveal))
                 line = [(float(x * SS), float(y * SS)) for x, y in wob[:cut]]
                 if filled and reveal >= 1 and len(line) > 2:
@@ -423,8 +549,14 @@ class ScenePaint:
         shade = np.clip(0.62 + 0.75 * light ** 0.6, 0.6, 1.2)[..., None]
         tint = np.stack([_blur_up(frame[..., c].copy()) for c in range(3)], -1) / 255
         rgb = paint[..., :3] * shade * (0.88 + 0.22 * tint)
-        a = (alpha * visible * 0.92)[..., None]
-        return (base.astype(np.float32) * (1 - a) + np.clip(rgb, 0, 255) * a).astype(np.uint8)
+        a = (alpha * visible * self.opacity)[..., None]
+        out = base.astype(np.float32)
+        if self.dim:
+            # Knock the background back (not the subject) so it reads as a drawn backdrop behind them.
+            keep = np.asarray(Image.fromarray(matte).filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(3)), np.float32)[..., None] / 255
+            ramp = min(1.0, (i + 1) / 8)
+            out = out * (keep + (1 - keep) * (1 - self.dim * ramp))
+        return (out * (1 - a) + np.clip(rgb, 0, 255) * a).astype(np.uint8)
 
 
 # ---------------------------------------------------------------- psychedelic burst
@@ -498,27 +630,27 @@ EDIT = [
         Doodle('notes', 0.95, 0.12, 0.2, WHITE, 3, rot=12), Doodle('heart', 0.08, 0.2, 0.13, PINK, 8, rot=-15),
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
         Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
-    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([ACID, WHITE], ['sparkle', 'star', 'squiggle', 'spiral', 'eyes'], 21, count=14, size=70, track='dense')),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5)], background=ScenePaint([(214, 226, 214)], ['ghost', 'peeker', 'eyeblob', 'ghost', 'peeker'], 21, count=9, size=92, track='dense', opacity=0.95)),
     shot(NOTLD, clip('notld_carry', 0.3), 1.5, 'whip', ACID, [
         Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
         Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
-    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=ScenePaint([RED, WHITE], ['skull', 'bolt', 'spiral', 'drops', 'squiggle'], 22, count=12, size=80, track='global'), grade=[(1.0, 1.5, 'duotone')]),
+    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10)], background=ScenePaint([(222, 230, 220)], seed=22, size=13, track='global', mode='hatch', opacity=0.55, dim=0.35), grade=[(1.0, 1.5, 'duotone')]),
     # Split: four NOTLD shots slam in one by one, doodles on top.
     shot(NOTLD, clip('notld_tv', 0.2), 2.0, 'slam', None, [
         Doodle('bolt', 0.47, 0.42, 0.12, ACID, 6, anchor='frame', rot=-12), Doodle('skull', 0.92, 0.12, 0.1, WHITE, 12, anchor='frame', rot=10),
         Doodle('sparkle', 0.08, 0.9, 0.09, PINK, 16, anchor='frame')],
          split=('grid', ['notld_tv', 'notld_presenter', 'notld_carry', 'notld_armchair'], (0, 4, 9, 13))),
-    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=ScenePaint([PINK, WHITE], ['bolt', 'sparkle', 'squiggle', 'star'], 23, count=12, size=78, track='global'), grade=[(0.75, 1.25, 'bw')]),
+    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [Doodle('halo', 0.5, -0.06, 0.12, ACID, 3)], background=ScenePaint([WHITE, PINK], seed=23, track='global', mode='radial', opacity=0.9), grade=[(0.75, 1.25, 'bw')]),
     shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.5, 'zoom', None, [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
         Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
          grade=[(1.5, 2.0, 'bw')]),
-    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([PINK, WHITE], ['heart', 'note', 'sparkle', 'notes'], 24, count=10, size=70)),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8)], background=ScenePaint([(246, 236, 214), PINK], seed=24, size=78, mode='staff', opacity=0.9)),
     shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 1.75, 'drop', ACID, [
         Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
          grade=[(0.9, 1.4, 'duotone')]),
-    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([PINK, ACID], ['heart', 'star', 'sparkle', 'smiley'], 25, count=12, size=66), grade=[(1.25, 1.75, 'bw')]),
+    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [Doodle('crown', 0.5, -0.02, 0.14, ACID, 2)], background=ScenePaint([(255, 150, 210)], ['rabbit'], 25, count=16, size=66, opacity=0.8), grade=[(1.25, 1.75, 'bw')]),
     shot('dark-forest', clip('forest_boy_b', 0.3), 2.75, 'whip', ACID, [
         Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
         Doodle('eyes', 0.73, 0.18, 0.045, WHITE, 14, anchor='frame'), Doodle('heart', -1.2, -0.1, 0.09, PINK, 20, anchor='follow'),
@@ -560,6 +692,30 @@ def render_shot(s, frames_n):
     return out
 
 
+def _render_to_disk(args):
+    index, folder = args
+    s = EDIT[index]
+    started = time.time()
+    frames = render_shot(s, round(s['seconds'] * FPS))
+    path = Path(folder) / f'{index:02d}.npy'
+    np.save(path, np.stack(frames))
+    return index, str(path), time.time() - started
+
+
+def render_all():
+    """Render every shot in its own process (shots are independent), reporting each as it lands."""
+    started = time.time()
+    with tempfile.TemporaryDirectory(prefix='doodle-') as folder:
+        ctx = multiprocessing.get_context('fork')
+        results = {}
+        with ctx.Pool(min(len(EDIT), os.cpu_count() or 4)) as pool:
+            for index, path, seconds in pool.imap_unordered(_render_to_disk, [(k, folder) for k in range(len(EDIT))]):
+                results[index] = list(np.load(path))
+                print(f'  shot {index + 1:2d}/{len(EDIT)} {EDIT[index]["slug"]:<38} {seconds:5.1f}s', flush=True)
+    print(f'  all shots rendered in {time.time() - started:.1f}s', flush=True)
+    return [results[k] for k in range(len(EDIT))]
+
+
 def main():
     projects = json.loads((ROOT / 'content/manual-projects.json').read_text())
     overrides = json.loads((ROOT / 'content/project-overrides.json').read_text())
@@ -567,7 +723,7 @@ def main():
     tools = {'dark-forest': ['Hunyuan3D', 'Kimodo', 'Blender'], 'f1r-live-video': ['LTX-2.3', 'Pi3X point cloud'],
              NOTLD: ['ComfyUI', 'LTX-2'], 'fugi-visualizer': ['Codex', 'WebGL'],
              'trips': ['Flux', 'Runway'], 'daft-punk-cover-art': ['ComfyUI', 'SDXL'], 'cat-walkman': ['SDXL', 'Suno']}
-    shots = [render_shot(s, round(s['seconds'] * FPS)) for s in EDIT]
+    shots = render_all()
     # Cuts: kaleidoscope bursts or the collage's motion-blurred transitions.
     phase = 0.0
     for index, s in enumerate(EDIT):
@@ -592,7 +748,7 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     target = OUT / 'reel-doodle-720.mp4'
     enc = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-',
-                            '-c:v', 'libx264', '-preset', 'slow', '-crf', '24', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(target)],
+                            *ENCODER, '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(target)],
                            stdin=subprocess.PIPE)
     manifest, t = [], 0.0
     for s, frames in zip(EDIT, shots):
@@ -608,7 +764,7 @@ def main():
         print(f"{s['slug']:<40} {dur:4.2f}s {s['enter']}", flush=True)
     enc.stdin.close()
     enc.wait()
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(target), '-vf', 'scale=854:480', '-c:v', 'libx264', '-preset', 'slow', '-crf', '26',
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(target), '-vf', 'scale=854:480', *ENCODER_SMALL,
                     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(OUT / 'reel-doodle-480.mp4')], check=True)
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', '1.5', '-i', str(target), '-frames:v', '1', '-q:v', '4', str(OUT / 'reel-doodle-poster.jpg')], check=True)
     (OUT / 'reel-doodle.json').write_text(json.dumps({'duration': round(t, 3), 'shots': manifest}, indent=2) + '\n')
