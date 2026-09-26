@@ -3,7 +3,8 @@
 
 Longer shots of the recent work with boiling, marker-style doodles and emoticons that track each
 subject (via the SAM3 mattes in .collage-cache/), a wobbling hand-drawn outline around the
-subject, and short psychedelic kaleidoscope bursts (~0.3 s) on some cuts.
+subject, short psychedelic kaleidoscope bursts (~0.3 s) on some cuts, and the collage reel's
+motion vocabulary on the others (whip, zoom punch, 3D spin, slam, drop, B&W/duotone flips, a slam-in split).
 
 Inputs: .collage-cache/src/<name>.mp4 and .collage-cache/matte/<name>/ (see README).
 Outputs: public/assets/generated/reel/reel-doodle-{720,480}.mp4, -poster.jpg, .json
@@ -30,6 +31,18 @@ RED = (255, 52, 60)
 ART = 'assets/artstation'
 FUGI = 'assets/projects/fugi-visualizer'
 RNG = np.random.default_rng(11)
+
+
+def _collage():
+    """The collage reel's motion vocabulary (transitions, splits, grades) so both edits move alike."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('collage', ROOT / 'scripts' / 'build-collage-reel.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+COLLAGE = _collage()
 
 
 # ---------------------------------------------------------------- sources
@@ -207,9 +220,11 @@ class Doodle:
         if age < 0:
             return
         pop = back_out(age / 4)
-        if self.anchor == 'bbox':
+        if self.anchor in ('bbox', 'follow'):
+            # 'follow' tracks the subject but sizes to the frame, for small subjects.
             x0, y0, x1, y1 = box
-            cx, cy, scale = x0 + self.u * (x1 - x0), y0 + self.v * (y1 - y0), self.size * (y1 - y0)
+            cx, cy = x0 + self.u * (x1 - x0), y0 + self.v * (y1 - y0)
+            scale = self.size * (H if self.anchor == 'follow' else (y1 - y0))
         else:
             cx, cy, scale = self.u * W, self.v * H, self.size * H
         cx, cy = cx + self.drift[0] * age, cy + self.drift[1] * age
@@ -309,61 +324,80 @@ def clip(name, start=0.0, zoom=1.0):
     return ('clip', name, start, zoom)
 
 
-# (slug, source, seconds, burst into this shot, outline colour or None, doodles)
+def shot(slug, source, seconds, enter, outline_colour, doodles, grade=(), split=None):
+    """enter: 'burst' (kaleidoscope) or a collage transition ('cut', 'whip', 'zoom', 'spin', 'slam', 'drop').
+    grade: [(from_s, to_s, 'bw'|'duotone')] quick treatment flips; the doodles stay in colour on top.
+    split: optional (layout, [cached clip names of the same project], arrivals) for a split screen."""
+    return dict(slug=slug, source=source, seconds=seconds, enter=enter, outline=outline_colour, doodles=doodles,
+                grade=list(grade), split=split)
+
+
+NOTLD = 'night-of-the-living-dead-ltx-contest'
 EDIT = [
-    ('f1r-live-video', clip('f1r_singer', 0.2), 2.5, False, PINK, [
+    shot('f1r-live-video', clip('f1r_singer', 0.2), 2.25, 'cut', PINK, [
         Doodle('notes', 0.95, 0.12, 0.2, WHITE, 3, rot=12), Doodle('heart', 0.08, 0.2, 0.13, PINK, 8, rot=-15),
         Doodle('sparkle', 0.85, 0.55, 0.1, ACID, 13), Doodle('heart', 1.05, 0.45, 0.09, PINK, 18, rot=20),
-        Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)]),
-    ('dark-forest', clip('forest_boy_a', 0.5, 2.6), 3.0, True, WHITE, [
-        Doodle('rays', -0.02, 0.42, 0.3, ACID, 2, spin=1.5), Doodle('eyes', -0.9, -0.05, 0.09, WHITE, 8),
-        Doodle('eyes', 1.8, 0.0, 0.08, WHITE, 16), Doodle('sparkle', 0.2, -0.25, 0.22, ACID, 22),
-        Doodle('bang', 1.35, 0.15, 0.17, PINK, 30), Doodle('eyes', 1.2, -0.2, 0.07, WHITE, 40)]),
-    ('night-of-the-living-dead-ltx-contest', clip('notld_carry', 0.3), 2.25, False, ACID, [
-        Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 6),
-        Doodle('bang', 0.62, 0.1, 0.12, ACID, 12), Doodle('squiggle', 0.5, 0.95, 0.07, ACID, 18)]),
-    ('night-of-the-living-dead-ltx-contest', clip('notld_armchair', 0.5), 2.5, True, None, [
-        Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10), Doodle('spiral', 0.32, 0.28, 0.1, ACID, 8, spin=-6),
-        Doodle('crown', 0.25, -0.02, 0.1, ACID, 14, rot=-8), Doodle('drops', 0.05, 0.55, 0.1, RED, 20),
-        Doodle('zzz', 0.55, 0.05, 0.12, WHITE, 28)]),
-    ('night-of-the-living-dead-ltx-contest', clip('notld_tv', 0.2), 2.0, False, WHITE, [
-        Doodle('bolt', 0.02, 0.1, 0.16, ACID, 2, rot=-12), Doodle('bolt', 0.98, 0.15, 0.14, ACID, 6, rot=15),
-        Doodle('sparkle', 0.85, 0.85, 0.1, WHITE, 12), Doodle('squiggle', 0.5, -0.06, 0.1, PINK, 18)]),
-    ('night-of-the-living-dead-ltx-contest', clip('notld_presenter', 0.4), 2.0, True, PINK, [
+        Doodle('note', 0.05, 0.62, 0.14, WHITE, 24, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
+    shot('dark-forest', clip('forest_boy_a', 0.5), 2.5, 'burst', WHITE, [
+        Doodle('rays', -0.05, 0.42, 0.13, ACID, 2, anchor='follow', spin=1.5), Doodle('eyes', 0.26, 0.1, 0.05, WHITE, 8, anchor='frame'),
+        Doodle('eyes', 0.63, 0.14, 0.045, WHITE, 14, anchor='frame'), Doodle('sparkle', 0.5, -0.4, 0.09, ACID, 20, anchor='follow'),
+        Doodle('bang', 1.9, 0.0, 0.1, PINK, 26, anchor='follow'), Doodle('eyes', 0.82, 0.08, 0.05, WHITE, 34, anchor='frame')]),
+    shot(NOTLD, clip('notld_carry', 0.3), 1.5, 'whip', ACID, [
+        Doodle('drops', 0.25, 0.08, 0.12, WHITE, 2), Doodle('motion', -0.08, 0.45, 0.14, WHITE, 5),
+        Doodle('bang', 0.62, 0.1, 0.12, ACID, 9)]),
+    shot(NOTLD, clip('notld_armchair', 0.5), 2.0, 'spin', None, [
+        Doodle('skull', 0.2, -0.12, 0.2, WHITE, 3, rot=-10), Doodle('spiral', 0.32, 0.28, 0.1, ACID, 7, spin=-6),
+        Doodle('crown', 0.25, -0.02, 0.1, ACID, 12, rot=-8), Doodle('drops', 0.05, 0.55, 0.1, RED, 18)], grade=[(1.0, 1.5, 'duotone')]),
+    # Split: four NOTLD shots slam in one by one, doodles on top.
+    shot(NOTLD, clip('notld_tv', 0.2), 2.0, 'slam', None, [
+        Doodle('bolt', 0.47, 0.42, 0.12, ACID, 6, anchor='frame', rot=-12), Doodle('skull', 0.92, 0.12, 0.1, WHITE, 12, anchor='frame', rot=10),
+        Doodle('sparkle', 0.08, 0.9, 0.09, PINK, 16, anchor='frame')],
+         split=('grid', ['notld_tv', 'notld_presenter', 'notld_carry', 'notld_armchair'], (0, 4, 9, 13))),
+    shot(NOTLD, clip('notld_presenter', 0.4), 2.25, 'burst', PINK, [
         Doodle('halo', 0.5, -0.06, 0.12, ACID, 3), Doodle('bolt', 0.1, 0.25, 0.14, PINK, 8, rot=-20),
-        Doodle('skull', 0.95, 0.2, 0.14, WHITE, 14, rot=12), Doodle('fire', 0.08, 0.8, 0.14, RED, 20)]),
-    ('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.75, False, None, [
+        Doodle('skull', 0.95, 0.2, 0.14, WHITE, 14, rot=12), Doodle('fire', 0.08, 0.8, 0.14, RED, 20)], grade=[(0.75, 1.25, 'bw')]),
+    shot('daft-punk-cover-art', still(f'{ART}/daft-punk-cover-art/01-vlx-maftei-finalupscaled.jpg', 'daft'), 2.5, 'zoom', None, [
         Doodle('halo', 0.24, 0.12, 0.09, ACID, 2, anchor='frame'), Doodle('halo', 0.74, 0.1, 0.09, ACID, 6, anchor='frame'),
         Doodle('star', 0.12, 0.3, 0.06, WHITE, 10, anchor='frame', spin=4), Doodle('motion', 0.9, 0.62, 0.08, WHITE, 14, anchor='frame'),
-        Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')]),
-    ('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 2.25, True, WHITE, [
-        Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8), Doodle('notes', 0.66, 0.35, 0.09, WHITE, 8, anchor='frame', rot=-8),
-        Doodle('note', 0.8, 0.2, 0.07, ACID, 14, anchor='frame', rot=10), Doodle('heart', 1.15, 0.85, 0.16, PINK, 20)]),
-    ('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 2.0, False, ACID, [
-        Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 8), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 14, spin=5)]),
-    ('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, True, None, [
+        Doodle('star', 0.52, 0.26, 0.05, PINK, 20, anchor='frame', spin=-5), Doodle('sparkle', 0.86, 0.3, 0.06, ACID, 26, anchor='frame')],
+         grade=[(1.5, 2.0, 'bw')]),
+    shot('cat-walkman', still(f'{ART}/cat-walkman/01-vlx-maftei-catwalkmanhighrezblurred2.jpg', 'cat'), 1.75, 'burst', WHITE, [
+        Doodle('heart_eyes', 1.25, 0.15, 0.26, PINK, 3, rot=8), Doodle('notes', 0.66, 0.35, 0.09, WHITE, 7, anchor='frame', rot=-8),
+        Doodle('note', 0.8, 0.2, 0.07, ACID, 12, anchor='frame', rot=10), Doodle('heart', 1.15, 0.85, 0.16, PINK, 16)]),
+    shot('trips', still(f'{ART}/trips/07-vlx-maftei-landscapes-07.jpg', 'trips_rock'), 1.75, 'drop', ACID, [
+        Doodle('arrow', 0.5, 1.25, 0.25, WHITE, 3), Doodle('sparkle', 0.15, 0.9, 0.2, ACID, 7), Doodle('spiral', 0.85, 0.35, 0.18, WHITE, 12, spin=5)],
+         grade=[(0.9, 1.4, 'duotone')]),
+    shot('fugi-visualizer', still(f'{FUGI}/reference-tongue-in.png', 'fugi'), 2.25, 'burst', None, [
         Doodle('crown', 0.5, -0.02, 0.14, ACID, 2), Doodle('heart', 0.08, 0.35, 0.1, PINK, 7, rot=-12), Doodle('heart', 0.93, 0.3, 0.12, PINK, 11, rot=14),
-        Doodle('sparkle', 0.12, 0.7, 0.1, WHITE, 16), Doodle('smiley', 0.92, 0.75, 0.13, ACID, 22, rot=-10)]),
-    ('dark-forest', clip('forest_boy_b', 0.3, 2.4), 3.0, True, ACID, [
-        Doodle('rays', 0.85, 0.42, 0.34, ACID, 2, spin=-1.5), Doodle('eyes', -0.8, -0.4, 0.09, WHITE, 10),
-        Doodle('eyes', 1.9, -0.3, 0.08, WHITE, 18), Doodle('heart', -0.55, 0.15, 0.22, PINK, 26),
-        Doodle('star', 1.6, 0.2, 0.22, ACID, 34, spin=6)]),
+        Doodle('sparkle', 0.12, 0.7, 0.1, WHITE, 16), Doodle('smiley', 0.92, 0.75, 0.13, ACID, 22, rot=-10)], grade=[(1.25, 1.75, 'bw')]),
+    shot('dark-forest', clip('forest_boy_b', 0.3), 2.75, 'whip', ACID, [
+        Doodle('rays', 1.0, 0.42, 0.13, ACID, 2, anchor='follow', spin=-1.5), Doodle('eyes', 0.34, 0.12, 0.05, WHITE, 8, anchor='frame'),
+        Doodle('eyes', 0.73, 0.18, 0.045, WHITE, 14, anchor='frame'), Doodle('heart', -1.2, -0.1, 0.09, PINK, 20, anchor='follow'),
+        Doodle('star', 2.2, -0.2, 0.09, ACID, 28, anchor='follow', spin=6)]),
 ]
 
 
-def render_shot(spec, doodles, colour, frames_n):
-    kind = spec[0]
-    frames, mattes = load_clip(spec[1], spec[2], frames_n, spec[3]) if kind == 'clip' else load_still(spec[1], spec[2], frames_n)
+def render_shot(s, frames_n):
+    spec = s['source']
+    frames, mattes = load_clip(spec[1], spec[2], frames_n, spec[3]) if spec[0] == 'clip' else load_still(spec[1], spec[2], frames_n)
     frames_n = min(frames_n, len(frames), len(mattes))
+    if s['split']:
+        layout, names, arrivals = s['split']
+        pieces = [load_clip(name, spec[2], frames_n)[0] for name in names]
+        frames = [COLLAGE.split(pieces, i, layout, i, list(arrivals)) for i in range(frames_n)]
     boxes = smooth_boxes(mattes[:frames_n])
     out = []
     for i in range(frames_n):
-        base = Image.fromarray(frames[i]).convert('RGBA')
-        if colour is not None and i >= 1:
-            base.alpha_composite(outline(mattes[i], i, colour))
+        f = frames[i]
+        for start, end, kind in s['grade']:
+            if start * FPS <= i < end * FPS:
+                f = COLLAGE.bw(f) if kind == 'bw' else COLLAGE.duotone(f)
+        base = Image.fromarray(np.ascontiguousarray(f)).convert('RGBA')
+        if s['outline'] is not None and i >= 1:
+            base.alpha_composite(outline(mattes[i], i, s['outline']))
         layer = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))
         draw = ImageDraw.Draw(layer)
-        for d in doodles:
+        for d in s['doodles']:
             d.draw(draw, i, boxes[i])
         base.alpha_composite(layer.resize((W, H), Image.LANCZOS))
         out.append(np.asarray(base.convert('RGB')))
@@ -375,21 +409,29 @@ def main():
     overrides = json.loads((ROOT / 'content/project-overrides.json').read_text())
     titles = {p['slug']: {**p, **overrides.get(p['slug'], {})}['title'] for p in projects}
     tools = {'dark-forest': ['Hunyuan3D', 'Kimodo', 'Blender'], 'f1r-live-video': ['LTX-2.3', 'Pi3X point cloud'],
-             'night-of-the-living-dead-ltx-contest': ['ComfyUI', 'LTX-2'], 'fugi-visualizer': ['Codex', 'WebGL'],
+             NOTLD: ['ComfyUI', 'LTX-2'], 'fugi-visualizer': ['Codex', 'WebGL'],
              'trips': ['Flux', 'Runway'], 'daft-punk-cover-art': ['ComfyUI', 'SDXL'], 'cat-walkman': ['SDXL', 'Suno']}
-    shots = [render_shot(spec, doodles, colour, round(seconds * FPS)) for _, spec, seconds, _, colour, doodles in EDIT]
-    # Psychedelic bursts on selected cuts: the last frames of the outgoing shot and the first of the incoming.
+    shots = [render_shot(s, round(s['seconds'] * FPS)) for s in EDIT]
+    # Cuts: kaleidoscope bursts or the collage's motion-blurred transitions.
     phase = 0.0
-    for index, (_, _, _, burst, _, _) in enumerate(EDIT):
-        if not burst or index == 0:
+    for index, s in enumerate(EDIT):
+        if index == 0 or s['enter'] == 'cut':
             continue
         prev, cur = shots[index - 1], shots[index]
-        for k, s in enumerate(BURST_OUT):
-            j = len(prev) - len(BURST_OUT) + k
-            prev[j] = kaleidoscope(prev[j], s, phase + k * 0.25)
-        for k, s in enumerate(BURST_IN):
-            cur[k] = kaleidoscope(cur[k], s, phase + (len(BURST_OUT) + k) * 0.25)
-        phase += 1.3
+        if s['enter'] == 'burst':
+            for k, strength in enumerate(BURST_OUT):
+                j = len(prev) - len(BURST_OUT) + k
+                prev[j] = kaleidoscope(prev[j], strength, phase + k * 0.25)
+            for k, strength in enumerate(BURST_IN):
+                cur[k] = kaleidoscope(cur[k], strength, phase + (len(BURST_OUT) + k) * 0.25)
+            phase += 1.3
+            continue
+        out_n, in_n = COLLAGE.TRANSITION_FRAMES[s['enter']]
+        for j in range(in_n):
+            cur[j] = COLLAGE.transition_in(cur[j], s['enter'], j / in_n, (j + 1) / in_n)
+        for j in range(out_n):
+            k = len(prev) - out_n + j
+            prev[k] = COLLAGE.transition_out(prev[k], s['enter'], j / out_n, (j + 1) / out_n)
 
     OUT.mkdir(parents=True, exist_ok=True)
     target = OUT / 'reel-doodle-720.mp4'
@@ -397,16 +439,17 @@ def main():
                             '-c:v', 'libx264', '-preset', 'slow', '-crf', '24', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(target)],
                            stdin=subprocess.PIPE)
     manifest, t = [], 0.0
-    for (slug, *_), frames in zip(EDIT, shots):
+    for s, frames in zip(EDIT, shots):
         for f in frames:
-            enc.stdin.write(f.tobytes())
+            enc.stdin.write(np.ascontiguousarray(f).tobytes())
         dur = len(frames) / FPS
-        if manifest and manifest[-1]['slug'] == slug:
+        if manifest and manifest[-1]['slug'] == s['slug']:
             manifest[-1]['end'] = round(t + dur, 3)
         else:
-            manifest.append({'start': round(t, 3), 'end': round(t + dur, 3), 'slug': slug, 'title': titles[slug], 'tools': tools.get(slug, [])})
+            manifest.append({'start': round(t, 3), 'end': round(t + dur, 3), 'slug': s['slug'], 'title': titles[s['slug']],
+                             'tools': tools.get(s['slug'], [])})
         t += dur
-        print(f'{slug:<40} {dur:4.2f}s', flush=True)
+        print(f"{s['slug']:<40} {dur:4.2f}s {s['enter']}", flush=True)
     enc.stdin.close()
     enc.wait()
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(target), '-vf', 'scale=854:480', '-c:v', 'libx264', '-preset', 'slow', '-crf', '26',
