@@ -87,7 +87,7 @@ test('hero shows the reel with a primary call to action', async ({ page }) => {
 
   await expect(page.locator('.hero-reel')).toHaveCount(1);
   await expect(page.locator('.hero-reel__video')).toHaveCount(1);
-  const cta = page.locator('.hero-actions .button--signal');
+  const cta = page.locator('.hero-identity__actions .button--signal');
   await expect(cta).toHaveAttribute('href', '/#work');
   await expect(cta).toHaveCSS('background-color', 'rgb(166, 255, 0)');
 

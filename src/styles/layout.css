@@ -660,14 +660,6 @@
   animation: terminalCursorBlink 0.86s steps(2) infinite;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-  width: var(--hero-copy-width);
-  max-width: 100%;
-}
 
 
 
@@ -827,9 +819,6 @@
     font-size: clamp(0.7rem, 2.65vw, 0.9rem);
   }
 
-  .hero-actions {
-    gap: 0.5rem;
-  }
 
 
   .ascii-bunny {
